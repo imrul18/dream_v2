@@ -1,109 +1,92 @@
-import React, { useState } from "react";
-import IconInputField from "../InputField/IconInputField";
-import InputField from "../InputField/InputField";
-import Selector from "../Selector/Selector";
+import React, { useEffect, useState } from "react";
+import Select from "react-select";
+import OptionService from "../../service/OptionService";
 import ImageUploadForm from "../ImageUpload/ImageUploadForm";
+import IconInputField from "../InputField/IconInputField";
+import MultiSelect from "../InputField/MultiSelect";
 
-const Release = () => {
-  const [releaseTitle, setReleaseTitle] = useState("");
-  const [versionSubtitle, setVersionSubtitle] = useState("");
-  const [primaryArtist, setPrimaryArtist] = useState("");
+const Release = ({ data, onChange }) => {
+  const [artistOption, setArtistOption] = useState([]);
+  const [genreOption, setGenreOption] = useState([]);
+  const [labelOption, setLabelOption] = useState([]);
+  const [formatOption, setFormatOption] = useState([
+    { label: "Single", value: 1 },
+    { label: "Albam", value: 2 },
+  ]);
+  const [productionYearOption, setProductionYearOption] = useState([]);
+  const getYearOptions = async () => {
+    const Year = new Date().getFullYear();
+    const array = [];
+    for (let index = Year - 3; index < Year + 3; index++) {
+      array?.push({ label: index, value: index });
+      setProductionYearOption(array);
+    }
+  };
+
+  const getOptions = async () => {
+    const genre = await OptionService.genre();
+    setGenreOption(genre?.data);
+    const label = await OptionService.label();
+    setLabelOption(
+      label?.data?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
+    );
+    const artist = await OptionService.artist();
+    setArtistOption(
+      artist?.data?.map((itm) => ({
+        ...itm,
+        value: itm?.id,
+        label: itm?.name,
+      }))
+    );
+  };
+
+  useEffect(() => {
+    getOptions();
+    getYearOptions();
+  }, []);
+
   const [featuring, setFeaturing] = useState("");
-  const [variousArtists, setVariousArtists] = useState(true);
-  const [genre, setGenre] = useState("");
-  const [subgenre, setSubgenre] = useState("");
-  const [labelName, setLabelName] = useState("");
-  const [format, setFormat] = useState("");
-  const [originalReleaseDate, setOriginalReleaseDate] = useState("");
-  const [pLine, setPLine] = useState("");
-  const [cLine, setCLine] = useState("");
-  const [productionYear, setProductionYear] = useState("");
-  const [upcEan, setUpcEan] = useState("");
-  const [producerCatalogueNumber, setProducerCatalogueNumber] = useState("");
-
-  const handleReleaseTitleChange = (event) => {
-    setReleaseTitle(event.target.value);
-  };
-
-  const handleVersionSubtitleChange = (event) => {
-    setVersionSubtitle(event.target.value);
-  };
-
-  const handlePrimaryArtistChange = (event) => {
-    setPrimaryArtist(event.target.value);
-  };
 
   const handleFeaturingChange = (event) => {
-    setFeaturing(event.target.value);
-  };
-
-  const handleVariousArtistsChange = (event) => {
-    setVariousArtists(event.target.checked);
-  };
-
-  const handleGenreChange = (event) => {
-    setGenre(event.target.value);
-  };
-
-  const handleSubgenreChange = (event) => {
-    setSubgenre(event.target.value);
-  };
-
-  const handleLabelNameChange = (event) => {
-    setLabelName(event.target.value);
-  };
-
-  const handleFormatChange = (event) => {
-    setFormat(event.target.value);
-  };
-
-  const handleOriginalReleaseDateChange = (event) => {
-    setOriginalReleaseDate(event.target.value);
-  };
-
-  const handlePLineChange = (event) => {
-    setPLine(event.target.value);
-  };
-
-  const handleCLineChange = (event) => {
-    setCLine(event.target.value);
-  };
-
-  const handleProductionYearChange = (event) => {
-    setProductionYear(event.target.value);
-  };
-
-  const handleUpcEanChange = (event) => {
-    setUpcEan(event.target.value);
-  };
-
-  const handleProducerCatalogueNumberChange = (event) => {
-    setProducerCatalogueNumber(event.target.value);
+    // setFeaturing(event.target.value);
   };
 
   return (
     <>
       <div className="row release-row">
         <div className="col-xl-3 col-lg-6 mt-4">
-          <ImageUploadForm />
+          <ImageUploadForm
+            onUpload={(link) => onChange({ cover_image: link })}
+          />
         </div>
         <div className="col-xl-3 col-lg-6 mt-4">
           <form className="r_input_group">
-            <InputField
-              label="Release Title"
-              value={releaseTitle}
-              onChange={handleReleaseTitleChange}
-            />
-            <InputField
-              label="Version/Subtitle"
-              value={versionSubtitle}
-              onChange={handleVersionSubtitleChange}
-            />
-            <IconInputField
+            <div className="input_f mt-3">
+              <label className="mb-2">
+                Release Title <span className="input_star">*</span>
+              </label>
+              <input
+                type="text"
+                value={data?.title}
+                onChange={(e) => onChange({ title: e.target.value })}
+                placeholder="Release Title"
+                required
+              />
+            </div>
+            <div className="input_f mt-3">
+              <label className="mb-2">Version/Subtitle</label>
+              <input
+                type="text"
+                value={data?.subtitle}
+                onChange={(e) => onChange({ subtitle: e.target.value })}
+                placeholder="Version/Subtitle"
+              />
+            </div>
+            <MultiSelect
+              options={artistOption}
               labels={["Primary Artist", "Secondary Artist"]}
-              ids={["input1", "input2"]}
-              placeholders={primaryArtist}
-              onChange={handlePrimaryArtistChange}
+              placeholders={"Select Primary Artist"}
+              onChange={(e) => onChange({ primary_artist: e })}
             />
             <IconInputField
               labels={["Featuring", "Secondary Featuring"]}
@@ -119,8 +102,10 @@ const Release = () => {
                 <div className="item">
                   <input
                     type="checkbox"
-                    checked={variousArtists}
-                    onChange={handleVariousArtistsChange}
+                    checked={data?.various_art_compilation ? true : false}
+                    onChange={(e) =>
+                      onChange({ various_art_compilation: e?.target?.checked })
+                    }
                   />
                 </div>
               </div>
@@ -133,74 +118,105 @@ const Release = () => {
               <label htmlFor="" className="mb-2">
                 Genre <span className="input_star">*</span>
               </label>
-              <Selector value={genre} onChange={handleGenreChange}>
-                {/* options */}
-              </Selector>
-            </div>
-            <div className="mt-3">
-              <label htmlFor="" className="mb-2">
-                Subgenre <span className="input_star">*</span>
-              </label>
-              <Selector value={subgenre} onChange={handleSubgenreChange}>
-                {/* options */}
-              </Selector>
+              <Select
+                options={genreOption}
+                value={genreOption?.find((itm) => itm?.value === data?.genre)}
+                onChange={(e) => onChange({ genre: e?.value })}
+                placeholder="Select Genre"
+              />
             </div>
 
             <div className="mt-3">
               <label htmlFor="" className="mb-2">
                 Label Name <span className="input_star">*</span>
               </label>
-              <Selector value={labelName} onChange={handleLabelNameChange}>
-                {/* options */}
-              </Selector>
+              <Select
+                options={labelOption}
+                value={labelOption?.find((itm) => itm?.value === data?.label)}
+                onChange={(e) => onChange({ label: e?.value })}
+                placeholder="Select Label Name"
+              />
             </div>
 
             <div className="mt-3">
               <label htmlFor="" className="mb-2">
                 Format <span className="input_star">*</span>
               </label>
-              <Selector value={format} onChange={handleFormatChange}>
-                {/* options */}
-              </Selector>
+              <Select
+                options={formatOption}
+                value={formatOption?.find((itm) => itm?.value === data?.format)}
+                onChange={(e) => onChange({ format: e?.value })}
+                placeholder="Select Format"
+              />
             </div>
-            <InputField
-              label="Original Release Date"
-              value={originalReleaseDate}
-              onChange={handleOriginalReleaseDateChange}
-            />
+            <div className="input_f mt-3">
+              <label className="mb-2">
+                Original Release Date <span className="input_star">*</span>
+              </label>
+              <input
+                type="date"
+                value={data?.main_release_date}
+                onChange={(e) =>
+                  onChange({ main_release_date: e.target.value })
+                }
+                placeholder="Original Release Date"
+              />
+            </div>
           </form>
         </div>
         <div className="col-xl-3 col-lg-6 mt-4">
           <form className="r_input_group">
-            <InputField
-              label="℗ line"
-              value={pLine}
-              onChange={handlePLineChange}
-            />
-            <InputField
-              label="© line"
-              value={cLine}
-              onChange={handleCLineChange}
-            />
+            <div className="input_f mt-3">
+              <label className="mb-2">℗ line</label>
+              <input
+                type="text"
+                value={data?.p_line}
+                onChange={(e) => onChange({ p_line: e.target.value })}
+                placeholder="℗ line"
+              />
+            </div>
+            <div className="input_f mt-3">
+              <label className="mb-2">© line</label>
+              <input
+                type="text"
+                value={data?.c_line}
+                onChange={(e) => onChange({ c_line: e.target.value })}
+                placeholder="© line"
+              />
+            </div>
             <div className="mt-3">
               <label htmlFor="" className="mb-2">
                 Production Year <span className="input_star">*</span>
               </label>
-              <Selector value={productionYear} onChange={handleProductionYearChange}>
-                {/* options */}
-              </Selector>
+              <Select
+                options={productionYearOption}
+                value={productionYearOption?.find(
+                  (itm) => itm?.value === data?.production_year
+                )}
+                onChange={(e) => onChange({ production_year: e?.value })}
+                placeholder="Select Production Year"
+              />
             </div>
-
-            <InputField
-              label="UPC/EAN"
-              value={upcEan}
-              onChange={handleUpcEanChange}
-            />
-            <InputField
-              label="Producer Catalogue Number"
-              value={producerCatalogueNumber}
-              onChange={handleProducerCatalogueNumberChange}
-            />
+            <div className="input_f mt-3">
+              <label className="mb-2">UPC/EAN</label>
+              <input
+                type="text"
+                value={data?.upc}
+                onChange={(e) => onChange({ upc: e.target.value })}
+                placeholder="UPC/EAN"
+              />
+            </div>
+            <div className="input_f mt-3">
+              <label className="mb-2">Producer Catalogue Number</label>
+              <input
+                type="text"
+                value={data?.producer_catalogue_number}
+                onChange={(e) =>
+                  onChange({ producer_catalogue_number: e.target.value })
+                }
+                placeholder="Producer Catalogue Number"
+              />
+            </div>
           </form>
         </div>
       </div>

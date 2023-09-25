@@ -6,7 +6,7 @@ let Api = axios.create({
   baseURL: baseUrl,
 
   headers: {
-    "Content-type": "application/json",
+    "Content-type": "multipart/form-data",
     accept: "application/json",
   },
   transformResponse: (data) => {

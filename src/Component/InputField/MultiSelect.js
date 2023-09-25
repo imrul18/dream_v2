@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
+import Select from "../Selector/Selector";
 
-const IconInputField = ({ labels, ids, placeholders, star, onChange }) => {
+const MultiSelect = ({ labels, placeholders, star, onChange, options }) => {
   const [inputFields, setInputFields] = useState([{ id: 1, value: "" }]);
 
   const handleAddInputField = () => {
@@ -26,7 +27,7 @@ const IconInputField = ({ labels, ids, placeholders, star, onChange }) => {
   };
 
   useEffect(() => {
-    onChange(inputFields);
+    onChange(inputFields?.map((itm) => itm?.value));
   }, [inputFields]);
 
   return (
@@ -34,16 +35,18 @@ const IconInputField = ({ labels, ids, placeholders, star, onChange }) => {
       {inputFields.map((field, index) => (
         <div className="new-input-field" key={field.id}>
           <div className="input-row">
-            <label htmlFor={ids[index]}>
+            <label>
               {labels[index]} <span className="input_star">{star}</span>{" "}
             </label>
-            <input
-              id={ids[index]}
+
+            <Select
+              options={options}
               type="text"
-              placeholder={placeholders[index]}
-              value={field.value}
-              onChange={(e) => handleInputChange(field.id, e.target.value)}
+              placeholder={placeholders}
+              value={options?.find(itm=> itm?.value === field?.value)}
+              onChange={(e) => handleInputChange(field.id, e.value)}
             />
+
             {index > 0 && (
               <BsTrash
                 className="delete-icon"
@@ -60,4 +63,4 @@ const IconInputField = ({ labels, ids, placeholders, star, onChange }) => {
   );
 };
 
-export default IconInputField;
+export default MultiSelect;

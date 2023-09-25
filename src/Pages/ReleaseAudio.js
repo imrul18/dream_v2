@@ -1,51 +1,73 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Release from "../Component/Tabs/Release";
+import React, { useState } from "react";
+import { BiCheck } from "react-icons/bi";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import EditAssets from "../Component/Tabs/EditAssets";
+import Release from "../Component/Tabs/Release";
 import ReleaseDate from "../Component/Tabs/ReleaseDate";
 import Submission from "../Component/Tabs/Submission";
-import { BiCheck } from "react-icons/bi";
+import { setMusicData } from "./reduxStore";
 
-const steps = [
-  { title: 'Release', component: <Release /> },
-  { title: 'Edit Assets', component: <EditAssets /> },
-  { title: 'Release Date', component: <ReleaseDate /> },
-  { title: 'Submission', component: <Submission /> },
-];
+
 
 function ReleaseAudio() {
+  const dispatch = useDispatch();
+  const { musicData } = useSelector((state) => state.reduxStore);
+  console.log("🚀 ~ file: ReleaseAudio.js:16 ~ ReleaseAudio ~ data:", musicData)
+
+  const onChange = (value) => {
+    dispatch(setMusicData({ ...musicData, ...value }));
+  };
+
   const [currentStep, setCurrentStep] = useState(0);
 
   const handleStepChange = (stepIndex) => {
     setCurrentStep(stepIndex);
   };
 
+  const steps = [
+    { title: "Release", component: <Release data={musicData} onChange={onChange}/> },
+    { title: "Edit Assets", component: <EditAssets onChange={onChange}/> },
+    { title: "Release Date", component: <ReleaseDate onChange={onChange}/> },
+    { title: "Submission", component: <Submission onChange={onChange}/> },
+  ];
+
   return (
     <div className="releaseaudio_page">
       <div className="tab-navigation_are">
         <div className="tab-navigation">
-        {steps.map((step, index) => (
-          <div
-            key={index}
-            className={`tab ${index === currentStep ? 'active' : ''}`}
-            onClick={() => handleStepChange(index)}>
-            <BiCheck className='icons'/>
-            {step.title}
-          </div>
-        ))}
+          {steps.map((step, index) => (
+            <div
+              key={index}
+              className={`tab ${index === currentStep ? "active" : ""}`}
+              onClick={() => handleStepChange(index)}
+            >
+              <BiCheck className="icons" />
+              {step.title}
+            </div>
+          ))}
         </div>
       </div>
-      <div className="steps">
-        {steps[currentStep].component}
-      </div>
+      <div className="steps">{steps[currentStep].component}</div>
       <div className="btn_area">
-        <button className='btn' onClick={() => handleStepChange(currentStep - 1)} disabled={currentStep === 0}>Back</button>
+        <button
+          className="btn"
+          onClick={() => handleStepChange(currentStep - 1)}
+          disabled={currentStep === 0}
+        >
+          Back
+        </button>
         {currentStep === steps.length - 1 ? (
           <Link to="/all-release">
-            <button className='btn'>Submit</button>
+            <button className="btn">Submit</button>
           </Link>
         ) : (
-          <button className='btn' onClick={() => handleStepChange(currentStep + 1)}>Next</button>
+          <button
+            className="btn"
+            onClick={() => handleStepChange(currentStep + 1)}
+          >
+            Next
+          </button>
         )}
       </div>
     </div>

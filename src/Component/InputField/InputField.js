@@ -1,12 +1,21 @@
-import React from 'react';
+import React from "react";
 
-const InputField = ({ label, star, value, onChange, type, error, disabled, placeholder }) => {
-  const inputId = label.replace(/\s+/g, '-').toLowerCase();
+const InputField = ({
+  label,
+  star,
+  value,
+  onChange,
+  type,
+  error,
+  disabled,
+  placeholder,
+}) => {
+  const inputId = label.replace(/\s+/g, "-").toLowerCase();
 
   return (
-    <div className='input_f mt-3'>
-      <label htmlFor={inputId} className='mb-2' key={inputId}>
-        {label} <span className='input_star'>{star}</span>
+    <div className="input_f mt-3">
+      <label htmlFor={inputId} className="mb-2" key={inputId}>
+        {label} <span className="input_star">{star}</span>
       </label>
       <input
         id={inputId}

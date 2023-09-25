@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { BsCamera } from "react-icons/bs";
+import FileService from "../../service/FileService";
 
-const ImageUploadForm = () => {
+const ImageUploadForm = ({ onUpload }) => {
   const [uploadedPhoto, setUploadedPhoto] = useState(null);
   const [buttonText, setButtonText] = useState("Upload Cover");
   const [isLoading, setIsLoading] = useState(false);
@@ -17,15 +18,16 @@ const ImageUploadForm = () => {
 
     if (file) {
       setIsLoading(true);
-
       try {
         const imageURL = URL.createObjectURL(file);
-
-        // Simulate upload delay (replace this with your actual upload process)
         await new Promise((resolve) => setTimeout(resolve, 1500));
-
         setUploadedPhoto(imageURL);
         setButtonText("Replace Cover");
+        const res = await FileService.upload({
+          file,
+          folder: "85dd3bb5-4d45-485d-8037-ba07babebe13",
+        });
+        onUpload(res?.data?.id);
       } catch (error) {
         console.error("Error uploading image:", error);
       } finally {
@@ -45,11 +47,7 @@ const ImageUploadForm = () => {
       />
       <div className="dropzone">
         {uploadedPhoto ? (
-          <img
-            src={uploadedPhoto}
-            alt="Uploaded"
-            className="uploaded-image"
-          />
+          <img src={uploadedPhoto} alt="Uploaded" className="uploaded-image" />
         ) : (
           <div className="upload-placeholder" onClick={handleUploadClick}>
             <BsCamera className="icons" />
