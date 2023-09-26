@@ -1,7 +1,5 @@
 import { Table } from "antd";
 import React, { useState } from "react";
-import { BiDownload } from "react-icons/bi";
-import { Link } from "react-router-dom";
 import TableFilter from "../Filter/TableFilter";
 import FailedPopover from "../Popover/FailedPopover";
 import SearchBar from "../SearchBar/SearchBar";
@@ -49,24 +47,24 @@ const columns = [
       );
     },
   },
-  {
-    title: "Action",
-    render: (text, record) => {
-      const { status } = record;
+  // {
+  //   title: "Action",
+  //   render: (text, record) => {
+  //     const { status } = record;
 
-      if (status === "Approved") {
-        return (
-          <div className="r_edit_delete">
-            <Link to="#" className="edit">
-              <BiDownload className="icons" />
-            </Link>
-          </div>
-        );
-      } else {
-        return null;
-      }
-    },
-  },
+  //     if (status === "Approved") {
+  //       return (
+  //         <div className="r_edit_delete">
+  //           <Link to="#" className="edit">
+  //             <BiDownload className="icons" />
+  //           </Link>
+  //         </div>
+  //       );
+  //     } else {
+  //       return null;
+  //     }
+  //   },
+  // },
 ];
 const data = [
   {

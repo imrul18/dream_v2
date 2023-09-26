@@ -1,7 +1,7 @@
 import http from "./http";
 
 const get = async (params) => {
-  const res = await http.get("/items/Artist_Channel_Request", { params });
+  const res = await http.get("/items/Analytics", { params });
   return res?.data;
 };
 
@@ -11,7 +11,7 @@ const getById = async (id) => {
 };
 
 const add = async (data) => {
-  const res = await http.post("/items/Artist_Channel_Request", data);
+  const res = await http.post("/items/Analytics", data);
   return res?.data;
 };
 

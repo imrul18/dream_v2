@@ -1,17 +1,17 @@
 import { Table } from "antd";
 import React, { useRef, useState } from "react";
-import { FaPause, FaPlay } from "react-icons/fa";
 import { BiPencil } from "react-icons/bi";
+import { FaPause, FaPlay } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import DeletePopup from "../Modal/DeletePopup";
 import t_audio from "../assets/audio/Lukrembo.mp3";
-import  DeletePopup from "../Modal/DeletePopup"
 
 const columns = [
-  {
-    title: "#",
-    dataIndex: "audio",
-    render: (audio) => <CustomAudioPlayer audio={audio} />,
-  },
+  // {
+  //   title: "#",
+  //   dataIndex: "audio",
+  //   render: (audio) => <CustomAudioPlayer audio={audio} />,
+  // },
   {
     title: "Track",
     dataIndex: "track",

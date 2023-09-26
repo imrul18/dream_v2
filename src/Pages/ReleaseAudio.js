@@ -13,7 +13,6 @@ import { setMusicData } from "./reduxStore";
 function ReleaseAudio() {
   const dispatch = useDispatch();
   const { musicData } = useSelector((state) => state.reduxStore);
-  console.log("🚀 ~ file: ReleaseAudio.js:16 ~ ReleaseAudio ~ data:", musicData)
 
   const onChange = (value) => {
     dispatch(setMusicData({ ...musicData, ...value }));
@@ -27,7 +26,7 @@ function ReleaseAudio() {
 
   const steps = [
     { title: "Release", component: <Release data={musicData} onChange={onChange}/> },
-    { title: "Edit Assets", component: <EditAssets onChange={onChange}/> },
+    { title: "Edit Assets", component: <EditAssets data={musicData} onChange={onChange}/> },
     { title: "Release Date", component: <ReleaseDate onChange={onChange}/> },
     { title: "Submission", component: <Submission onChange={onChange}/> },
   ];

@@ -6,6 +6,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../Layout/Navbar.css";
 
 import { FaPlus, FaPlusSquare } from "react-icons/fa";
+import DashboardService from "../../service/DashboardService";
 import Analytics from "../assets/icons/Analytics.svg";
 import Cataog from "../assets/icons/Cataog.svg";
 import Dashboard from "../assets/icons/Dashboard.svg";
@@ -32,6 +33,17 @@ const MainLayout = () => {
   const handleToggle = () => {
     setCollapsed((prevCollapsed) => !prevCollapsed);
   };
+
+  const [data, setData] = useState([]);
+
+  const getData = async () => {
+    const res = await DashboardService.get()
+    setData(res?.data);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -171,9 +183,9 @@ const MainLayout = () => {
           <Outlet />
         </Content>
         <Footer className="footer">
-          <p>Copyright © 2023 Dream Records Pvt. Ltd.</p>
+          <p>Copyright © {new Date().getFullYear()} Dream Records Pvt. Ltd.</p>
           <div className="sponsored_by">
-            <p>Partnered By Believe Music</p>
+            <p>{data?.footer_right}</p>
           </div>
         </Footer>
       </Layout>

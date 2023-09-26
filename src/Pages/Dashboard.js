@@ -10,28 +10,15 @@ import DashboardService from "../service/DashboardService";
 const Dashboard = () => {
   const [data, setData] = useState([]);
 
-  const getData = async (params) => {
-    const res = await DashboardService.get(params);
-    const finalData = res?.data?.map((item, index) => {
-      return {
-        key: index,
-        id: item?.id,
-        name: item?.title,
-        youtube_url: item?.youtube_url,
-        status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
-        failed_reason: item?.failed_reason,
-      };
-    });
-    setData(finalData);
-  };
-
-  const onSearch = async (value) => {
-    getData({ search: value });
+  const getData = async () => {
+    const res = await DashboardService.get()
+    setData(res?.data);
   };
 
   useEffect(() => {
     getData();
   }, []);
+  
   return (
     <>
       <div className="container-fluid">
@@ -52,19 +39,19 @@ const Dashboard = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/contact">
+                <div>
                   <img src={artist_img} alt="" />
-                </Link>
+                </div>
               </li>
               <li>
-                <Link to="/contact">
+                <div>
                   <img src={artist_img} alt="" />
-                </Link>
+                </div>
               </li>
               <li>
-                <Link to="/contact">
+                <div>
                   <img src={artist_img} alt="" />
-                </Link>
+                </div>
               </li>
             </ul>
           </div>
