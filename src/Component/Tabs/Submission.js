@@ -1,8 +1,65 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import OptionService from "../../service/OptionService";
 import AssetsTable from "../Table/AssetsTable";
 import sub_img from "../assets/img/cover.jpg";
 
-function Submission() {
+function Submission({ data, onChange }) {
+  const [tableData, setTableData] = useState([]);
+  useEffect(() => {
+    setTableData(
+      data?.tracks?.map((itm, index) => ({
+          key: index,
+          // audio: t_audio,
+          track: itm?.title,
+          artist: itm?.primary_artist?.length
+            ? artistOption?.find(
+                (item) => item?.value == itm?.primary_artist[0]
+              )?.label
+            : "",
+          ISRC: itm?.isrc,
+        }))
+    );
+  }, [data]);
+
+  const [artistOption, setArtistOption] = useState([]);
+  const [genreOption, setGenreOption] = useState([]);
+  const [labelOption, setLabelOption] = useState([]);
+  const [formatOption, setFormatOption] = useState([
+    { label: "Single", value: 1 },
+    { label: "Albam", value: 2 },
+  ]);
+  const [productionYearOption, setProductionYearOption] = useState([]);
+  const getYearOptions = async () => {
+    const Year = new Date().getFullYear();
+    const array = [];
+    for (let index = Year - 3; index < Year + 3; index++) {
+      array?.push({ label: index, value: index });
+      setProductionYearOption(array);
+    }
+  };
+
+  const getOptions = async () => {
+    const genre = await OptionService.genre();
+    setGenreOption(genre?.data);
+    const label = await OptionService.label();
+    setLabelOption(
+      label?.data?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
+    );
+    const artist = await OptionService.artist();
+    setArtistOption(
+      artist?.data?.map((itm) => ({
+        ...itm,
+        value: itm?.id,
+        label: itm?.name,
+      }))
+    );
+  };
+
+  useEffect(() => {
+    getOptions();
+    getYearOptions();
+  }, []);
+
   return (
     <div className="submission_page-info s_info">
       <div className="row">
@@ -12,58 +69,86 @@ function Submission() {
         </div>
         <div className="col-xl-4 col-lg-6 col-md-12 mt-3">
           <div className="input_value">
-            <p className="input_name">Release Title</p> <span>Not Found</span>
+            <p className="input_name">Release Title</p>{" "}
+            <span>{data?.title ?? "Not Found"}</span>
           </div>
           <div className="input_value">
             <p className="input_name">Version/Subtitle</p>{" "}
-            <span>Not Found</span>
+            <span>{data?.subtitle ?? "Not Found"}</span>
           </div>
-          <div className="input_value">
-            <p className="input_name">Primary Artist</p> <span>Not Found</span>
-          </div>
-          <div className="input_value">
-            <p className="input_name">Featuring</p> <span>Not Found</span>
-          </div>
-          <div className="input_value">
+
+          {data?.primary_artist?.map((item) => (
+            <div className="input_value">
+              <p className="input_name">Primary Artist</p>{" "}
+              <span>
+                {artistOption?.find((itm) => itm?.value == item)?.label ??
+                  "Not Found"}
+              </span>
+            </div>
+          ))}
+          {data?.featuring?.map((itm) => (
+            <div className="input_value">
+              <p className="input_name">Featuring</p>{" "}
+              <span>{itm ?? "Not Found"}</span>
+            </div>
+          ))}
+
+          {/* <div className="input_value">
             <p className="input_name">Remixer</p> <span>Not Found</span>
-          </div>
+          </div> */}
           <div className="input_value">
             <p className="input_name">Various Artists / Compilation</p>{" "}
-            <span>Not Found</span>
+            <span>{data?.various_art_compilation ? "Yes" : "No"}</span>
           </div>
           <div className="input_value">
-            <p className="input_name">Genre</p> <span>Not Found</span>
+            <p className="input_name">Genre</p>{" "}
+            <span>
+              {genreOption?.find((itm) => itm?.value == data?.genre)?.label ??
+                "Not Found"}
+            </span>
           </div>
-          <div className="input_value">
+          {/* <div className="input_value">
             <p className="input_name">Subgenre</p> <span>Not Found</span>
-          </div>
+          </div> */}
         </div>
         <div className="col-xl-4 col-lg-6 col-md-12 mt-3">
           <div className="input_value">
-            <p className="input_name">Label Name</p> <span>Not Found</span>
+            <p className="input_name">Label Name</p>{" "}
+            <span>
+              {labelOption?.find((itm) => itm?.value == data?.label)?.label ??
+                "Not Found"}
+            </span>
           </div>
           <div className="input_value">
-            <p className="input_name">Format</p> <span>Not Found</span>
+            <p className="input_name">Format</p>{" "}
+            <span>
+              {formatOption?.find((itm) => itm?.value == data?.format)?.label ??
+                "Not Found"}
+            </span>
           </div>
           <div className="input_value">
             <p className="input_name">Original Release Date</p>{" "}
-            <span>Not Found</span>
+            <span>{data?.original_release_date ?? "Not Found"}</span>
           </div>
           <div className="input_value">
-            <p className="input_name">℗ line</p> <span>Not Found</span>
+            <p className="input_name">℗ line</p>{" "}
+            <span>{data?.p_line ?? "Not Found"}</span>
           </div>
           <div className="input_value">
-            <p className="input_name">℗ line</p> <span>Not Found</span>
+            <p className="input_name">℗ line</p>{" "}
+            <span>{data?.c_line ?? "Not Found"}</span>
           </div>
           <div className="input_value">
-            <p className="input_name">Production Year</p> <span>Not Found</span>
+            <p className="input_name">Production Year</p>{" "}
+            <span>{data?.production_year ?? "Not Found"}</span>
           </div>
           <div className="input_value">
-            <p className="input_name">UPC/EAN</p> <span>Not Found</span>
+            <p className="input_name">UPC/EAN</p>{" "}
+            <span>{data?.upc ?? "Not Found"}</span>
           </div>
           <div className="input_value">
             <p className="input_name">Producer Catalogue Number</p>
-            <span>Not Found</span>
+            <span>{data?.producer_catalogue_number ?? "Not Found"}</span>
           </div>
         </div>
       </div>
@@ -73,7 +158,7 @@ function Submission() {
           <h2 className="mb-3">Release Date</h2>
           <div className="input_value">
             <p className="input_name">Main Release Date</p>
-            <span>12-12-2023</span>
+            <span>{data?.main_release_date ?? null}</span>
           </div>
         </div>
       </div>
@@ -81,7 +166,7 @@ function Submission() {
       <div className="row mt-3">
         <div className="col-lg-12 col-md-12">
           <h2 className="mb-3">Assets</h2>
-          <AssetsTable />
+          <AssetsTable data={tableData} />
         </div>
       </div>
     </div>

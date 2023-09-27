@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import OptionService from "../../service/OptionService";
 import ImageUploadForm from "../ImageUpload/ImageUploadForm";
-import IconInputField from "../InputField/IconInputField";
+import MultiInput from "../InputField/MultiInput";
 import MultiSelect from "../InputField/MultiSelect";
 
 const Release = ({ data, onChange }) => {
@@ -45,18 +45,14 @@ const Release = ({ data, onChange }) => {
     getYearOptions();
   }, []);
 
-  const [featuring, setFeaturing] = useState("");
-
-  const handleFeaturingChange = (event) => {
-    // setFeaturing(event.target.value);
-  };
-
   return (
     <>
       <div className="row release-row">
         <div className="col-xl-3 col-lg-6 mt-4">
           <ImageUploadForm
+            image={data?.image ?? null}
             onUpload={(link) => onChange({ cover_image: link })}
+            onImage={(image_link) => onChange({ image: image_link })}
           />
         </div>
         <div className="col-xl-3 col-lg-6 mt-4">
@@ -83,16 +79,19 @@ const Release = ({ data, onChange }) => {
               />
             </div>
             <MultiSelect
+              data={data?.primary_artist}
               options={artistOption}
               labels={["Primary Artist", "Secondary Artist"]}
               placeholders={"Select Primary Artist"}
               onChange={(e) => onChange({ primary_artist: e })}
             />
-            <IconInputField
+
+            <MultiInput
+              data={data?.featuring}
               labels={["Featuring", "Secondary Featuring"]}
               ids={["input1", "input2"]}
-              placeholders={featuring}
-              onChange={handleFeaturingChange}
+              placeholders={"Featuring"}
+              onChange={(e) => onChange({ featuring: e })}
             />
             <div className="mt-3">
               <label htmlFor="" className="mb-2">
@@ -155,9 +154,9 @@ const Release = ({ data, onChange }) => {
               </label>
               <input
                 type="date"
-                value={data?.main_release_date}
+                value={data?.original_release_date}
                 onChange={(e) =>
-                  onChange({ main_release_date: e.target.value })
+                  onChange({ original_release_date: e.target.value })
                 }
                 placeholder="Original Release Date"
               />

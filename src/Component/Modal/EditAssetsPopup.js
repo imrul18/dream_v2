@@ -1,117 +1,79 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
+import { BiPencil } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import Select from "react-select";
+import OptionService from "../../service/OptionService";
 import AudioUploadForm from "../AudioUpload/AudioUploadForm";
-import IconInputField from "../InputField/IconInputField";
-import InputField from "../InputField/InputField";
-import Selector from "../Selector/Selector";
-import TextField from "../TextBox/TextField";
 import PrimaryBtn from "../Button/PrimaryBtn";
+import MultiInput from "../InputField/MultiInput";
+import MultiSelect from "../InputField/MultiSelect";
 
-function EditAssetsPopup() {
-  const [show, setShow] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+function EditAssetsPopup({ oldData, onTrackChange }) {
+  const [data, setData] = useState();
 
-  const handlePChange = (selectedOption) => {
-    setSelectedOption(selectedOption);
-    console.log(`Selected: ${selectedOption.label}`);
+  const onValueChange = (value) => {
+    setData({ ...data, ...value });
   };
 
-  const Pyears = [
-    { value: "2024", label: "2024" },
-    { value: "2023", label: "2023" },
-    { value: "2022", label: "2022" },
-    { value: "2021", label: "2021" },
-  ];
+  useEffect(() => {
+    setData(oldData);
+  }, [oldData]);
+
+  const [show, setShow] = useState(false);
+
+  const [artistOption, setArtistOption] = useState([]);
+  const [genreOption, setGenreOption] = useState([]);
+  const [productionYearOption, setProductionYearOption] = useState([]);
+  const getYearOptions = async () => {
+    const Year = new Date().getFullYear();
+    const array = [];
+    for (let index = Year - 3; index < Year + 3; index++) {
+      array?.push({ label: index, value: index });
+      setProductionYearOption(array);
+    }
+  };
+
+  const getOptions = async () => {
+    const genre = await OptionService.genre();
+    setGenreOption(genre?.data);
+    const artist = await OptionService.artist();
+    setArtistOption(
+      artist?.data?.map((itm) => ({
+        ...itm,
+        value: itm?.id,
+        label: itm?.name,
+      }))
+    );
+  };
+
+  useEffect(() => {
+    getOptions();
+    getYearOptions();
+  }, []);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [name, setName] = useState("");
-  const [version_S, setVersion_S] = useState("");
-  const [primaryArtist, setPrimaryArtist] = useState("");
-  const [PCN, setPCN] = useState("");
-  const [Publisher, setPublisher] = useState("");
-  const [ISRC, setISRC] = useState("");
-  const [Ttl, setTtl] = useState("");
-  const [LyricsLanguage, setLyricsLanguage] = useState("");
-  const [Remixer, setRemixer] = useState("");
-  const [LyricsWritter, setLyricsWritter] = useState("");
-  const [Composer, setComposer] = useState("");
-  const [Pline, setPline] = useState("");
-  const [Music, setMusic] = useState(true);
-  const [Original, setOriginal] = useState(true);
-  const [Yes, setYes] = useState(true);
-  const [PYes, setPYes] = useState(true);
-
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleversion_SChange = (event) => {
-    setVersion_S(event.target.value);
-  };
-  const handlePrimaryArtistChange = (event) => {
-    setPrimaryArtist(event.target.value);
-  };
-
-  const [comment, setComment] = useState("");
-
-  const handleCommentChange = (event) => {
-    setComment(event.target.value);
-  };
-  const handlePublisherChange = (event) => {
-    setPublisher(event.target.value);
-  };
-  const handleISRCChange = (event) => {
-    setISRC(event.target.value);
-  };
-  const handlePCNCChange = (event) => {
-    setPCN(event.target.value);
-  };
-  const handleTtlChange = (event) => {
-    setTtl(event.target.value);
-  };
-  const handleLyricsLanguageChange = (event) => {
-    setLyricsLanguage(event.target.value);
-  };
-  const handleRemixerChange = (event) => {
-    setRemixer(event.target.value);
-  };
-  const handleLyricsWritterChange = (event) => {
-    setLyricsWritter(event.target.value);
-  };
-  const handleComposerChange = (event) => {
-    setComposer(event.target.value);
-  };
-  const handlePlineChange = (event) => {
-    setPline(event.target.value);
-  };
-
-  const handleMusicChange = (event) => {
-    setMusic(event.target.checked);
-  };
-  const handleOriginalChange = (event) => {
-    setOriginal(event.target.checked);
-  };
-  const handleYesChange = (event) => {
-    setYes(event.target.checked);
-  };
-  const handlePYesChange = (event) => {
-    setPYes(event.target.checked);
+  const handleSubmit = () => {
+    onTrackChange(data);
+    handleClose();
   };
 
   return (
     <>
-      <button className="btn add_label_btn" onClick={handleShow}>
-        Add Track
-      </button>
+      <Link to="#" className="edit" onClick={handleShow}>
+        <BiPencil className="icons" />
+      </Link>
       <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Add Track</Modal.Title>
+          <Modal.Title>Edit Track</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="modal_upload_area">
-            <AudioUploadForm />
+            <AudioUploadForm
+              onValueChange={(e) => onValueChange({ audio: e })}
+            />
           </div>
           <form className="r_input_group">
             <div className="mt-3">
@@ -122,8 +84,10 @@ function EditAssetsPopup() {
                 <div className="item">
                   <input
                     type="checkbox"
-                    checked={Music}
-                    onChange={handleMusicChange}
+                    checked={data?.primary_track_type}
+                    onChange={(e) =>
+                      onValueChange({ primary_track_type: e.target.checked })
+                    }
                   />
                   <label htmlFor="">Music</label>
                 </div>
@@ -135,25 +99,67 @@ function EditAssetsPopup() {
               </label>
               <div className="checkbox_item">
                 <div className="item">
-                  <input type="checkbox"
-                    checked={Original}
-                    onChange={handleOriginalChange} />
+                  <input
+                    type="checkbox"
+                    checked={
+                      data?.secondary_track_type == "Original" ? true : false
+                    }
+                    onChange={() =>
+                      onValueChange({ secondary_track_type: "Original" })
+                    }
+                  />
                   <label htmlFor="">Original</label>
                 </div>
                 <div className="item">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={
+                      data?.secondary_track_type == "Karaoke" ? true : false
+                    }
+                    onChange={() =>
+                      onValueChange({ secondary_track_type: "Karaoke" })
+                    }
+                  />
                   <label htmlFor="">Karaoke</label>
                 </div>
                 <div className="item">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={
+                      data?.secondary_track_type == "Medley" ? true : false
+                    }
+                    onChange={() =>
+                      onValueChange({ secondary_track_type: "Medley" })
+                    }
+                  />
                   <label htmlFor="">Medley</label>
                 </div>
                 <div className="item">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={
+                      data?.secondary_track_type == "Cover" ? true : false
+                    }
+                    onChange={() =>
+                      onValueChange({ secondary_track_type: "Cover" })
+                    }
+                  />
                   <label htmlFor="">Cover</label>
                 </div>
                 <div className="item">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={
+                      data?.secondary_track_type == "Cover by cover band"
+                        ? true
+                        : false
+                    }
+                    onChange={() =>
+                      onValueChange({
+                        secondary_track_type: "Cover by cover band",
+                      })
+                    }
+                  />
                   <label htmlFor="">Cover by cover band</label>
                 </div>
               </div>
@@ -164,169 +170,251 @@ function EditAssetsPopup() {
               </label>
               <div className="checkbox_item">
                 <div className="item">
-                  <input type="checkbox" 
-                    checked={Yes}
-                    onChange={handleYesChange}
+                  <input
+                    type="checkbox"
+                    checked={data?.instrumental == "yes" ? true : false}
+                    onChange={() => onValueChange({ instrumental: "yes" })}
                   />
                   <label htmlFor="">Yes</label>
                 </div>
                 <div className="item">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={data?.instrumental == "no" ? true : false}
+                    onChange={() => onValueChange({ instrumental: "no" })}
+                  />
                   <label htmlFor="">No</label>
                 </div>
               </div>
             </div>
-            <InputField
-              label="Title"
-              value={name}
-              star="*"
-              onChange={handleNameChange}
-            />
-            <InputField
-              label="Version/Subtitle"
-              value={version_S}
-              onChange={handleversion_SChange}
-            />
-            <IconInputField
+            <div className="input_f mt-3">
+              <label className="mb-2">
+                Title <span className="input_star">*</span>
+              </label>
+              <input
+                type="text"
+                value={data?.title}
+                onChange={(e) => onValueChange({ title: e.target.value })}
+                placeholder="Title"
+                required
+              />
+            </div>
+            <div className="input_f mt-3">
+              <label className="mb-2">Version/Subtitle</label>
+              <input
+                type="text"
+                value={data?.subtitle}
+                onChange={(e) => onValueChange({ subtitle: e.target.value })}
+                placeholder="Version/Subtitle"
+              />
+            </div>
+            <MultiSelect
+              data={data?.primary_artist}
+              options={artistOption}
               labels={["Primary Artist", "Secondary Artist"]}
+              placeholders={"Select Primary Artist"}
+              onChange={(e) => onValueChange({ primary_artist: e })}
+            />
+            <MultiInput
+              data={data?.featuring}
+              labels={["Featuring", "Secondary Featuring"]}
               ids={["input1", "input2"]}
-              placeholders={[null, null]}
-              onChange={handlePrimaryArtistChange}
-              value={primaryArtist}
-              star="*"
+              placeholders={"Featuring"}
+              onChange={(e) => onValueChange({ featuring: e })}
             />
-            <IconInputField
-              labels={["Featuring", "Secondary Featuringt"]}
-              ids={["input1", "input2"]}
-              placeholders={[null, null]}
-            />
-            <InputField
-              label="Remixer"
-              value={Remixer}
-              onChange={handleRemixerChange}
-            />
-            <div className="add_input mt-3">
-              <InputField
-                label="Lyrics Writter"
-                value={LyricsWritter}
-                onChange={handleLyricsWritterChange}
-                star="*"
+            <div className="input_f mt-3">
+              <label className="mb-2">Remixer</label>
+              <input
+                type="text"
+                value={data?.remixer}
+                onChange={(e) => onValueChange({ remixer: e.target.value })}
+                placeholder="Remixer"
               />
+            </div>
+            <div className="add_input mt-3">
+              <div className="input_f mt-3">
+                <label className="mb-2">Lyrics Writter</label>
+                <span className="input_star">*</span>
+                <input
+                  type="text"
+                  value={data?.lyrics_writter}
+                  onChange={(e) =>
+                    onValueChange({ lyrics_writter: e.target.value })
+                  }
+                  placeholder="Lyrics Writter"
+                />
+              </div>
               <p className="input_desc">
                 Digital Music Stores require full first and last (family) name
               </p>
             </div>
             <div className="add_input mt-3">
-              <InputField
-                label="Composer"
-                value={Composer}
-                onChange={handleComposerChange}
-                star="*"
-              />
+              <div className="input_f mt-3">
+                <label className="mb-2">Composer</label>
+                <span className="input_star">*</span>
+                <input
+                  type="text"
+                  value={data?.composer}
+                  onChange={(e) => onValueChange({ composer: e.target.value })}
+                  placeholder="Composer"
+                />
+              </div>
               <p className="input_desc">
                 Digital Music Stores require full first and last (family) name
               </p>
             </div>
-            <IconInputField
+
+            <MultiInput
+              data={data?.arranger}
               labels={["Arranger", "Secondary Arranger"]}
               ids={["input1", "input2"]}
-              placeholders={[null, null]}
+              placeholders={"Arranger"}
+              onChange={(e) => onValueChange({ arranger: e })}
             />
-            <IconInputField
+            <MultiInput
+              data={data?.producer}
               labels={["Producer", "Secondary Producer"]}
               ids={["input1", "input2"]}
-              placeholders={[null, null]}
+              placeholders={"Producer"}
+              onChange={(e) => onValueChange({ producer: e })}
             />
-            <InputField
-              label="℗ Pline"
-              value={Pline}
-              onChange={handlePlineChange}
-              star="*"
-            />
+            <div className="input_f mt-3">
+              <label className="mb-2">℗ line</label>
+              <input
+                type="text"
+                value={data?.p_line}
+                onChange={(e) => onValueChange({ p_line: e.target.value })}
+                placeholder="℗ line"
+              />
+            </div>
             <div className="mt-3">
               <label htmlFor="" className="mb-2">
                 Production Year <span className="input_star">*</span>
               </label>
-              <Selector
-                options={Pyears}
-                onChange={handlePChange}
-                placeholder="2023"
-                value={selectedOption}
+              <Select
+                options={productionYearOption}
+                value={productionYearOption?.find(
+                  (itm) => itm?.value === data?.production_year
+                )}
+                onChange={(e) => onValueChange({ production_year: e?.value })}
+                placeholder="Select Production Year"
               />
             </div>
-            <InputField
-              label="Publisher"
-              value={Publisher}
-              onChange={handlePublisherChange}
-            />
-            <InputField
-              label="ISRC"
-              value={ISRC}
-              onChange={handleISRCChange}
-              placeholder="XX-0X0-00-00000"
-            />
+            <div className="input_f mt-3">
+              <label className="mb-2">Publisher</label>
+              <input
+                type="text"
+                value={data?.publisher}
+                onChange={(e) => onValueChange({ publisher: e.target.value })}
+                placeholder="Publisher"
+              />
+            </div>
+            <div className="input_f mt-3">
+              <label className="mb-2">ISRC</label>
+              <input
+                type="text"
+                value={data?.isrc}
+                onChange={(e) => onValueChange({ isrc: e.target.value })}
+                placeholder="XX-0X0-00-00000"
+              />
+            </div>
             <div className="mt-3">
               <label htmlFor="" className="mb-2">
                 Genre <span className="input_star">*</span>
               </label>
-              <Selector />
+              <Select
+                options={genreOption}
+                value={genreOption?.find((itm) => itm?.value === data?.genre)}
+                onChange={(e) => onValueChange({ genre: e?.value })}
+                placeholder="Select Genre"
+              />
             </div>
-            <div className="mt-3">
-              <label htmlFor="" className="mb-2">
-                Subgenre <span className="input_star">*</span>
-              </label>
-              <Selector />
+            <div className="input_f mt-3">
+              <label className="mb-2">Producer Catalogue Number</label>
+              <input
+                type="text"
+                value={data?.producer_catalogue_number}
+                onChange={(e) =>
+                  onValueChange({ producer_catalogue_number: e.target.value })
+                }
+                placeholder="Producer Catalogue Number"
+              />
             </div>
-            <InputField
-              label="Producer Catalogue Number"
-              value={PCN}
-              onChange={handlePCNCChange}
-            />
             <div className="mt-3">
               <label htmlFor="" className="mb-2">
                 Parental advisory <span className="input_star">*</span>
               </label>
               <div className="checkbox_item">
                 <div className="item">
-                  <input type="checkbox" 
-                    checked={PYes}
-                    onChange={handlePYesChange}
+                  <input
+                    type="checkbox"
+                    checked={data?.parental_advisory == "yes" ? true : false}
+                    onChange={() => onValueChange({ parental_advisory: "yes" })}
                   />
                   <label htmlFor="">Yes</label>
                 </div>
                 <div className="item">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={data?.parental_advisory == "no" ? true : false}
+                    onChange={() => onValueChange({ parental_advisory: "no" })}
+                  />
                   <label htmlFor="">No</label>
                 </div>
                 <div className="item">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={
+                      data?.parental_advisory == "cleaned" ? true : false
+                    }
+                    onChange={() =>
+                      onValueChange({ parental_advisory: "cleaned" })
+                    }
+                  />
                   <label htmlFor="">Cleaned</label>
                 </div>
               </div>
             </div>
-            <InputField
-              label="Track Title Language"
-              value={Ttl}
-              onChange={handleTtlChange}
-              star="*"
-            />
-            <InputField
-              label="Lyrics Language"
-              value={LyricsLanguage}
-              onChange={handleLyricsLanguageChange}
-              star="*"
-            />
-            <TextField
-              label="Lyrics"
-              type="text"
-              value={comment}
-              onChange={handleCommentChange}
-            />
+            <div className="input_f mt-3">
+              <label className="mb-2">Track Title Language</label>
+              <span className="input_star">*</span>
+              <input
+                type="text"
+                value={data?.track_title_language}
+                onChange={(e) =>
+                  onValueChange({ track_title_language: e.target.value })
+                }
+                placeholder="Track Title Language"
+              />
+            </div>
+            <div className="input_f mt-3">
+              <label className="mb-2">Lyrics Language</label>
+              <span className="input_star">*</span>
+              <input
+                type="text"
+                value={data?.lyrics_language}
+                onChange={(e) =>
+                  onValueChange({ lyrics_language: e.target.value })
+                }
+                placeholder="Lyrics Language"
+              />
+            </div>
+            <div className="input_f mt-3">
+              <label className="mb-2">Lyrics</label>
+              <textarea
+                type="text"
+                cols="30"
+                rows="5"
+                value={data?.lyrics}
+                onChange={(e) => onValueChange({ lyrics: e.target.value })}
+                placeholder="Lyrics"
+              />
+            </div>
           </form>
         </Modal.Body>
         <Modal.Footer>
           <div className="btn_area">
-            <PrimaryBtn label="Submit" onClick={handleClose} />
+            <PrimaryBtn label="Update" onClick={handleSubmit} />
             <button className="btn_s" onClick={handleClose}>
               Cancel
             </button>

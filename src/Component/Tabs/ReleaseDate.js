@@ -1,9 +1,10 @@
 import { DatePicker, Space } from "antd";
 import React from "react";
 
-const EditAssets = () => {
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
+const EditAssets = ({ data, onChange }) => {
+
+  const onDateChange = (date, dateString) => {
+    onChange({main_release_date: dateString})
   };
 
   const disabledDate = (current) => {
@@ -18,7 +19,7 @@ const EditAssets = () => {
         </label>
         <div className="checkbox_item">
           <Space direction="vertical">
-            <DatePicker onChange={onChange} disabledDate={disabledDate} />
+            <DatePicker onChange={onDateChange} disabledDate={disabledDate} />
           </Space>
         </div>
       </div>

@@ -1,17 +1,14 @@
 import { Table } from "antd";
 import React, { useRef, useState } from "react";
-import { BiPencil } from "react-icons/bi";
 import { FaPause, FaPlay } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import t_audio from "../assets/audio/Lukrembo.mp3";
-import DeletePopup from "../Modal/DeletePopup"
 
 const columns = [
-  {
-    title: "#",
-    dataIndex: "audio",
-    render: (audio) => <CustomAudioPlayer audio={audio} />,
-  },
+  // {
+  //   title: "#",
+  //   dataIndex: "audio",
+  //   render: (audio) => <CustomAudioPlayer audio={audio} />,
+  // },
   {
     title: "Track Title",
     dataIndex: "track",
@@ -24,20 +21,20 @@ const columns = [
     title: "ISRC",
     dataIndex: "ISRC",
   },
-  {
-    title: "Action",
-    render: (text, record) => (
-      <div className="r_edit_delete">
-        <Link to="#" className="edit">
-          <BiPencil className="icons" />
-        </Link>
-        {/* <Link to="#" className="delete">
-          <BiTrashAlt className="icons" />
-        </Link> */}
-        <DeletePopup/>
-      </div>
-    ),
-  },
+  // {
+  //   title: "Action",
+  //   render: (text, record) => (
+  //     <div className="r_edit_delete">
+  //       <Link to="#" className="edit">
+  //         <BiPencil className="icons" />
+  //       </Link>
+  //       {/* <Link to="#" className="delete">
+  //         <BiTrashAlt className="icons" />
+  //       </Link> */}
+  //       <DeletePopup/>
+  //     </div>
+  //   ),
+  // },
 ];
 
 const data = [
@@ -75,7 +72,8 @@ const CustomAudioPlayer = ({ audio }) => {
   );
 };
 
-const AssetsTable = () => {
+const AssetsTable = ({data}) => {
+  console.log("🚀 ~ file: AssetsTable.js:76 ~ AssetsTable ~ data:", data)
   return (
     <div>
       <Table

@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsTrash } from "react-icons/bs";
-import Select from "../Selector/Selector";
 
-const MultiSelect = ({
-  data,
-  labels,
-  placeholders,
-  star,
-  onChange,
-  options,
-}) => {
+const MultiInput = ({ data, labels, placeholders, star, onChange }) => {
   const [inputFields, setInputFields] = useState(
-    data?.map((itm) => ({ id: Date.now(), value: itm })) ?? [{ id: Date.now(), value: "" }]
+    data?.map((itm) => ({ id: Date.now(), value: itm })) ?? [
+      { id: Date.now(), value: "" },
+    ]
   );
 
   const handleAddInputField = () => {
@@ -42,20 +36,17 @@ const MultiSelect = ({
   return (
     <div className="position-relative">
       {inputFields.map((field, index) => (
-        <div className="new-input-field" key={index}>
+        <div className="new-input-field" key={field.id}>
           <div className="input-row">
             <label>
               {labels[index]} <span className="input_star">{star}</span>{" "}
             </label>
-
-            <Select
-              options={options}
+            <input
               type="text"
               placeholder={placeholders}
-              value={options?.find((itm) => itm?.value === field?.value)}
-              onChange={(e) => handleInputChange(field.id, e.value)}
+              value={field.value}
+              onChange={(e) => handleInputChange(field.id, e.target.value)}
             />
-
             {index > 0 && (
               <BsTrash
                 className="delete-icon"
@@ -72,4 +63,4 @@ const MultiSelect = ({
   );
 };
 
-export default MultiSelect;
+export default MultiInput;
