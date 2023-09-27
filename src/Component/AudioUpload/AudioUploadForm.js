@@ -1,20 +1,27 @@
 import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import { MdAudiotrack } from "react-icons/md"; // Using the audio icon
+import FileService from "../../service/FileService";
 
-const AudioUploadForm = () => {
+const AudioUploadForm = ({onValueChange}) => {
   const [uploadedAudio, setUploadedAudio] = useState(null);
   const [buttonText, setButtonText] = useState("Upload Audio");
   const [audioFileName, setAudioFileName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0); // Added upload progress state
 
-  const handleDrop = (acceptedFiles) => {
+  const handleDrop = async(acceptedFiles) => {
     const file = acceptedFiles[0];
 
     if (file) {
       setIsLoading(true);
       const audioURL = URL.createObjectURL(file);
+
+      const res = await FileService.upload({
+        file,
+        folder: "85dd3bb5-4d45-485d-8037-ba07babebe13",
+      });
+      onValueChange(res?.data?.id);
 
       // Simulating upload delay (you can replace this with your actual upload process)
       const simulateUpload = () => {
@@ -49,7 +56,7 @@ const AudioUploadForm = () => {
 
   return (
     <div className="audio_upload_form">
-      <Dropzone onDrop={handleDrop} accept="audio/*">
+      <Dropzone onDrop={handleDrop} accept="audio/.mp3">
         {({ getRootProps, getInputProps }) => (
           <div {...getRootProps()} className="dropzone">
             <input {...getInputProps()} id="fileInput" />

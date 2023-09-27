@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { BsCamera } from "react-icons/bs";
 import FileService from "../../service/FileService";
 
-const ImageUploadForm = ({ onUpload }) => {
-  const [uploadedPhoto, setUploadedPhoto] = useState(null);
+const ImageUploadForm = ({ image, onImage, onUpload }) => {
+  const [uploadedPhoto, setUploadedPhoto] = useState(image);
   const [buttonText, setButtonText] = useState("Upload Cover");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,6 +22,7 @@ const ImageUploadForm = ({ onUpload }) => {
         const imageURL = URL.createObjectURL(file);
         await new Promise((resolve) => setTimeout(resolve, 1500));
         setUploadedPhoto(imageURL);
+        onImage(imageURL);
         setButtonText("Replace Cover");
         const res = await FileService.upload({
           file,

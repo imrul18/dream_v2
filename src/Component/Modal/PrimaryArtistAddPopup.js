@@ -18,6 +18,7 @@ function LabelManagePopup({onSubmit}) {
   const [instagramId, setInstagramId] = useState("");
   const [youtubeChannelUrl, setYoutubeChannelUrl] = useState("");
   const [uploadedPhoto, setUploadedPhoto] = useState(null);
+  const [imageId, setImageId] = useState(null);
 
   const handleSubmit = async (e) => {
     const data = {
@@ -27,7 +28,7 @@ function LabelManagePopup({onSubmit}) {
       facebook_url: facebookUrl,
       instagram_id: instagramId,
       youtube_channel_url: youtubeChannelUrl,
-      image: uploadedPhoto,
+      image: imageId,
     };
     const res = await PrimaryArtistService.add(data);
     if (res) {
@@ -80,6 +81,7 @@ function LabelManagePopup({onSubmit}) {
           <PhotoUploader
             uploadedPhoto={uploadedPhoto}
             setUploadedPhoto={setUploadedPhoto}
+            onUpload={(link)=>setImageId(link)}
           />
           <div className="input_group">
             <InputField

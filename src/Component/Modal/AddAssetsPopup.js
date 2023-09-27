@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { BiPencil } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Select from "react-select";
 import OptionService from "../../service/OptionService";
 import AudioUploadForm from "../AudioUpload/AudioUploadForm";
@@ -9,16 +8,24 @@ import PrimaryBtn from "../Button/PrimaryBtn";
 import MultiInput from "../InputField/MultiInput";
 import MultiSelect from "../InputField/MultiSelect";
 
-function EditAssetsPopup({ oldData, onTrackChange }) {
-  const [data, setData] = useState();
+function AddAssetsPopup({ onTrackChange }) {
+  const { musicData } = useSelector((state) => state.reduxStore);
+  const [data, setData] = useState({
+    id: Date.now() + Math.random(),
+    primary_track_type: true,
+    instrumental: "no",
+    secondary_track_type: "Original",
+  });
 
   const onValueChange = (value) => {
     setData({ ...data, ...value });
   };
 
   useEffect(() => {
-    setData(oldData);
-  }, [oldData]);
+    if (musicData) {
+      setData({ ...musicData, ...data, id: musicData?.tracks?.length });
+    }
+  }, [musicData]);
 
   const [show, setShow] = useState(false);
 
@@ -57,23 +64,22 @@ function EditAssetsPopup({ oldData, onTrackChange }) {
 
   const handleSubmit = () => {
     onTrackChange(data);
+    setData(null) 
     handleClose();
   };
 
   return (
     <>
-      <Link to="#" className="edit" onClick={handleShow}>
-        <BiPencil className="icons" />
-      </Link>
+      <button className="btn add_label_btn" onClick={handleShow}>
+        Add Track
+      </button>
       <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Edit Track</Modal.Title>
+          <Modal.Title>Add Track</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="modal_upload_area">
-            <AudioUploadForm
-              onValueChange={(e) => onValueChange({ audio: e })}
-            />
+            <AudioUploadForm />
           </div>
           <form className="r_input_group">
             <div className="mt-3">
@@ -414,7 +420,7 @@ function EditAssetsPopup({ oldData, onTrackChange }) {
         </Modal.Body>
         <Modal.Footer>
           <div className="btn_area">
-            <PrimaryBtn label="Update" onClick={handleSubmit} />
+            <PrimaryBtn label="Submit" onClick={handleSubmit} />
             <button className="btn_s" onClick={handleClose}>
               Cancel
             </button>
@@ -425,4 +431,4 @@ function EditAssetsPopup({ oldData, onTrackChange }) {
   );
 }
 
-export default EditAssetsPopup;
+export default AddAssetsPopup;

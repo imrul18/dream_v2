@@ -1,77 +1,71 @@
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import PrimaryBtn from '../Component/Button/PrimaryBtn';
+import PrimaryBtn from "../Component/Button/PrimaryBtn";
 import Selector from "../Component/Selector/Selector";
 import AnalyticsTable from "../Component/Table/AnalyticsTable";
 import AnalyticService from "../service/AnalyticService";
+import OptionService from "../service/OptionService";
 
 function Analytics() {
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedOptionM, setSelectedOptionM] = useState(null);
-  const [selectedOptionL, setSelectedOptionL] = useState(null);
+  const [yearsOptions, setYearsOptions] = useState([]);
+  const [monthsOptions, setMonthsOptions] = useState([
+    { label: "January", value: "January" },
+    { label: "February", value: "February" },
+    { label: "March", value: "March" },
+    { label: "April", value: "April" },
+    { label: "May", value: "May" },
+    { label: "June", value: "June" },
+    { label: "July", value: "July" },
+    { label: "August", value: "August" },
+    { label: "September", value: "September" },
+    { label: "October", value: "October" },
+    { label: "November", value: "November" },
+    { label: "December", value: "December" },
+  ]);
+  const [labelOptions, setLabelOptions] = useState([]);
+
+  const [params, setParams] = useState({
+    year: new Date().getFullYear(),
+    month: monthsOptions[new Date().getMonth()]?.label,
+  });
 
   const handleChange = (selectedOption) => {
-    setSelectedOption(selectedOption);
-    console.log(`Selected: ${selectedOption.label}`);
-  };
-  const handleChangeM = (selectedOptionM) => {
-    setSelectedOptionM(selectedOptionM);
-    console.log(`Selected: ${selectedOptionM.label}`);
-  };
-  const handleChangeL = (selectedOptionL) => {
-    setSelectedOptionL(selectedOptionL);
-    console.log(`Selected: ${selectedOptionL.label}`);
+    setParams({ ...params, ...selectedOption });
   };
 
-  const years = [
-    { value: "2023", label: "2023" },
-    { value: "2022", label: "2022" },
-    { value: "2021", label: "2021" },
-  ];
-
-  const months = [
-    { value: "2023", label: "2023" },
-    { value: "2022", label: "2022" },
-    { value: "2021", label: "2021" },
-  ];
-
-  const label = [
-    { value: "2023", label: "2023" },
-    { value: "2022", label: "2022" },
-    { value: "2021", label: "2021" },
-  ];
-
-  useEffect(() => {
-    let params = {};
-    if (selectedOption) {
-      params = { year: selectedOption?.value };
+  const getYearOptions = async () => {
+    const Year = new Date().getFullYear();
+    const array = [];
+    for (let index = Year - 3; index < Year + 3; index++) {
+      array?.push({ label: index, value: index });
+      setYearsOptions(array);
     }
-    if (selectedOptionM) {
-      params = { ...params, month: selectedOptionM?.value };
-    }
-    if (selectedOptionL) {
-      params = { ...params, label: selectedOptionL?.value };
-    }
-    getData(params);    
-  }, [selectedOption]);
-
+  };
 
   const [data, setData] = useState([]);
   const getData = async (params) => {
+    const label = await OptionService.label();
+    setLabelOptions(
+      label?.data?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
+    );
     const res = await AnalyticService.get(params);
     const finalData = res?.data?.map((item, index) => {
       return {
         key: index,
-        date: moment(item?.created_at).format("DD-MM-YYYY"),
-        url: item?.youtube_url,
-        UPC_EAN: item?.upc,
-        LNS: item?.label_name_sender,
-        LNR: item?.label_name_receiver,
+        years: item?.year,
+        month: item?.month,
+        label: label?.data?.find((itm) => itm?.id == item?.label)?.title,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
       };
     });
     setData(finalData);
+  };
+
+  const submitAnalytics = async () => {
+    const res = await AnalyticService.add(params);
+    if (res) {
+      getData();
+    }
   };
 
   const onSearch = async (value) => {
@@ -79,6 +73,7 @@ function Analytics() {
   };
 
   useEffect(() => {
+    getYearOptions();
     getData();
   }, []);
 
@@ -88,28 +83,28 @@ function Analytics() {
         <h2 className="mb-3">User Analytics</h2>
         <div className="analytics_area">
           <Selector
-            options={years}
-            onChange={handleChange}
+            options={yearsOptions}
+            value={yearsOptions?.find((itm) => itm?.value === params?.year)}
+            onChange={(e) => handleChange({ year: e?.value })}
             placeholder="All Year"
-            value={selectedOption}
           />
           <Selector
-            options={months}
-            onChange={handleChangeM}
+            options={monthsOptions}
+            value={monthsOptions?.find((itm) => itm?.value === params?.month)}
+            onChange={(e) => handleChange({ month: e?.value })}
             placeholder="All Months"
-            value={selectedOptionM}
           />
           <Selector
-            options={label}
-            onChange={handleChangeL}
+            options={labelOptions}
+            value={labelOptions?.find((itm) => itm?.value === params?.label)}
+            onChange={(e) => handleChange({ label: e?.value })}
             placeholder="All Labels"
-            value={selectedOptionL}
           />
-          <PrimaryBtn label="Submit"/>
+          <PrimaryBtn label="Submit" onClick={submitAnalytics} />
         </div>
         <div className="table_content">
           <h2 className="mb-5">User Analytics History</h2>
-          <AnalyticsTable data={data} onSearch={onSearch}/>
+          <AnalyticsTable data={data} onSearch={onSearch} />
         </div>
       </div>
     </>

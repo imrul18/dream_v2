@@ -1,15 +1,19 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
+import Select from "react-select";
 import PrimaryBtn from "../Component/Button/PrimaryBtn";
 import InputField from "../Component/InputField/InputField";
 import AddClaimReleaseTable from "../Component/Table/AddClaimReleaseTable";
 import ClaimReleaseService from "../service/ClaimReleaseService";
+import OptionService from "../service/OptionService";
 
 function AddClaimRelease() {
   const [name, setName] = useState("");
   const [UPCEAN, setUPCEAN] = useState("");
   const [lableName, setLableName] = useState("");
   const [lableNameT, setLableNameT] = useState("");
+  const [labelOption, setLabelOption] = useState([]);
+
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -18,7 +22,7 @@ function AddClaimRelease() {
     setUPCEAN(event.target.value);
   };
   const handleLableChange = (event) => {
-    setLableName(event.target.value);
+    setLableName(event);
   };
   const handleLableTChange = (event) => {
     setLableNameT(event.target.value);
@@ -43,15 +47,19 @@ function AddClaimRelease() {
 
   const [data, setData] = useState([]);
   const getData = async (params) => {
+    const label = await OptionService.label();
+    setLabelOption(
+      label?.data?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
+    );
     const res = await ClaimReleaseService.get(params);
     const finalData = res?.data?.map((item, index) => {
       return {
         key: index,
-        date: moment(item?.created_at).format("DD-MM-YYYY"),
+        date: moment(item?.date_created).format("DD-MM-YYYY"),
         url: item?.youtube_url,
         UPC_EAN: item?.upc,
-        LNS: item?.label_name_sender,
-        LNR: item?.label_name_receiver,
+        LNS: label?.data?.find(itm =>itm?.id == item?.claim_sender)?.title,
+        LNR: item?.claim_receiver,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
       };
     });
@@ -90,13 +98,18 @@ function AddClaimRelease() {
               value={UPCEAN}
               onChange={handleUPCEANChange}
             />
-            <InputField
-              label="Lable Name (Who send a claim)"
-              star="*"
-              type="text"
-              value={lableName}
-              onChange={handleLableChange}
-            />
+            <div className="input_f mt-3">
+              <label className="mb-2">
+                Label Name (Who send a claim){" "}
+                <span className="input_star">*</span>
+              </label>
+              <Select
+                options={labelOption}
+                value={labelOption?.find((itm) => itm?.value === lableName)}
+                onChange={(e) => handleLableChange(e?.value)}
+                placeholder="Select Lable"
+              />
+            </div>
             <InputField
               label="Lable Name (Who received a claim)"
               star="*"

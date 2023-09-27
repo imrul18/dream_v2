@@ -1,7 +1,7 @@
 import http from "./http";
 
 const get = async (params) => {
-  const res = await http.get("/items/Release_Music", { params });
+  const res = await http.get("/items/Support_Ticket", { params });
   return res?.data;
 };
 
@@ -11,7 +11,7 @@ const getById = async (id) => {
 };
 
 const add = async (data) => {
-  const res = await http.post("/items/Release_Music", data);
+  const res = await http.post("/items/Support_Ticket", data);
   return res?.data;
 };
 
@@ -25,7 +25,7 @@ const deleteItem = async (id) => {
   return res?.data;
 };
 
-const MusicCatalogService = {
+const SupportService = {
   get,
   getById,
   add,
@@ -33,4 +33,4 @@ const MusicCatalogService = {
   deleteItem,
 };
 
-export default MusicCatalogService;
+export default SupportService;

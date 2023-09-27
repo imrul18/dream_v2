@@ -6,6 +6,7 @@ import EditAssets from "../Component/Tabs/EditAssets";
 import Release from "../Component/Tabs/Release";
 import ReleaseDate from "../Component/Tabs/ReleaseDate";
 import Submission from "../Component/Tabs/Submission";
+import MusicCatalogService from "../service/MusicCatalogService";
 import { setMusicData } from "./reduxStore";
 
 
@@ -13,7 +14,6 @@ import { setMusicData } from "./reduxStore";
 function ReleaseAudio() {
   const dispatch = useDispatch();
   const { musicData } = useSelector((state) => state.reduxStore);
-  console.log("🚀 ~ file: ReleaseAudio.js:16 ~ ReleaseAudio ~ data:", musicData)
 
   const onChange = (value) => {
     dispatch(setMusicData({ ...musicData, ...value }));
@@ -27,10 +27,15 @@ function ReleaseAudio() {
 
   const steps = [
     { title: "Release", component: <Release data={musicData} onChange={onChange}/> },
-    { title: "Edit Assets", component: <EditAssets onChange={onChange}/> },
-    { title: "Release Date", component: <ReleaseDate onChange={onChange}/> },
-    { title: "Submission", component: <Submission onChange={onChange}/> },
+    { title: "Edit Assets", component: <EditAssets data={musicData} onChange={onChange}/> },
+    { title: "Release Date", component: <ReleaseDate data={musicData} onChange={onChange}/> },
+    { title: "Submission", component: <Submission data={musicData} onChange={onChange}/> },
   ];
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const res = await MusicCatalogService.add(musicData);
+  }
 
   return (
     <div className="releaseaudio_page">
@@ -59,7 +64,7 @@ function ReleaseAudio() {
         </button>
         {currentStep === steps.length - 1 ? (
           <Link to="/all-release">
-            <button className="btn">Submit</button>
+            <button className="btn" onClick={onSubmit}>Submit</button>
           </Link>
         ) : (
           <button

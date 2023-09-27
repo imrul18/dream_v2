@@ -26,9 +26,17 @@ const login = async (email, password) => {
 };
 
 const refreshToken = async () => {
-  const res = await http.post("/auth/refresh", {
-    refresh_token: JSON.parse(localStorage.getItem("refreshToken")),
-  });
+  const res = await http.post(
+    "/auth/refresh",
+    {
+      refresh_token: JSON.parse(localStorage.getItem("refreshToken")),
+    },
+    {
+      headers: {
+        Authorization: null,
+      },
+    }
+  );
   const accessToken = res?.data?.data?.access_token;
   const refreshToken = res?.data?.data?.refresh_token;
   if (accessToken) {
