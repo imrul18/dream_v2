@@ -178,16 +178,16 @@ function AddAssetsPopup({ onTrackChange }) {
                 <div className="item">
                   <input
                     type="checkbox"
-                    checked={data?.instrumental == "yes" ? true : false}
-                    onChange={() => onValueChange({ instrumental: "yes" })}
+                    checked={data?.instrumental}
+                    onChange={() => onValueChange({ instrumental: true })}
                   />
                   <label htmlFor="">Yes</label>
                 </div>
                 <div className="item">
                   <input
                     type="checkbox"
-                    checked={data?.instrumental == "no" ? true : false}
-                    onChange={() => onValueChange({ instrumental: "no" })}
+                    checked={!data?.instrumental}
+                    onChange={() => onValueChange({ instrumental: false })}
                   />
                   <label htmlFor="">No</label>
                 </div>

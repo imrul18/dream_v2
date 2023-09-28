@@ -5,8 +5,8 @@ const get = async (params) => {
   return res?.data;
 };
 
-const getById = async (id) => {
-  const res = await http.get("/items/Label/" + id);
+const notification = async () => {
+  const res = await http.get("/items/Notifications");
   return res?.data;
 };
 
@@ -27,7 +27,7 @@ const deleteItem = async (id) => {
 
 const DashboardService = {
   get,
-  getById,
+  notification,
   add,
   update,
   deleteItem,

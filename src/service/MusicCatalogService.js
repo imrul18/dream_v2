@@ -5,13 +5,13 @@ const get = async (params) => {
   return res?.data;
 };
 
-const getById = async (id) => {
-  const res = await http.get("/items/Label/" + id);
+const add = async (data) => {
+  const res = await http.post("/items/Release_Music", data);
   return res?.data;
 };
 
-const add = async (data) => {
-  const res = await http.post("/items/Release_Music", data);
+const CallerTune = async (params) => {
+  const res = await http.get("/items/Caller_Tune", { params });
   return res?.data;
 };
 
@@ -27,8 +27,8 @@ const deleteItem = async (id) => {
 
 const MusicCatalogService = {
   get,
-  getById,
   add,
+  CallerTune,
   update,
   deleteItem,
 };

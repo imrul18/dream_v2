@@ -9,11 +9,15 @@ import DashboardService from "../service/DashboardService";
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
-
+  const [notification, setNotification] = useState([]);
+  
   const getData = async () => {
     const res = await DashboardService.get()
     setData(res?.data);
+    const noti = await DashboardService.notification()
+    setNotification(noti?.data);
   };
+  console.log("🚀 ~ file: Dashboard.js:13 ~ Dashboard ~ notification:", notification)
 
   useEffect(() => {
     getData();

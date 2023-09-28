@@ -10,8 +10,8 @@ const Release = ({ data, onChange }) => {
   const [genreOption, setGenreOption] = useState([]);
   const [labelOption, setLabelOption] = useState([]);
   const [formatOption, setFormatOption] = useState([
-    { label: "Single", value: 1 },
-    { label: "Albam", value: 2 },
+    { label: "Single", value: "single" },
+    { label: "Albam", value: "albam" },
   ]);
   const [productionYearOption, setProductionYearOption] = useState([]);
   const getYearOptions = async () => {

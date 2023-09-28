@@ -1,13 +1,13 @@
 import { Divider, Radio, Table } from "antd";
 import React, { useState } from "react";
-import { BiPencil} from "react-icons/bi";
+import { BiPencil } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import TableFilter from "../Filter/TableFilter";
+import DeletePopup from "../Modal/DeletePopup";
 import AntPopover from "../Popover/AntPopover";
 import SearchBar from "../SearchBar/SearchBar";
 import coverImg from "../assets/img/cover.jpg";
-import DeletePopup from "../Modal/DeletePopup"
 const columns = [
   {
     title: "Title",
@@ -91,7 +91,7 @@ const columns = [
             <Link to="/catalog_details" className="edit">
               <FaRegEye className="icons" />
             </Link>
-            <DeletePopup/>
+            <DeletePopup />
             <AntPopover />
           </div>
         );
@@ -104,7 +104,7 @@ const columns = [
             <Link to="/release-audio" className="pen">
               <BiPencil className="icons" />
             </Link>
-            <DeletePopup/>
+            <DeletePopup />
             <AntPopover />
           </div>
         );
@@ -117,7 +117,7 @@ const columns = [
             <Link to="/release-audio" className="pen">
               <BiPencil className="icons" />
             </Link>
-            <DeletePopup/>
+            <DeletePopup />
           </div>
         );
       }
@@ -200,7 +200,7 @@ const data = [
   },
 ];
 
-const ReleaseAudioTable = () => {
+const ReleaseAudioTable = ({ data, onSearch }) => {
   const [selectionType, setSelectionType] = useState("checkbox");
   const [selectedStatus, setSelectedStatus] = useState("all");
 
@@ -226,7 +226,7 @@ const ReleaseAudioTable = () => {
 
       <div className="table_title mt-3">
         <p>Show 4 entries</p>
-        <SearchBar />
+        <SearchBar onSearch={onSearch} />
       </div>
 
       {/* Table Area */}
