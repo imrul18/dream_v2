@@ -23,7 +23,9 @@ const edit = async (id, data) => {
 };
 
 const show = async (id) => {
-  const res = await http.get("/items/Release_Music/" + id);
+  const res = await http.get("/items/Release_Music/" + id, {
+    params: { fields: ["*.*.*"] },
+  });
   return res?.data;
 };
 

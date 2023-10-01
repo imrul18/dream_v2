@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { useSelector } from "react-redux";
 import Select from "react-select";
 import OptionService from "../../service/OptionService";
 import AudioUploadForm from "../AudioUpload/AudioUploadForm";
@@ -8,11 +7,10 @@ import PrimaryBtn from "../Button/PrimaryBtn";
 import MultiInput from "../InputField/MultiInput";
 import MultiSelect from "../InputField/MultiSelect";
 
-function AddAssetsPopup({ onTrackChange }) {
-  const { musicData } = useSelector((state) => state.reduxStore);
+function AddAssetsPopup({ onSubmit, musicData }) {
 
   const [data, setData] = useState({});
-
+  const [error, setError] = useState(null);
   useEffect(() => {
     if (musicData) {
       setData({
@@ -37,43 +35,12 @@ function AddAssetsPopup({ onTrackChange }) {
       });
     }
   }, [musicData]);
-  
-  const onValueChange = (value) => {
+
+  const onDataChange = (value) => {
     setData({ ...data, ...value });
   };
 
-  const onArtistChange = (e) => {
-    onValueChange({
-      primary_artist: {
-        create: e?.map((item) => ({
-          Release_Music_id: "+",
-          Primary_Artist_id: {
-            id: item,
-          },
-        })),
-        delete: [],
-        update: [],
-      },
-    });
-  };
-  const onFeatureChange = (e) => {
-    onValueChange({
-      featuring: e?.map((item) => ({ artist_name: item })),
-    });
-  };
-  const onArrangerChange = (e) => {
-    onValueChange({
-      arranger: e?.map((item) => ({ arranger_name: item })),
-    });
-  };
-  const onProducerChange = (e) => {
-    onValueChange({
-      producer: e?.map((item) => ({ producer_name: item })),
-    });
-  };
-
   const [show, setShow] = useState(false);
-
   const [artistOption, setArtistOption] = useState([]);
   const [genreOption, setGenreOption] = useState([]);
   const [productionYearOption, setProductionYearOption] = useState([]);
@@ -107,10 +74,101 @@ function AddAssetsPopup({ onTrackChange }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleSubmit = () => {
-    onTrackChange(data);
-    setData(null);
-    handleClose();
+  const handleSubmit = async () => {
+    let redirect = true;
+    let errorData = {};
+    if (data?.file) {
+      errorData = { ...errorData, file: null };
+    } else {
+      errorData = { ...errorData, file: "Please upload music" };
+      redirect = false;
+    }
+
+    if (data?.title) {
+      errorData = { ...errorData, title: null };
+    } else {
+      errorData = { ...errorData, title: "Please enter title" };
+      redirect = false;
+    }
+
+    if (data?.primary_artist?.length) {
+      errorData = { ...errorData, primary_artist: null };
+    } else {
+      errorData = {
+        ...errorData,
+        primary_artist: "Please select primary artist",
+      };
+      redirect = false;
+    }
+
+    if (data?.lyrics_writter?.length) {
+      errorData = { ...errorData, lyrics_writter: null };
+    } else {
+      errorData = {
+        ...errorData,
+        lyrics_writter: "Please add lyrics writter",
+      };
+      redirect = false;
+    }
+
+    if (data?.composer?.length) {
+      errorData = { ...errorData, composer: null };
+    } else {
+      errorData = {
+        ...errorData,
+        composer: "Please add lyrics writter",
+      };
+      redirect = false;
+    }
+
+    if (data?.p_line) {
+      errorData = { ...errorData, p_line: null };
+    } else {
+      errorData = {
+        ...errorData,
+        p_line: "Please enter p_line",
+      };
+      redirect = false;
+    }
+
+    if (data?.production_year) {
+      errorData = { ...errorData, production_year: null };
+    } else {
+      errorData = {
+        ...errorData,
+        production_year: "Please select production year",
+      };
+      redirect = false;
+    }
+
+    if (data?.genre) {
+      errorData = { ...errorData, genre: null };
+    } else {
+      errorData = { ...errorData, genre: "Please select genre" };
+      redirect = false;
+    }
+
+    if (data?.track_title_language) {
+      errorData = { ...errorData, track_title_language: null };
+    } else {
+      errorData = { ...errorData, track_title_language: "Please add Track Title Language" };
+      redirect = false;
+    }
+
+    if (data?.lyrics_language) {
+      errorData = { ...errorData, lyrics_language: null };
+    } else {
+      errorData = { ...errorData, lyrics_language: "Please add lyric language" };
+      redirect = false;
+    }
+    
+    if (redirect) {
+      onSubmit(data);
+      setData(null);
+      handleClose();
+    } else {
+      setError(errorData);
+    }
   };
 
   return (
@@ -126,8 +184,9 @@ function AddAssetsPopup({ onTrackChange }) {
           <div className="modal_upload_area">
             <AudioUploadForm
               audio={data?.file}
-              onValueChange={(e) => onValueChange({ file: e })}
+              onValueChange={(e) => onDataChange({ file: e })}
             />
+            <small className="text-danger">{error?.file}</small>
           </div>
           <form className="r_input_group">
             <div className="mt-3">
@@ -140,7 +199,7 @@ function AddAssetsPopup({ onTrackChange }) {
                     type="checkbox"
                     checked={data?.primary_track_type}
                     onChange={(e) =>
-                      onValueChange({ primary_track_type: e.target.checked })
+                      onDataChange({ primary_track_type: e.target.checked })
                     }
                   />
                   <label htmlFor="">Music</label>
@@ -159,7 +218,7 @@ function AddAssetsPopup({ onTrackChange }) {
                       data?.secondary_track_type == "Original" ? true : false
                     }
                     onChange={() =>
-                      onValueChange({ secondary_track_type: "Original" })
+                      onDataChange({ secondary_track_type: "Original" })
                     }
                   />
                   <label htmlFor="">Original</label>
@@ -171,7 +230,7 @@ function AddAssetsPopup({ onTrackChange }) {
                       data?.secondary_track_type == "Karaoke" ? true : false
                     }
                     onChange={() =>
-                      onValueChange({ secondary_track_type: "Karaoke" })
+                      onDataChange({ secondary_track_type: "Karaoke" })
                     }
                   />
                   <label htmlFor="">Karaoke</label>
@@ -183,7 +242,7 @@ function AddAssetsPopup({ onTrackChange }) {
                       data?.secondary_track_type == "Medley" ? true : false
                     }
                     onChange={() =>
-                      onValueChange({ secondary_track_type: "Medley" })
+                      onDataChange({ secondary_track_type: "Medley" })
                     }
                   />
                   <label htmlFor="">Medley</label>
@@ -195,7 +254,7 @@ function AddAssetsPopup({ onTrackChange }) {
                       data?.secondary_track_type == "Cover" ? true : false
                     }
                     onChange={() =>
-                      onValueChange({ secondary_track_type: "Cover" })
+                      onDataChange({ secondary_track_type: "Cover" })
                     }
                   />
                   <label htmlFor="">Cover</label>
@@ -209,7 +268,7 @@ function AddAssetsPopup({ onTrackChange }) {
                         : false
                     }
                     onChange={() =>
-                      onValueChange({
+                      onDataChange({
                         secondary_track_type: "Cover by cover band",
                       })
                     }
@@ -226,16 +285,16 @@ function AddAssetsPopup({ onTrackChange }) {
                 <div className="item">
                   <input
                     type="checkbox"
-                    checked={data?.instrumental == 'yes' ? true : false}
-                    onChange={() => onValueChange({ instrumental: true })}
+                    checked={data?.instrumental == "yes" ? true : false}
+                    onChange={() => onDataChange({ instrumental: "yes" })}
                   />
                   <label htmlFor="">Yes</label>
                 </div>
                 <div className="item">
                   <input
                     type="checkbox"
-                    checked={data?.instrumental == 'no' ? true : false}
-                    onChange={() => onValueChange({ instrumental: 'no' })}
+                    checked={data?.instrumental == "no" ? true : false}
+                    onChange={() => onDataChange({ instrumental: "no" })}
                   />
                   <label htmlFor="">No</label>
                 </div>
@@ -248,106 +307,99 @@ function AddAssetsPopup({ onTrackChange }) {
               <input
                 type="text"
                 value={data?.title}
-                onChange={(e) => onValueChange({ title: e.target.value })}
+                onChange={(e) => onDataChange({ title: e.target.value })}
                 placeholder="Title"
                 required
               />
+              <small className="text-danger">{error?.title}</small>
             </div>
             <div className="input_f mt-3">
               <label className="mb-2">Version/Subtitle</label>
               <input
                 type="text"
                 value={data?.subtitle}
-                onChange={(e) => onValueChange({ subtitle: e.target.value })}
+                onChange={(e) => onDataChange({ subtitle: e.target.value })}
                 placeholder="Version/Subtitle"
               />
             </div>
             <MultiSelect
-              data={data?.primary_artist?.create?.map(
-                (itm) => itm?.Primary_Artist_id?.id
-              )}
+              data={data?.primary_artist}
               options={artistOption}
               labels={["Primary Artist", "Secondary Artist"]}
               placeholders={"Select Primary Artist"}
-              onChange={onArtistChange}
+              onChange={(e) => onDataChange({ primary_artist: e })}
+              star="*"
             />
+            <small className="text-danger">{error?.primary_artist}</small>
             <MultiInput
-              data={data?.featuring?.map((itm) => itm?.artist_name)}
+              data={data?.featuring}
               labels={["Featuring", "Secondary Featuring"]}
               ids={["input1", "input2"]}
               placeholders={"Featuring"}
-              onChange={onFeatureChange}
+              onChange={(e) => onDataChange({ featuring: e })}
             />
             <div className="input_f mt-3">
               <label className="mb-2">Remixer</label>
               <input
                 type="text"
                 value={data?.remixer}
-                onChange={(e) => onValueChange({ remixer: e.target.value })}
+                onChange={(e) => onDataChange({ remixer: e.target.value })}
                 placeholder="Remixer"
               />
             </div>
             <div className="add_input mt-3">
-              <div className="input_f mt-3">
-                <label className="mb-2">Lyrics Writter</label>
-                <span className="input_star">*</span>
-                <input
-                  type="text"
-                  value={data?.lyrics_writter?.writter_name}
-                  onChange={(e) =>
-                    onValueChange({
-                      lyrics_writter: { writter_name: e.target.value },
-                    })
-                  }
-                  placeholder="Lyrics Writter"
-                />
-              </div>
+              <MultiInput
+                data={data?.lyrics_writter}
+                labels={["Lyrics Writter", "Secondary Lyrics Writter"]}
+                ids={["input1", "input2"]}
+                placeholders={"Lyrics Writter"}
+                onChange={(e) => onDataChange({ lyrics_writter: e })}
+                star="*"
+              />
               <p className="input_desc">
                 Digital Music Stores require full first and last (family) name
               </p>
+              <small className="text-danger">{error?.lyrics_writter}</small>
             </div>
             <div className="add_input mt-3">
-              <div className="input_f mt-3">
-                <label className="mb-2">Composer</label>
-                <span className="input_star">*</span>
-                <input
-                  type="text"
-                  value={data?.composer?.composer_name}
-                  onChange={(e) =>
-                    onValueChange({
-                      composer: { composer_name: e.target.value },
-                    })
-                  }
-                  placeholder="Composer"
-                />
-              </div>
+              <MultiInput
+                data={data?.composer}
+                labels={["Composer", "Secondary Composer"]}
+                ids={["input1", "input2"]}
+                placeholders={"Composer"}
+                onChange={(e) => onDataChange({ composer: e })}
+                star="*"
+              />
               <p className="input_desc">
                 Digital Music Stores require full first and last (family) name
               </p>
+              <small className="text-danger">{error?.composer}</small>
             </div>
 
             <MultiInput
-              data={data?.arranger?.create?.map((itm) => itm?.arranger_name)}
+              data={data?.arranger}
               labels={["Arranger", "Secondary Arranger"]}
               ids={["input1", "input2"]}
               placeholders={"Arranger"}
-              onChange={onArrangerChange}
+              onChange={(e) => onDataChange({ arranger: e })}
             />
             <MultiInput
-              data={data?.producer?.create?.map((itm) => itm?.producer_name)}
+              data={data?.producer}
               labels={["Producer", "Secondary Producer"]}
               ids={["input1", "input2"]}
               placeholders={"Producer"}
-              onChange={onProducerChange}
+              onChange={(e) => onDataChange({ producer: e })}
             />
             <div className="input_f mt-3">
-              <label className="mb-2">℗ line</label>
+              <label className="mb-2">℗ line</label>{" "}
+              <span className="input_star">*</span>
               <input
                 type="text"
                 value={data?.p_line}
-                onChange={(e) => onValueChange({ p_line: e.target.value })}
+                onChange={(e) => onDataChange({ p_line: e.target.value })}
                 placeholder="℗ line"
               />
+              <small className="text-danger">{error?.p_line}</small>
             </div>
             <div className="mt-3">
               <label htmlFor="" className="mb-2">
@@ -358,16 +410,17 @@ function AddAssetsPopup({ onTrackChange }) {
                 value={productionYearOption?.find(
                   (itm) => itm?.value === data?.production_year
                 )}
-                onChange={(e) => onValueChange({ production_year: e?.value })}
+                onChange={(e) => onDataChange({ production_year: e?.value })}
                 placeholder="Select Production Year"
               />
+              <small className="text-danger">{error?.production_year}</small>
             </div>
             <div className="input_f mt-3">
               <label className="mb-2">Publisher</label>
               <input
                 type="text"
                 value={data?.publisher}
-                onChange={(e) => onValueChange({ publisher: e.target.value })}
+                onChange={(e) => onDataChange({ publisher: e.target.value })}
                 placeholder="Publisher"
               />
             </div>
@@ -376,7 +429,7 @@ function AddAssetsPopup({ onTrackChange }) {
               <input
                 type="text"
                 value={data?.isrc}
-                onChange={(e) => onValueChange({ isrc: e.target.value })}
+                onChange={(e) => onDataChange({ isrc: e.target.value })}
                 placeholder="XX-0X0-00-00000"
               />
             </div>
@@ -387,9 +440,10 @@ function AddAssetsPopup({ onTrackChange }) {
               <Select
                 options={genreOption}
                 value={genreOption?.find((itm) => itm?.value === data?.genre)}
-                onChange={(e) => onValueChange({ genre: e?.value })}
+                onChange={(e) => onDataChange({ genre: e?.value })}
                 placeholder="Select Genre"
               />
+              <small className="text-danger">{error?.genre}</small>
             </div>
             <div className="input_f mt-3">
               <label className="mb-2">Producer Catalogue Number</label>
@@ -397,7 +451,7 @@ function AddAssetsPopup({ onTrackChange }) {
                 type="text"
                 value={data?.producer_catalogue_number}
                 onChange={(e) =>
-                  onValueChange({ producer_catalogue_number: e.target.value })
+                  onDataChange({ producer_catalogue_number: e.target.value })
                 }
                 placeholder="Producer Catalogue Number"
               />
@@ -411,7 +465,7 @@ function AddAssetsPopup({ onTrackChange }) {
                   <input
                     type="checkbox"
                     checked={data?.parental_advisory == "yes" ? true : false}
-                    onChange={() => onValueChange({ parental_advisory: "yes" })}
+                    onChange={() => onDataChange({ parental_advisory: "yes" })}
                   />
                   <label htmlFor="">Yes</label>
                 </div>
@@ -419,7 +473,7 @@ function AddAssetsPopup({ onTrackChange }) {
                   <input
                     type="checkbox"
                     checked={data?.parental_advisory == "no" ? true : false}
-                    onChange={() => onValueChange({ parental_advisory: "no" })}
+                    onChange={() => onDataChange({ parental_advisory: "no" })}
                   />
                   <label htmlFor="">No</label>
                 </div>
@@ -430,7 +484,7 @@ function AddAssetsPopup({ onTrackChange }) {
                       data?.parental_advisory == "cleaned" ? true : false
                     }
                     onChange={() =>
-                      onValueChange({ parental_advisory: "cleaned" })
+                      onDataChange({ parental_advisory: "cleaned" })
                     }
                   />
                   <label htmlFor="">Cleaned</label>
@@ -444,10 +498,11 @@ function AddAssetsPopup({ onTrackChange }) {
                 type="text"
                 value={data?.track_title_language}
                 onChange={(e) =>
-                  onValueChange({ track_title_language: e.target.value })
+                  onDataChange({ track_title_language: e.target.value })
                 }
                 placeholder="Track Title Language"
               />
+              <small className="text-danger">{error?.track_title_language}</small>
             </div>
             <div className="input_f mt-3">
               <label className="mb-2">Lyrics Language</label>
@@ -456,10 +511,11 @@ function AddAssetsPopup({ onTrackChange }) {
                 type="text"
                 value={data?.lyrics_language}
                 onChange={(e) =>
-                  onValueChange({ lyrics_language: e.target.value })
+                  onDataChange({ lyrics_language: e.target.value })
                 }
                 placeholder="Lyrics Language"
               />
+              <small className="text-danger">{error?.lyrics_language}</small>
             </div>
             <div className="input_f mt-3">
               <label className="mb-2">Lyrics</label>
@@ -468,7 +524,7 @@ function AddAssetsPopup({ onTrackChange }) {
                 cols="30"
                 rows="5"
                 value={data?.lyrics}
-                onChange={(e) => onValueChange({ lyrics: e.target.value })}
+                onChange={(e) => onDataChange({ lyrics: e.target.value })}
                 placeholder="Lyrics"
               />
             </div>

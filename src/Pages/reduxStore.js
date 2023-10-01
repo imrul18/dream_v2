@@ -4,12 +4,16 @@ export const reduxStoreSlice = createSlice({
   name: "reduxStore",
   initialState: {
     musicData: null,
+    oldData: null,
     updateData: null,
     refreshTime: null
   },
   reducers: {
     setMusicData: (state, action) => {
       state.musicData = action.payload;
+    },
+    setOldData: (state, action) => {
+      state.oldData = action.payload;
     },
     setUpdateData: (state, action) => {
       state.updateData = action.payload;
@@ -20,5 +24,5 @@ export const reduxStoreSlice = createSlice({
   },
 });
 
-export const { setMusicData, setUpdateData, setRefreshTime } = reduxStoreSlice.actions;
+export const { setMusicData, setOldData, setUpdateData, setRefreshTime } = reduxStoreSlice.actions;
 export default reduxStoreSlice.reducer;

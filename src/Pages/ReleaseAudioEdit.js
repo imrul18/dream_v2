@@ -1,31 +1,74 @@
 import React, { useEffect, useState } from "react";
 import { BiCheck } from "react-icons/bi";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import EditAssets from "../Component/EditTabs/EditAssets";
 import Release from "../Component/EditTabs/Release";
 import ReleaseDate from "../Component/EditTabs/ReleaseDate";
 import Submission from "../Component/EditTabs/Submission";
 import MusicCatalogService from "../service/MusicCatalogService";
-import { setMusicData } from "./reduxStore";
+import { setOldData, setUpdateData } from "./reduxStore";
 
 function ReleaseAudioEdit() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { updateData, musicData } = useSelector((state) => state.reduxStore);
 
   const getMusicData = async () => {
     const res = await MusicCatalogService.getById(id);
-    dispatch(setMusicData(res?.data));
+    const data = {
+      id: res?.data?.id,
+      title: res?.data?.title,
+      subtitle: res?.data?.subtitle,
+      c_line: res?.data?.c_line,
+      cover_image: res?.data?.cover_image?.id,
+      featuring: res?.data?.featuring?.map((item) => item?.artist_name),
+      format: res?.data?.format,
+      genre: res?.data?.genre,
+      label: res?.data?.label?.id,
+      main_release_date: res?.data?.main_release_date,
+      original_release_date: res?.data?.original_release_date,
+      p_line: res?.data?.p_line,
+      primary_artist: res?.data?.primary_artist?.map(item => item?.Primary_Artist_id?.id),
+      producer_catalogue_number: res?.data?.producer_catalogue_number,
+      production_year: res?.data?.production_year,
+      upc: res?.data?.upc,
+      various_art_compilation: res?.data?.various_art_compilation,
+      tracks: res?.data?.tracks?.map((item) => {
+          return {
+            id: item?.id,
+            arranger: item?.arranger?.map((item) => item?.arranger_name),
+            composer: item?.composer?.map((item) => item?.composer_name),
+            featuring: item?.featuring?.map((item) => item?.artist_name),
+            file: item?.file?.id,
+            genre: item?.genre,
+            instrumental: item?.instrumental,
+            isrc: item?.isrc,
+            lyrics: item?.lyrics,
+            lyrics_language: item?.lyrics_language,
+            lyrics_writter: item?.lyrics_writter?.map((item) => item?.writer_name),
+            p_line: item?.p_line,
+            parental_advisory: item?.parental_advisory,
+            primary_artist: item?.primary_artist?.map(item => item?.Primary_Artist_id?.id),
+            producer: item?.producer?.map((item) => item?.producer_name),
+            producer_catalogue_number: item?.producer_catalogue_number,
+            production_year: item?.production_year,
+            publisher: item?.publisher,
+            remixer: item?.remixer,
+            secondary_track_type: item?.secondary_track_type,
+            subtitle: item?.subtitle,
+            title: item?.title,
+            track_title_language: item?.track_title_language,
+          };
+        }),        
+    };
+
+    dispatch(setOldData(data));
+    dispatch(setUpdateData(data));
   }
 
   useEffect(() => {
     if (id) getMusicData();
   }, [id]);
-
-  const onChange = (value) => {
-    dispatch(setMusicData({ ...musicData, ...value }));
-  };
 
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -36,26 +79,21 @@ function ReleaseAudioEdit() {
   const steps = [
     {
       title: "Release",
-      component: <Release data={musicData} onUpdate={onChange} />,
+      component: <Release currentStep={currentStep} setCurrentStep={setCurrentStep} />,
     },
     {
       title: "Edit Assets",
-      component: <EditAssets data={musicData} onChange={onChange} />,
+      component: <EditAssets currentStep={currentStep} setCurrentStep={setCurrentStep} />,
     },
     {
       title: "Release Date",
-      component: <ReleaseDate data={musicData} onChange={onChange} />,
+      component: <ReleaseDate currentStep={currentStep} setCurrentStep={setCurrentStep} />,
     },
     {
       title: "Submission",
-      component: <Submission data={musicData} onChange={onChange} />,
+      component: <Submission currentStep={currentStep} setCurrentStep={setCurrentStep} />,
     },
   ];
-
-  const onSubmit = async (e) => {
-    e.preventDefault();    
-    const res = await MusicCatalogService.edit(id, updateData);
-  };
 
   return (
     <div className="releaseaudio_page">
@@ -73,30 +111,7 @@ function ReleaseAudioEdit() {
           ))}
         </div>
       </div>
-      <div className="steps">{steps[currentStep].component}</div>
-      <div className="btn_area">
-        <button
-          className="btn"
-          onClick={() => handleStepChange(currentStep - 1)}
-          disabled={currentStep === 0}
-        >
-          Back
-        </button>
-        {currentStep === steps.length - 1 ? (
-          <Link to="/all-release">
-            <button className="btn" onClick={onSubmit}>
-              Submit
-            </button>
-          </Link>
-        ) : (
-          <button
-            className="btn"
-            onClick={() => handleStepChange(currentStep + 1)}
-          >
-            Next
-          </button>
-        )}
-      </div>
+      {steps[currentStep].component}     
     </div>
   );
 }

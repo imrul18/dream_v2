@@ -54,7 +54,8 @@ function SupportCenter() {
   }, []);
 
   const onSubmit = async () => {
-    const res = await SupportService.add({title: name, message, files: {create:'a', update:null, delete:[]}});
+    const res = await SupportService.add({title: name, message});
+    // const res = await SupportService.add({title: name, message, files: {create:'a', update:null, delete:[]}});
     if (res) {
       getData();
     }

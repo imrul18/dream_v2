@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { setMusicData } from "../../Pages/reduxStore";
@@ -39,6 +41,7 @@ const Release = ({ currentStep, setCurrentStep }) => {
     const label = await OptionService.label();
     setLabelOption(
       label?.data?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
+      // label?.data?.filter(itm=>itm?.status == 'approved')?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
     );
     const artist = await OptionService.artist();
     setArtistOption(
@@ -137,7 +140,10 @@ const Release = ({ currentStep, setCurrentStep }) => {
     if (musicData?.primary_artist?.length) {
       errorData = { ...errorData, primary_artist: null };
     } else {
-      errorData = { ...errorData, primary_artist: "Please select primary artist" };
+      errorData = {
+        ...errorData,
+        primary_artist: "Please select primary artist",
+      };
       redirect = false;
     }
 
@@ -189,6 +195,7 @@ const Release = ({ currentStep, setCurrentStep }) => {
                 labels={["Primary Artist", "Secondary Artist"]}
                 placeholders={"Select Primary Artist"}
                 onChange={(item) => setData({ primary_artist: item })}
+                star="*"
               />
               <small className="text-danger">{error?.primary_artist}</small>
 
@@ -272,22 +279,27 @@ const Release = ({ currentStep, setCurrentStep }) => {
                 <label className="mb-2">
                   Original Release Date <span className="input_star">*</span>
                 </label>
-                <input
-                  type="date"
-                  value={musicData?.original_release_date}
-                  onChange={(e) =>
-                    setData({ original_release_date: e.target.value })
-                  }
-                  placeholder="Original Release Date"
-                />
-                <small className="text-danger">{error?.original_release_date}</small>
+                <div>
+                  <DatePicker
+                    selected={
+                      new Date(musicData?.original_release_date ?? null)
+                    }
+                    onChange={(date) =>
+                      setData({ original_release_date: date })
+                    }
+                  />
+                </div>
+                <small className="text-danger">
+                  {error?.original_release_date}
+                </small>
               </div>
             </form>
           </div>
           <div className="col-xl-3 col-lg-6 mt-4">
             <form className="r_input_group">
               <div className="input_f mt-3">
-                <label className="mb-2">℗ line</label> <span className="input_star">*</span>
+                <label className="mb-2">℗ line</label>{" "}
+                <span className="input_star">*</span>
                 <input
                   type="text"
                   value={musicData?.p_line}
@@ -297,7 +309,8 @@ const Release = ({ currentStep, setCurrentStep }) => {
                 <small className="text-danger">{error?.p_line}</small>
               </div>
               <div className="input_f mt-3">
-                <label className="mb-2">© line</label> <span className="input_star">*</span>
+                <label className="mb-2">© line</label>{" "}
+                <span className="input_star">*</span>
                 <input
                   type="text"
                   value={musicData?.c_line}
@@ -321,7 +334,8 @@ const Release = ({ currentStep, setCurrentStep }) => {
                 <small className="text-danger">{error?.production_year}</small>
               </div>
               <div className="input_f mt-3">
-                <label className="mb-2">UPC/EAN</label> <span className="input_star">*</span>
+                <label className="mb-2">UPC/EAN</label>{" "}
+                <span className="input_star">*</span>
                 <input
                   type="text"
                   value={musicData?.upc}

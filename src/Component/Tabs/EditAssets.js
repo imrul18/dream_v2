@@ -35,11 +35,13 @@ function EditAssets({ currentStep, setCurrentStep }) {
   };
 
   useEffect(() => {
-    setTruck(musicData?.tracks);
+    setTruck(musicData?.tracks ?? []);
   }, [musicData]);
 
-
   const clickPrev = () => {
+    if (truck?.length > 0) {
+      setData({ tracks: truck });
+    }
     setCurrentStep(currentStep - 1);
   };
 
@@ -55,7 +57,7 @@ function EditAssets({ currentStep, setCurrentStep }) {
     <>
       <div className="steps">
         <div className="edit_assets">
-          <AddAssetsPopup onSubmit={onTrackSubmit} />
+          <AddAssetsPopup onSubmit={onTrackSubmit} musicData={musicData}/>
 
           <EditAssetsTable
             data={truck}

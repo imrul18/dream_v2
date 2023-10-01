@@ -34,8 +34,8 @@ const EditAssetsTable = ({ data, onTrackEdit, onTrackDelete }) => {
   const columns = [
     {
       title: "#",
-      dataIndex: "audio",
-      render: (audio) => <CustomAudioPlayer audio={audio} />,
+      dataIndex: "file",
+      render: (file) => <CustomAudioPlayer audio={file} />,
     },
     {
       title: "Track",
@@ -51,13 +51,13 @@ const EditAssetsTable = ({ data, onTrackEdit, onTrackDelete }) => {
     },
     {
       title: "Action",
-      render: (text, record) => (
+      render: (text, data) => (
         <div className="r_edit_delete">
           <EditAssetsPopup
-            oldData={record}
+            oldData={data}
             onTrackChange={(e) => onTrackEdit(e)}
           />
-          <DeletePopup onClick={() => onTrackDelete(record?.key)} />
+          <DeletePopup onClick={() => onTrackDelete(data?.id)} />
         </div>
       ),
     },

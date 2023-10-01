@@ -12,7 +12,7 @@ const MultiSelect = ({
   options,
 }) => {
   const [inputFields, setInputFields] = useState(
-    data?.map((itm) => ({ id: Date.now(), value: itm })) ?? [{ id: Date.now(), value: "" }]
+    data ? data?.map((itm) => ({ id: itm?.id, value: itm })) : [{ id: Date.now(), value: "" }]
   );
 
   const handleAddInputField = () => {

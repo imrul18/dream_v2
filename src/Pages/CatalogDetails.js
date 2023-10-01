@@ -7,63 +7,19 @@ import DeletePopup from "../Component/Modal/DeletePopup";
 import AntPopover from "../Component/Popover/AntPopover";
 import FileService from "../service/FileService";
 import MusicCatalogService from "../service/MusicCatalogService";
-import OptionService from "../service/OptionService";
 
 function CatalogDetails() {
   const audioRef = useRef(null);
   const { id } = useParams();
   const [data, setData] = useState({});
-  const [tracks, setTracks] = useState([]);
-
-  const getTracks = async () => {
-    const val = [];
-    for (let i = 0; i < data?.tracks?.length; i++) {
-      const res = await MusicCatalogService.tracks(data?.tracks[i]);
-      val?.push(res?.data);
-    }
-    setTracks(val);
-  };
-
-  useEffect(() => {
-    getTracks();
-  }, [data]);
 
   const getData = async () => {
     const res = await MusicCatalogService.show(id);
     setData(res?.data);
   };
 
-  const [artistOption, setArtistOption] = useState([]);
-  const [genreOption, setGenreOption] = useState([]);
-  const [labelOption, setLabelOption] = useState([]);
-  const [formatOption, setFormatOption] = useState([
-    { label: "Single", value: "single" },
-    { label: "Albam", value: "albam" },
-  ]);
-
-  const getOptions = async () => {
-    const genre = await OptionService.genre();
-    setGenreOption(genre?.data);
-    const label = await OptionService.label();
-    setLabelOption(
-      label?.data?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
-    );
-    const artist = await OptionService.artist();
-    setArtistOption(
-      artist?.data?.map((itm) => ({
-        ...itm,
-        value: itm?.id,
-        label: itm?.name,
-      }))
-    );
-  };
-
   useEffect(() => {
-    getOptions();
-  }, []);
-
-  useEffect(() => {
-    getData();
+    if (id) getData();
   }, [id]);
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -117,7 +73,7 @@ function CatalogDetails() {
   } else if (data?.status === "correction_request") {
     icon = (
       <div className="r_edit_delete">
-        <Link to="/release-audio" className="pen">
+        <Link to={`/release-audio/${data?.id}`} className="pen">
           <BiPencil className="icons" />
         </Link>
         {/* <DeletePopup /> */}
@@ -128,14 +84,45 @@ function CatalogDetails() {
     text = "Correction Request";
   }
 
+  const CustomAudioPlayer = ({ audio }) => {
+    const audioRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const togglePlayPause = () => {
+      if (audioRef.current) {
+        if (isPlaying) {
+          audioRef.current.pause();
+        } else {
+          audioRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+      }
+    };
+
+    return (
+      <div className="custom-audio-player">
+        <audio ref={audioRef} src={FileService.image(audio)} />
+        <button className="play_btn" onClick={togglePlayPause}>
+          {isPlaying ? <FaPause /> : <FaPlay />}
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="catalog_details">
       <div className="catalog_area">
         <div className="row">
           <div className="col-xl-3 col-lg-6 col-sm-12">
             <div className="cover_img">
-              <img src={data?.cover_image
-                  ? FileService?.image(data?.cover_image) : `https://i2.wp.com/ui-avatars.com/api/${data?.title}/400`} alt=""  />
+              <img
+                src={
+                  data?.cover_image
+                    ? FileService?.image(data?.cover_image?.id)
+                    : `https://i2.wp.com/ui-avatars.com/api/${data?.title}/400`
+                }
+                alt=""
+              />
             </div>
           </div>
           <div className="col-xl-9 col-lg-6 col-sm-12">
@@ -148,30 +135,26 @@ function CatalogDetails() {
                 <h1>{data?.title}</h1>
                 <h2>
                   by{" "}
-                  {artistOption?.find(
-                    (itm) => itm?.id == data?.primary_artist[0]
-                  )?.label ?? "--"}
+                  {data?.primary_artist?.length &&
+                    data?.primary_artist[0]?.Primary_Artist_id?.name}
                 </h2>
               </div>
             </div>
           </div>
         </div>
       </div>
-      {tracks?.map((itm) => (
+      {data?.tracks?.map((itm) => (
         <div className="catalog_release_info">
           <div className="song_info">
             <div className="title">
-              <div className="custom-audio-player">
-                <audio ref={audioRef} src={itm?.file && FileService?.image(itm?.file)} />
-                <button className="play_btn" onClick={togglePlayPause}>
-                  {isPlaying ? <FaPause /> : <FaPlay />}
-                </button>
-              </div>
+              <CustomAudioPlayer audio={itm?.file?.id} />
               <div>
                 <h2>{itm?.title}</h2>
-                <p>By {artistOption?.find(
-                    (item) => item?.id == itm?.primary_artist[0]
-                  )?.label ?? "--"}</p>
+                <p>
+                  By{" "}
+                  {itm?.primary_artist?.length &&
+                    itm?.primary_artist[0]?.Primary_Artist_id?.name}
+                </p>
               </div>
             </div>
             <div className="toggle_icons" onClick={toggleInfoVisibility}>
@@ -189,7 +172,8 @@ function CatalogDetails() {
                 <div className="row">
                   <div className="col-xl-4 col-lg-6 col-md-12 ">
                     <div className="input_value">
-                      <p className="input_name">Title</p> <span>{itm?.title ?? "Not Found"}</span>
+                      <p className="input_name">Title</p>{" "}
+                      <span>{itm?.title ?? "Not Found"}</span>
                     </div>
                     <div className="input_value">
                       <p className="input_name">Version/Subtitle</p>
@@ -197,18 +181,28 @@ function CatalogDetails() {
                     </div>
                     <div className="input_value">
                       <p className="input_name">Primary Artist </p>
-                      <span>{artistOption?.find((item) => item?.id == itm?.primary_artist[0])?.label ??
-                  "Not Found"}</span>
+                      <span>
+                        {itm?.primary_artist?.length &&
+                          itm?.primary_artist[0]?.Primary_Artist_id?.name}
+                      </span>
                     </div>
                   </div>
                   <div className="col-xl-4 col-lg-6 col-md-12">
                     <div className="input_value">
                       <p className="input_name">Lyrics Writter</p>
-                      <span>{itm?.lyrics_writer?.length ? itm?.lyrics_writer[0]?.writer_name :"Not Found"}</span>
+                      <span>
+                        {itm?.lyrics_writer?.length
+                          ? itm?.lyrics_writer[0]?.writer_name
+                          : "Not Found"}
+                      </span>
                     </div>
                     <div className="input_value">
                       <p className="input_name">Composer</p>
-                      <span>{itm?.composer?.length ? itm?.composer[0]?.composer_name :"Not Found"}</span>
+                      <span>
+                        {itm?.composer?.length
+                          ? itm?.composer[0]?.composer_name
+                          : "Not Found"}
+                      </span>
                     </div>
                     <div className="input_value">
                       <p className="input_name">ISRC</p>
@@ -217,8 +211,9 @@ function CatalogDetails() {
                   </div>
                   <div className="col-xl-4 col-lg-6 col-md-12">
                     <div className="input_value">
-                      <p className="input_name">Genre</p> <span>{itm?.genre ?? "Not Found"}</span>
-                    </div>                    
+                      <p className="input_name">Genre</p>{" "}
+                      <span>{itm?.genre ?? "Not Found"}</span>
+                    </div>
                     <div className="input_value">
                       <p className="input_name">Lyrics Language</p>{" "}
                       <span>{itm?.lyrics_language ?? "Not Found"}</span>
@@ -240,10 +235,7 @@ function CatalogDetails() {
           <div className="col-xl-4 col-lg-6 col-md-12">
             <div className="input_value">
               <p className="input_name">Label Name</p>
-              <span>
-                {labelOption?.find((itm) => itm?.id == data?.label)?.label ??
-                  "Not Found"}
-              </span>
+              <span>{data?.label?.title ?? "Not Found"}</span>
             </div>
             <div className="input_value">
               <p className="input_name">UPC/EAN</p>
@@ -271,10 +263,7 @@ function CatalogDetails() {
           <div className="col-xl-4 col-lg-6 col-md-12">
             <div className="input_value">
               <p className="input_name">Format</p>
-              <span>
-                {formatOption?.find((itm) => itm?.value == data?.format)
-                  ?.label ?? "Not Found"}
-              </span>
+              <span>{data?.format ?? "Not Found"}</span>
             </div>
             <div className="input_value">
               <p className="input_name">Original Release Date</p>
