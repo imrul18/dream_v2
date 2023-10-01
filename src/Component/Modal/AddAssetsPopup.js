@@ -10,8 +10,34 @@ import MultiSelect from "../InputField/MultiSelect";
 
 function AddAssetsPopup({ onTrackChange }) {
   const { musicData } = useSelector((state) => state.reduxStore);
+
   const [data, setData] = useState({});
 
+  useEffect(() => {
+    if (musicData) {
+      setData({
+        c_line: musicData?.c_line,
+        featuring: musicData?.featuring,
+        format: musicData?.format,
+        genre: musicData?.genre,
+        label: musicData?.label,
+        main_release_date: musicData?.main_release_date,
+        original_release_date: musicData?.original_release_date,
+        p_line: musicData?.p_line,
+        primary_artist: musicData?.primary_artist,
+        producer_catalogue_number: musicData?.producer_catalogue_number,
+        production_year: musicData?.production_year,
+        upc: musicData?.upc,
+        various_art_compilation: musicData?.various_art_compilation,
+        id: Date.now() + Math.random(),
+        primary_track_type: true,
+        instrumental: "no",
+        secondary_track_type: "Original",
+        parental_advisory: "no",
+      });
+    }
+  }, [musicData]);
+  
   const onValueChange = (value) => {
     setData({ ...data, ...value });
   };
@@ -45,30 +71,6 @@ function AddAssetsPopup({ onTrackChange }) {
       producer: e?.map((item) => ({ producer_name: item })),
     });
   };
-
-  useEffect(() => {
-    if (musicData) {
-      setData({
-        c_line: musicData?.c_line,
-        featuring: musicData?.featuring,
-        format: musicData?.format,
-        genre: musicData?.genre,
-        label: musicData?.label,
-        main_release_date: musicData?.main_release_date,
-        original_release_date: musicData?.original_release_date,
-        p_line: musicData?.p_line,
-        primary_artist: musicData?.primary_artist,
-        producer_catalogue_number: musicData?.producer_catalogue_number,
-        production_year: musicData?.production_year,
-        upc: musicData?.upc,
-        various_art_compilation: musicData?.various_art_compilation,
-        id: Date.now() + Math.random(),
-        primary_track_type: true,
-        instrumental: "no",
-        secondary_track_type: "Original",
-      });
-    }
-  }, [musicData]);
 
   const [show, setShow] = useState(false);
 
@@ -224,7 +226,7 @@ function AddAssetsPopup({ onTrackChange }) {
                 <div className="item">
                   <input
                     type="checkbox"
-                    checked={data?.instrumental}
+                    checked={data?.instrumental == 'yes' ? true : false}
                     onChange={() => onValueChange({ instrumental: true })}
                   />
                   <label htmlFor="">Yes</label>
@@ -232,8 +234,8 @@ function AddAssetsPopup({ onTrackChange }) {
                 <div className="item">
                   <input
                     type="checkbox"
-                    checked={!data?.instrumental}
-                    onChange={() => onValueChange({ instrumental: false })}
+                    checked={data?.instrumental == 'no' ? true : false}
+                    onChange={() => onValueChange({ instrumental: 'no' })}
                   />
                   <label htmlFor="">No</label>
                 </div>

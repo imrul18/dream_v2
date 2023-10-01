@@ -1,63 +1,22 @@
 import React, { useEffect, useState } from "react";
-import OptionService from "../../service/OptionService";
+import { useDispatch, useSelector } from "react-redux";
+import { setMusicData } from "../../Pages/reduxStore";
 import AddAssetsPopup from "../Modal/AddAssetsPopup";
 import EditAssetsTable from "../Table/EditAssetsTable";
 
-function EditAssets({ data, onChange }) {
-  const [artistOption, setArtistOption] = useState([]);
-  const getOptions = async () => {
-    const artist = await OptionService.artist();
-    setArtistOption(
-      artist?.data?.map((itm) => ({
-        ...itm,
-        value: itm?.id,
-        label: itm?.name,
-      }))
-    );
+function EditAssets({ currentStep, setCurrentStep }) {
+  const dispatch = useDispatch();
+  const { musicData } = useSelector((state) => state.reduxStore);
+
+  const setData = (data) => {
+    dispatch(setMusicData({ ...musicData, ...data }));
   };
 
-  useEffect(() => {
-    getOptions();
-  }, []);
+  const [error, setError] = useState(null);
+  const [truck, setTruck] = useState([]);
 
-  const [truck, setTruck] = useState(data?.tracks);
-
-  useEffect(() => {
-    setTruck(data?.tracks ?? []);
-
-    setTableData(
-      data?.tracks?.map((itm, index) => ({
-        key: itm?.id,
-        audio: itm?.file,
-        title: itm?.title,
-        subtitle: itm?.subtitle,
-        artist: itm?.primary_artist?.create?.length
-          ? artistOption?.find((itm) => itm?.value == itm?.primary_artist?.create[0]?.Primary_Artist_id?.id)
-              ?.label
-          : "",
-          isrc: itm?.isrc,
-      }))
-    );
-  }, [data]);
-
-  const [tableData, setTableData] = useState([]);
-
-  const onTrackChange = (value) => {
+  const onTrackSubmit = (value) => {
     setTruck([...truck, value]);
-    setTableData([
-      ...tableData,
-      {
-        key: value?.id,
-        audio: value?.file,
-        title: value?.title,
-        subtitle: value?.subtitle,
-        artist: value?.primary_artist?.create?.length
-        ? artistOption?.find((itm) => itm?.value == value?.primary_artist?.create[0]?.Primary_Artist_id?.id)
-            ?.label
-        : "",
-        isrc: value?.isrc,
-      },
-    ]);
   };
 
   const onTrackEdit = (value) => {
@@ -69,46 +28,53 @@ function EditAssets({ data, onChange }) {
         return itm;
       })
     );
-
-    setTableData(
-      tableData?.map((itm) => {
-        if (itm?.key == value?.id) {
-          return {
-            key: itm?.id,
-            audio: itm?.file,
-            title: itm?.title,
-            subtitle: itm?.subtitle,
-            artist: itm?.primary_artist?.create?.length
-            ? artistOption?.find((item) => item?.value == itm?.primary_artist?.create[0]?.Primary_Artist_id?.id)
-                ?.label
-            : "",
-            isrc: itm?.isrc,
-          };
-        }
-        return itm;
-      })
-    );
   };
 
   const onTrackDelete = (id) => {
     setTruck(truck?.filter((itm) => itm?.id != id));
-    setTableData(tableData?.filter((itm) => itm?.key != id));
   };
 
   useEffect(() => {
-    onChange({ tracks: truck });
-  }, [truck]);
+    setTruck(musicData?.tracks);
+  }, [musicData]);
 
+
+  const clickPrev = () => {
+    setCurrentStep(currentStep - 1);
+  };
+
+  const clickNext = () => {
+    if (truck?.length > 0) {
+      setData({ tracks: truck });
+      setCurrentStep(currentStep + 1);
+    } else {
+      setError("Please add at least one track");
+    }
+  };
   return (
-    <div className="edit_assets">
-      <AddAssetsPopup onTrackChange={onTrackChange} />
-      <EditAssetsTable
-        originalData={truck}
-        data={tableData}
-        onTrackEdit={onTrackEdit}
-        onTrackDelete={onTrackDelete}
-      />
-    </div>
+    <>
+      <div className="steps">
+        <div className="edit_assets">
+          <AddAssetsPopup onSubmit={onTrackSubmit} />
+
+          <EditAssetsTable
+            data={truck}
+            onTrackEdit={onTrackEdit}
+            onTrackDelete={onTrackDelete}
+          />
+        </div>
+        <small className="text-danger">{error}</small>
+      </div>
+
+      <div className="btn_area">
+        <button className="btn" onClick={clickPrev}>
+          Back
+        </button>
+        <button className="btn" onClick={clickNext}>
+          Next
+        </button>
+      </div>
+    </>
   );
 }
 

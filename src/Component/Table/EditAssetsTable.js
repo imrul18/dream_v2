@@ -30,12 +30,7 @@ const CustomAudioPlayer = ({ audio }) => {
   );
 };
 
-const EditAssetsTable = ({
-  originalData,
-  data,
-  onTrackEdit,
-  onTrackDelete,
-}) => {
+const EditAssetsTable = ({ data, onTrackEdit, onTrackDelete }) => {
   const columns = [
     {
       title: "#",
@@ -59,7 +54,7 @@ const EditAssetsTable = ({
       render: (text, record) => (
         <div className="r_edit_delete">
           <EditAssetsPopup
-            oldData={originalData?.find((itm) => itm?.id == record?.key)}
+            oldData={record}
             onTrackChange={(e) => onTrackEdit(e)}
           />
           <DeletePopup onClick={() => onTrackDelete(record?.key)} />
