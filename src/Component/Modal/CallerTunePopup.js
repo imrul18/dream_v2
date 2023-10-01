@@ -1,15 +1,25 @@
-import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
+import { FiPhoneCall } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import MusicCatalogService from "../../service/MusicCatalogService";
 import AirtelLogo from "../assets/img/Airtel.png";
 import VodafoneLogo from "../assets/img/vodafone.png";
-import jioLogo from "../assets/img/jio.png";
-import TermsAndConditionsCheckbox from "../Checkbox/TermsAndConditionsCheckbox";
-import { FiPhoneCall } from "react-icons/fi";
 
-function CallerTunePopup() {
+function CallerTunePopup({ id }) {
   const [show, setShow] = useState(false);
   const [selectedCards, setSelectedCards] = useState([]);
+
+  const [crbt, setCrbt] = useState([]);
+
+  const getCRBT = async () => {
+    const res = await MusicCatalogService.getCRBT();
+    setCrbt(res?.data);
+  };
+
+  useEffect(() => {
+    getCRBT();
+  }, []);
 
   const handleClose = () => {
     setShow(false);
@@ -28,10 +38,25 @@ function CallerTunePopup() {
     }
   };
 
+  const onApply = async () => {
+    const data = {
+      release_music: id,
+      crbt: {
+        create: selectedCards.map((item) => ({
+          Caller_Tune_id: "+",
+          CRBT_id: { id: item },
+        })),
+        delete: [],
+        update: [],
+      },
+    };
+    const res = await MusicCatalogService.addCallerTune(data);
+  };
+
   return (
     <>
       <button className="btn" onClick={handleShow}>
-        <FiPhoneCall className="icons"/>
+        <FiPhoneCall className="icons" />
       </button>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -42,36 +67,44 @@ function CallerTunePopup() {
             <div className="items">
               <h2>Select CRBT</h2>
               <div className="item">
-                <div
-                  className={`card ${selectedCards.includes('Airtel') ? 'active' : ''}`}
-                  onClick={() => handleCardClick('Airtel')}
-                >
-                  <img src={AirtelLogo} alt="" />
-                </div>
-                <div
-                  className={`card ${selectedCards.includes('Jio') ? 'active' : ''}`}
-                  onClick={() => handleCardClick('Jio')}
-                >
-                  <img src={jioLogo} alt="" />
-                </div>
+                {crbt?.map((item, index) => {
+                  if (item?.status == "active") {
+                    return (
+                      <div
+                        className={`card ${
+                          selectedCards.includes(item?.id) ? "active" : ""
+                        }`}
+                        onClick={() => handleCardClick(item?.id)}
+                      >
+                        <img src={AirtelLogo} alt="" />
+                      </div>
+                    );
+                  }
+                })}
               </div>
             </div>
             <div className="items mt-4">
               <h2>Coming Soon CRBT</h2>
               <div className="item">
-                <div className="card">
-                  <img src={VodafoneLogo} alt="" />
-                </div>
+                {crbt?.map((item, index) => {
+                  if (item?.status != "active") {
+                    return (
+                      <div className="card">
+                        <img src={VodafoneLogo} alt="" />
+                      </div>
+                    );
+                  }
+                })}
               </div>
             </div>
             <div className="items mt-4">
-              <TermsAndConditionsCheckbox/>
+              {/* <TermsAndConditionsCheckbox /> */}
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <div className="btn_area">
-            <Link to="/caller_tune" className="btn" onClick={handleClose}>
+            <Link to="/caller_tune" className="btn" onClick={onApply}>
               Apply
             </Link>
             <button className="btn_s" onClick={handleClose}>

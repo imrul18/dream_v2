@@ -10,20 +10,63 @@ import MultiSelect from "../InputField/MultiSelect";
 
 function AddAssetsPopup({ onTrackChange }) {
   const { musicData } = useSelector((state) => state.reduxStore);
-  const [data, setData] = useState({
-    id: Date.now() + Math.random(),
-    primary_track_type: true,
-    instrumental: "no",
-    secondary_track_type: "Original",
-  });
+  const [data, setData] = useState({});
 
   const onValueChange = (value) => {
     setData({ ...data, ...value });
   };
 
+  const onArtistChange = (e) => {
+    onValueChange({
+      primary_artist: {
+        create: e?.map((item) => ({
+          Release_Music_id: "+",
+          Primary_Artist_id: {
+            id: item,
+          },
+        })),
+        delete: [],
+        update: [],
+      },
+    });
+  };
+  const onFeatureChange = (e) => {
+    onValueChange({
+      featuring: e?.map((item) => ({ artist_name: item })),
+    });
+  };
+  const onArrangerChange = (e) => {
+    onValueChange({
+      arranger: e?.map((item) => ({ arranger_name: item })),
+    });
+  };
+  const onProducerChange = (e) => {
+    onValueChange({
+      producer: e?.map((item) => ({ producer_name: item })),
+    });
+  };
+
   useEffect(() => {
     if (musicData) {
-      setData({ ...musicData, ...data, id: musicData?.tracks?.length });
+      setData({
+        c_line: musicData?.c_line,
+        featuring: musicData?.featuring,
+        format: musicData?.format,
+        genre: musicData?.genre,
+        label: musicData?.label,
+        main_release_date: musicData?.main_release_date,
+        original_release_date: musicData?.original_release_date,
+        p_line: musicData?.p_line,
+        primary_artist: musicData?.primary_artist,
+        producer_catalogue_number: musicData?.producer_catalogue_number,
+        production_year: musicData?.production_year,
+        upc: musicData?.upc,
+        various_art_compilation: musicData?.various_art_compilation,
+        id: Date.now() + Math.random(),
+        primary_track_type: true,
+        instrumental: "no",
+        secondary_track_type: "Original",
+      });
     }
   }, [musicData]);
 
@@ -64,7 +107,7 @@ function AddAssetsPopup({ onTrackChange }) {
 
   const handleSubmit = () => {
     onTrackChange(data);
-    setData(null) 
+    setData(null);
     handleClose();
   };
 
@@ -79,7 +122,10 @@ function AddAssetsPopup({ onTrackChange }) {
         </Modal.Header>
         <Modal.Body>
           <div className="modal_upload_area">
-            <AudioUploadForm />
+            <AudioUploadForm
+              audio={data?.file}
+              onValueChange={(e) => onValueChange({ file: e })}
+            />
           </div>
           <form className="r_input_group">
             <div className="mt-3">
@@ -215,18 +261,20 @@ function AddAssetsPopup({ onTrackChange }) {
               />
             </div>
             <MultiSelect
-              data={data?.primary_artist}
+              data={data?.primary_artist?.create?.map(
+                (itm) => itm?.Primary_Artist_id?.id
+              )}
               options={artistOption}
               labels={["Primary Artist", "Secondary Artist"]}
               placeholders={"Select Primary Artist"}
-              onChange={(e) => onValueChange({ primary_artist: e })}
+              onChange={onArtistChange}
             />
             <MultiInput
-              data={data?.featuring}
+              data={data?.featuring?.map((itm) => itm?.artist_name)}
               labels={["Featuring", "Secondary Featuring"]}
               ids={["input1", "input2"]}
               placeholders={"Featuring"}
-              onChange={(e) => onValueChange({ featuring: e })}
+              onChange={onFeatureChange}
             />
             <div className="input_f mt-3">
               <label className="mb-2">Remixer</label>
@@ -243,9 +291,11 @@ function AddAssetsPopup({ onTrackChange }) {
                 <span className="input_star">*</span>
                 <input
                   type="text"
-                  value={data?.lyrics_writter}
+                  value={data?.lyrics_writter?.writter_name}
                   onChange={(e) =>
-                    onValueChange({ lyrics_writter: e.target.value })
+                    onValueChange({
+                      lyrics_writter: { writter_name: e.target.value },
+                    })
                   }
                   placeholder="Lyrics Writter"
                 />
@@ -260,8 +310,12 @@ function AddAssetsPopup({ onTrackChange }) {
                 <span className="input_star">*</span>
                 <input
                   type="text"
-                  value={data?.composer}
-                  onChange={(e) => onValueChange({ composer: e.target.value })}
+                  value={data?.composer?.composer_name}
+                  onChange={(e) =>
+                    onValueChange({
+                      composer: { composer_name: e.target.value },
+                    })
+                  }
                   placeholder="Composer"
                 />
               </div>
@@ -271,18 +325,18 @@ function AddAssetsPopup({ onTrackChange }) {
             </div>
 
             <MultiInput
-              data={data?.arranger}
+              data={data?.arranger?.create?.map((itm) => itm?.arranger_name)}
               labels={["Arranger", "Secondary Arranger"]}
               ids={["input1", "input2"]}
               placeholders={"Arranger"}
-              onChange={(e) => onValueChange({ arranger: e })}
+              onChange={onArrangerChange}
             />
             <MultiInput
-              data={data?.producer}
+              data={data?.producer?.create?.map((itm) => itm?.producer_name)}
               labels={["Producer", "Secondary Producer"]}
               ids={["input1", "input2"]}
               placeholders={"Producer"}
-              onChange={(e) => onValueChange({ producer: e })}
+              onChange={onProducerChange}
             />
             <div className="input_f mt-3">
               <label className="mb-2">℗ line</label>

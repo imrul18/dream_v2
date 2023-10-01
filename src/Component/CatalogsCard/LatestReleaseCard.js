@@ -4,7 +4,7 @@ import Pending from "../assets/icons/P.svg";
 import CoverImg from "../assets/img/cover.jpg";
 import Card from "./Card";
 
-const LatestReleaseCard = () => {
+const LatestReleaseCard = ({data}) => {
   const cardData = [
     {
       sImg: CoverImg,
@@ -34,8 +34,8 @@ const LatestReleaseCard = () => {
 
   return (
     <>
-      {cardData.map((card, index) => (
-        <Link to="/catalog_details">
+      {data.map((card, index) => (
+        <Link to={`/catalog_details/${card?.id}`}>
           <Card
             key={index}
             sImg={card.sImg}

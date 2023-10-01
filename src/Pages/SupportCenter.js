@@ -12,6 +12,7 @@ function SupportCenter() {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState("");
+  console.log("🚀 ~ file: SupportCenter.js:15 ~ SupportCenter ~ file:", file)
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -53,7 +54,7 @@ function SupportCenter() {
   }, []);
 
   const onSubmit = async () => {
-    const res = await SupportService.add({title: name, message});
+    const res = await SupportService.add({title: name, message, files: {create:'a', update:null, delete:[]}});
     if (res) {
       getData();
     }

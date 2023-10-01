@@ -69,6 +69,7 @@ function ManualClaimRequest() {
         CIA: item?.content_id_activated ? "Yes" : "No",
         UPC: item?.upc,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
+        failed_reason: item?.failed_reason,
       };
     });
     setData(finalData);

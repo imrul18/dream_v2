@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import { setUpdateData } from "../../Pages/reduxStore";
 import OptionService from "../../service/OptionService";
 import ImageUploadForm from "../ImageUpload/ImageUploadForm";
 import MultiInput from "../InputField/MultiInput";
 import MultiSelect from "../InputField/MultiSelect";
 
-const Release = ({ data, onChange }) => {
+const Release = ({ data, onUpdate }) => {
+  const dispatch = useDispatch();
+  const { updateData } = useSelector((state) => state.reduxStore);
   const [artistOption, setArtistOption] = useState([]);
   const [genreOption, setGenreOption] = useState([]);
   const [labelOption, setLabelOption] = useState([]);
@@ -48,7 +52,7 @@ const Release = ({ data, onChange }) => {
   const onFeatureChange = (e) => {
     onChange({
       featuring: e?.map((item) => ({ artist_name: item })),
-    });
+    });    
   };
 
   const onArtistChange = (e) => {
@@ -64,6 +68,11 @@ const Release = ({ data, onChange }) => {
         update: [],
       },
     });
+  };
+
+  const onChange = (e) => {
+    dispatch(setUpdateData({ ...updateData, e }));
+    onUpdate(e);
   };
 
   return (

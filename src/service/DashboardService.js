@@ -6,7 +6,15 @@ const get = async (params) => {
 };
 
 const notification = async () => {
-  const res = await http.get("/items/Notifications");
+  const res = await http.get("/Notifications");
+  return res?.data;
+};
+
+const archived = async (id) => {
+  const res = await http.patch("/Notifications", {
+    data: { status: "archived" },
+    keys: [id],
+  });
   return res?.data;
 };
 
@@ -28,6 +36,7 @@ const deleteItem = async (id) => {
 const DashboardService = {
   get,
   notification,
+  archived,
   add,
   update,
   deleteItem,

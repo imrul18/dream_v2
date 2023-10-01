@@ -1,6 +1,7 @@
 import { Table } from "antd";
 import React, { useState } from "react";
 import TableFilter from "../Filter/TableFilter";
+import FailedPopover from "../Popover/FailedPopover";
 import SearchBar from "../SearchBar/SearchBar";
 
 const columns = [
@@ -49,7 +50,7 @@ const columns = [
             <span className={`status ${className}`} style={{ color }}>
               {status}
             </span>
-            {/* {status === 'Failed' && <FailedPopover/>} */}
+            {status === "Failed" && <FailedPopover message={data?.failed_reason}/>}
           </div>
       );
     },

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PrimaryArtistAddPopup from "../Component/Modal/PrimaryArtistAddPopup";
 import SearchBar from "../Component/SearchBar/SearchBar";
 import PrimaryArtistTable from "../Component/Table/PrimaryArtistTable";
+import FileService from "../service/FileService";
 import PrimaryArtistService from "../service/PrimaryArtistService";
 
 function PrimaryArtistManage() {
@@ -14,7 +15,14 @@ function PrimaryArtistManage() {
         id: item?.id,
         name: (
           <div className="c_tune_table_title">
-            <img src={item?.image ?? `https://i2.wp.com/ui-avatars.com/api/${item?.name}/400`} alt="" className="table_user_img" />
+            <img
+              src={
+                item?.image
+                  ? FileService?.image(item.image) : `https://i2.wp.com/ui-avatars.com/api/${item?.name}/400`
+              }
+              alt=""
+              className="table_user_img"
+            />
             <span>{item?.name}</span>
           </div>
         ),
@@ -29,8 +37,8 @@ function PrimaryArtistManage() {
   };
 
   const onSearch = async (value) => {
-    getData({search: value});
-  };    
+    getData({ search: value });
+  };
 
   useEffect(() => {
     getData();
@@ -43,12 +51,12 @@ function PrimaryArtistManage() {
           <h1>Primary Artist</h1>
         </div>
         <hr className="mt-4" />
-        <PrimaryArtistAddPopup onSubmit={getData}/>
+        <PrimaryArtistAddPopup onSubmit={getData} />
       </div>
       <div className="table_content mt-4">
         <div className="table_title">
           <p>Show 4 entries</p>
-          <SearchBar onSearch={onSearch}/>
+          <SearchBar onSearch={onSearch} />
         </div>
         <PrimaryArtistTable data={data} onEdit={getData} />
       </div>

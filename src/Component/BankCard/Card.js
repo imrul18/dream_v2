@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import { BsBank2 } from "react-icons/bs";
+import React, { useEffect, useRef, useState } from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
+import { BsBank2 } from "react-icons/bs";
 
 function Card({ bankName, accountNumber, companyName, activateCard, isActive }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,7 +48,7 @@ function Card({ bankName, accountNumber, companyName, activateCard, isActive }) 
       </div>
       <div className="dot_toggle" ref={iconsRef}>
         <BiDotsVerticalRounded className="icons" onClick={handleMenuClick} />
-        {isMenuOpen && (
+        {/* {isMenuOpen && (
           <div className="toggle_menu">
             <ul>
               <li className="primary" onClick={handlePrimaryClick}>
@@ -57,7 +57,7 @@ function Card({ bankName, accountNumber, companyName, activateCard, isActive }) 
               <li className="mt-2" onClick={() => setIsMenuOpen(false)}>Edit</li>
             </ul>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -61,6 +61,7 @@ function AddClaimRelease() {
         LNS: label?.data?.find(itm =>itm?.id == item?.claim_sender)?.title,
         LNR: item?.claim_receiver,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
+        failed_reason: item?.failed_reason,
       };
     });
     setData(finalData);

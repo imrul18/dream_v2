@@ -4,7 +4,6 @@ import { BiPencil } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import TableFilter from "../Filter/TableFilter";
-import DeletePopup from "../Modal/DeletePopup";
 import AntPopover from "../Popover/AntPopover";
 import SearchBar from "../SearchBar/SearchBar";
 import coverImg from "../assets/img/cover.jpg";
@@ -14,14 +13,14 @@ const columns = [
     dataIndex: "title",
     className: "header_title",
   },
-  {
-    title: "Label",
-    dataIndex: "label",
-  },
-  {
-    title: "Artist",
-    dataIndex: "artist",
-  },
+  // {
+  //   title: "Label",
+  //   dataIndex: "label",
+  // },
+  // {
+  //   title: "Artist",
+  //   dataIndex: "artist",
+  // },
   {
     title: "Release Date",
     dataIndex: "releaseDate",
@@ -34,31 +33,37 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     render: (status) => {
+      let text = "";
       let color;
       let className = "";
 
       if (status === "Pending") {
         color = "black";
         className = "pending";
-      } else if (status === "Approved") {
+        text = "Pending";
+      } else if (status === "Ongoing") {
+        color = "black";
+        className = "unfinished";
+        text = "Ongoing";
+      } else if (status === "Published") {
         color = "black";
         className = "approved";
+        text = "Published";
       } else if (status === "Rejected") {
         color = "black";
         className = "Rejected";
-      } else if (status === "Correction Request") {
+        text = "Rejected";
+      } else if (status === "Correction_request") {
         color = "black";
         className = "c_request";
-      } else if (status === "Unfinished") {
-        color = "black";
-        className = "unfinished";
+        text = "Correction Request";
       } else {
         color = "black";
       }
 
       return (
         <span className={`status ${className}`} style={{ color }}>
-          {status}
+          {text}
         </span>
       );
     },
@@ -72,15 +77,23 @@ const columns = [
       if (status === "Pending") {
         iconElement = (
           <div className="r_edit_delete">
-            <Link to="/catalog_details" className="edit">
+            <Link to={`/catalog_details/${record?.id}`} className="edit">
               <FaRegEye className="icons" />
             </Link>
           </div>
         );
-      } else if (status === "Approved") {
+      } else if (status === "Ongoing") {
         iconElement = (
           <div className="r_edit_delete">
-            <Link to="/catalog_details" className="edit">
+            <Link to={`/catalog_details/${record?.id}`} className="edit">
+              <FaRegEye className="icons" />
+            </Link>
+          </div>
+        );
+      } else if (status === "Published") {
+        iconElement = (
+          <div className="r_edit_delete">
+            <Link to={`/catalog_details/${record?.id}`} className="edit">
               <FaRegEye className="icons" />
             </Link>
           </div>
@@ -88,36 +101,24 @@ const columns = [
       } else if (status === "Rejected") {
         iconElement = (
           <div className="r_edit_delete">
-            <Link to="/catalog_details" className="edit">
+            <Link to={`/catalog_details/${record?.id}`} className="edit">
               <FaRegEye className="icons" />
             </Link>
-            <DeletePopup />
-            <AntPopover />
+            {/* <DeletePopup /> */}
+            <AntPopover message={record?.rejection} />
           </div>
         );
-      } else if (status === "Correction Request") {
+      } else if (status === "Correction_request") {
         iconElement = (
           <div className="r_edit_delete">
-            <Link to="/catalog_details" className="edit">
+            <Link to={`/catalog_details/${record?.id}`} className="edit">
               <FaRegEye className="icons" />
             </Link>
-            <Link to="/release-audio" className="pen">
+            <Link to={`/release-audio/${record?.id}`} className="pen">
               <BiPencil className="icons" />
             </Link>
-            <DeletePopup />
-            <AntPopover />
-          </div>
-        );
-      } else if (status === "Unfinished") {
-        iconElement = (
-          <div className="r_edit_delete">
-            <Link to="/catalog_details" className="edit">
-              <FaRegEye className="icons" />
-            </Link>
-            <Link to="/release-audio" className="pen">
-              <BiPencil className="icons" />
-            </Link>
-            <DeletePopup />
+            {/* <DeletePopup /> */}
+            <AntPopover message={record?.rejection} />
           </div>
         );
       }

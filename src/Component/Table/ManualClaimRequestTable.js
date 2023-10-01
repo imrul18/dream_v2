@@ -28,7 +28,7 @@ const columns = [
   {
     title: "Status",
     dataIndex: "status",
-    render: (status) => {
+    render: (status, data) => {
       let color;
       let className = ""; // Initialize className with an empty string
 
@@ -50,7 +50,7 @@ const columns = [
           <span className={`status ${className}`} style={{ color }}>
             {status}
           </span>
-          {status === "Failed" && <FailedPopover />}
+          {status === "Failed" && <FailedPopover message={data?.failed_reason}/>}
         </div>
       );
     },

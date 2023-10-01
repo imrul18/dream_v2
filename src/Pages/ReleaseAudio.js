@@ -44,36 +44,19 @@ function ReleaseAudio() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(
-      "🚀 ~ file: ReleaseAudio.js:37 ~ onSubmit ~ preventDefault:",
-      musicData
-    );
     const data = {
       title: musicData?.title,
       subtitle: musicData?.subtitle,
       c_line: musicData?.c_line,
-      cover_image: musicData?.cover_image, //need to recheck
-      featuring: musicData?.featuring?.map((item) => {
-        return { artist_name: item };
-      }),
+      cover_image: musicData?.cover_image,
+      featuring: musicData?.featuring,
       format: musicData?.format,
       genre: musicData?.genre,
       label: musicData?.label,
       main_release_date: musicData?.main_release_date,
       original_release_date: musicData?.original_release_date,
       p_line: musicData?.p_line,
-      primary_artist: {
-        create: musicData?.primary_artist?.map((item) => {
-          return {
-            Release_Music_id: "+",
-            Primary_Artist_id: {
-              id: item,
-            },
-          };
-        }),
-        delete: [],
-        update: [],
-      },
+      primary_artist: musicData?.primary_artist,
       producer_catalogue_number: musicData?.producer_catalogue_number,
       production_year: musicData?.production_year,
       upc: musicData?.upc,
@@ -81,39 +64,20 @@ function ReleaseAudio() {
       tracks: {
         create: musicData?.tracks?.map((item) => {
           return {
-            arranger: item?.arranger?.map((itm) => {
-              return { arranger_name: itm };
-            }),
-            // composer: item?.composer?.map((itm) => {return {composer_name: itm}}),
-            composer: { composer_name: item?.composer },
-            featuring: item?.featuring?.map((itm) => {
-              return { artist_name: itm };
-            }),
+            arranger: item?.arranger,
+            composer:item?.composer,
+            featuring: item?.featuring,
             file: item?.file, //this is missing
             genre: item?.genre,
             instrumental: item?.instrumental,
             isrc: item?.isrc,
             lyrics: item?.lyrics,
             lyrics_language: item?.lyrics_language,
-            // lyrics_writter: item?.lyrics_writter?.map((itm) => {return {writter_name: itm}}),
-            lyrics_writter: { writter_name: item?.lyrics_writter },
+            lyrics_writter: item?.lyrics_writter,
             p_line: item?.p_line,
             parental_advisory: item?.parental_advisory,
-            primary_artist: {
-              create: item?.primary_artist?.map((id) => {
-                return {
-                  Release_Music_id: "+",
-                  Primary_Artist_id: {
-                    id: id,
-                  },
-                };
-              }),
-              delete: [],
-              update: [],
-            },
-            producer: item?.producer?.map((itm) => {
-              return { producer_name: itm };
-            }),
+            primary_artist: item?.primary_artist,
+            producer: item?.producer,
             producer_catalogue_number: item?.producer_catalogue_number,
             production_year: item?.production_year,
             publisher: item?.publisher,
@@ -128,7 +92,6 @@ function ReleaseAudio() {
         update: [],
       },
     };
-    console.log("🚀 ~ file: ReleaseAudio.js:118 ~ onSubmit ~ data:", data);
     const res = await MusicCatalogService.add(data);
   };
 

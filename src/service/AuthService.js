@@ -8,10 +8,16 @@ const login = async (email, password) => {
     otp: "string",
   });
   const accessToken = res?.data?.data?.access_token;
+  const accessTokenExpires = res?.data?.data?.expires;
   const refreshToken = res?.data?.data?.refresh_token;
   if (accessToken) {
     localStorage.setItem("accessToken", JSON.stringify(accessToken));
     localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
+    localStorage.setItem(
+      "refreshTime",
+      JSON.stringify(new Date().getTime() + accessTokenExpires - 30000)
+    );
+
     return {
       status: true,
       data: res?.data,
@@ -38,10 +44,15 @@ const refreshToken = async () => {
     }
   );
   const accessToken = res?.data?.data?.access_token;
+  const accessTokenExpires = res?.data?.data?.expires;
   const refreshToken = res?.data?.data?.refresh_token;
   if (accessToken) {
     localStorage.setItem("accessToken", JSON.stringify(accessToken));
     localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
+    localStorage.setItem(
+      "refreshTime",
+      JSON.stringify(new Date().getTime() + accessTokenExpires - 30000)
+    );
     return {
       status: true,
       data: res?.data,

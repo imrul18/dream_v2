@@ -10,38 +10,8 @@ function CallerTune() {
     const finalData = res?.data?.map((item, index) => {
       return {
         key: index,
-        title: (
-          <div className="c_tune_table_title">
-            <img src={item?.image} alt="" className="table_img" />
-            <span>
-              Title Here
-            </span>
-          </div>
-        ),
-        // artist: "Artist Name",
-        // label: "no info",
-        // upc: <span>UPC: 10 </span>,
-        // stores: (
-        //   <div className="sim_icons">
-        //     <img src={airtelLogo} alt="" />
-        //     <img src={vodafoneLogo} alt="" />
-        //   </div>
-        // ),
-        // status: "Pending",
-
-        // key: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
-        // title: (
-        //   <div className="c_tune_table_title">
-        //     <img src={item?.cover_image} alt="" className="table_img" />
-        //     <span>{item?.title}</span>
-        //   </div>
-        // ),
-        // label: item?.label_name,
-        // artist: item?.artist_name,
-        // releaseDate: item?.main_release_date,
-        // artist: "Afnan",
-        // upc: <span>{item?.upc}</span>,
-        // status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),        
+        ...item,
+        status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),        
       };
     });
     setData(finalData);

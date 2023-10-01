@@ -1,10 +1,10 @@
-import React, { useState} from "react";
-import userImg from "../assets/img/user.png";
+import React, { useState } from "react";
 import { AiFillSetting } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import ChangePasswordPopup from "../Modal/ChangePasswordPopup";
 import Notification from "../Notification/Notification";
 import Logo from "../assets/img/Logo.svg";
+import userImg from "../assets/img/user.png";
 
 function Topbar() {
   const [isOpen, setIsOpen] = useState(false);

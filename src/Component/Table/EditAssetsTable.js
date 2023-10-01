@@ -1,32 +1,34 @@
 import { Table } from "antd";
-import React from "react";
+import React, { useRef, useState } from "react";
+import { FaPause, FaPlay } from "react-icons/fa";
+import FileService from "../../service/FileService";
 import DeletePopup from "../Modal/DeletePopup";
 import EditAssetsPopup from "../Modal/EditAssetsPopup";
 
-// const CustomAudioPlayer = ({ audio }) => {
-//   const audioRef = useRef(null);
-//   const [isPlaying, setIsPlaying] = useState(false);
+const CustomAudioPlayer = ({ audio }) => {
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-//   const togglePlayPause = () => {
-//     if (audioRef.current) {
-//       if (isPlaying) {
-//         audioRef.current.pause();
-//       } else {
-//         audioRef.current.play();
-//       }
-//       setIsPlaying(!isPlaying);
-//     }
-//   };
+  const togglePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
 
-//   return (
-//     <div className="custom-audio-player">
-//       <audio ref={audioRef} src={audio} />
-//       <button className="play_btn" onClick={togglePlayPause}>
-//         {isPlaying ? <FaPause /> : <FaPlay />}
-//       </button>
-//     </div>
-//   );
-// };
+  return (
+    <div className="custom-audio-player">
+      <audio ref={audioRef} src={FileService.image(audio)} />
+      <button className="play_btn" onClick={togglePlayPause}>
+        {isPlaying ? <FaPause /> : <FaPlay />}
+      </button>
+    </div>
+  );
+};
 
 const EditAssetsTable = ({
   originalData,
@@ -35,22 +37,22 @@ const EditAssetsTable = ({
   onTrackDelete,
 }) => {
   const columns = [
-    // {
-    //   title: "#",
-    //   dataIndex: "audio",
-    //   render: (audio) => <CustomAudioPlayer audio={audio} />,
-    // },
     {
-      title: "Track",
-      dataIndex: "track",
+      title: "#",
+      dataIndex: "audio",
+      render: (audio) => <CustomAudioPlayer audio={audio} />,
     },
     {
-      title: "Artist",
-      dataIndex: "artist",
+      title: "Track",
+      dataIndex: "title",
+    },
+    {
+      title: "Sub Ttile",
+      dataIndex: "subtitle",
     },
     {
       title: "ISRC",
-      dataIndex: "ISRC",
+      dataIndex: "isrc",
     },
     {
       title: "Action",

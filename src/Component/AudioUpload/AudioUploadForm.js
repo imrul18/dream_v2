@@ -3,7 +3,7 @@ import Dropzone from "react-dropzone";
 import { MdAudiotrack } from "react-icons/md"; // Using the audio icon
 import FileService from "../../service/FileService";
 
-const AudioUploadForm = ({onValueChange}) => {
+const AudioUploadForm = ({audio, onValueChange}) => {
   const [uploadedAudio, setUploadedAudio] = useState(null);
   const [buttonText, setButtonText] = useState("Upload Audio");
   const [audioFileName, setAudioFileName] = useState("");

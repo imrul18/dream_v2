@@ -16,6 +16,36 @@ function EditAssetsPopup({ oldData, onTrackChange }) {
     setData({ ...data, ...value });
   };
 
+  const onArtistChange = (e) => {
+    onValueChange({
+      primary_artist: {
+        create: e?.map((item) => ({
+          Release_Music_id: "+",
+          Primary_Artist_id: {
+            id: item,
+          },
+        })),
+        delete: [],
+        update: [],
+      },
+    });
+  };
+  const onFeatureChange = (e) => {
+    onValueChange({
+      featuring: e?.map((item) => ({ artist_name: item })),
+    });
+  };
+  const onArrangerChange = (e) => {
+    onValueChange({
+      arranger: e?.map((item) => ({ arranger_name: item })),
+    });
+  };
+  const onProducerChange = (e) => {
+    onValueChange({
+      producer: e?.map((item) => ({ producer_name: item })),
+    });
+  };
+
   useEffect(() => {
     setData(oldData);
   }, [oldData]);
@@ -72,7 +102,7 @@ function EditAssetsPopup({ oldData, onTrackChange }) {
         <Modal.Body>
           <div className="modal_upload_area">
             <AudioUploadForm
-              onValueChange={(e) => onValueChange({ audio: e })}
+              onValueChange={(e) => onValueChange({ file: e })}
             />
           </div>
           <form className="r_input_group">
@@ -209,18 +239,20 @@ function EditAssetsPopup({ oldData, onTrackChange }) {
               />
             </div>
             <MultiSelect
-              data={data?.primary_artist}
+              data={data?.primary_artist?.create?.map(
+                (itm) => itm?.Primary_Artist_id?.id
+              )}
               options={artistOption}
               labels={["Primary Artist", "Secondary Artist"]}
               placeholders={"Select Primary Artist"}
-              onChange={(e) => onValueChange({ primary_artist: e })}
+              onChange={onArtistChange}
             />
             <MultiInput
-              data={data?.featuring}
+              data={data?.featuring?.map((itm) => itm?.artist_name)}
               labels={["Featuring", "Secondary Featuring"]}
               ids={["input1", "input2"]}
               placeholders={"Featuring"}
-              onChange={(e) => onValueChange({ featuring: e })}
+              onChange={onFeatureChange}
             />
             <div className="input_f mt-3">
               <label className="mb-2">Remixer</label>
@@ -265,18 +297,18 @@ function EditAssetsPopup({ oldData, onTrackChange }) {
             </div>
 
             <MultiInput
-              data={data?.arranger}
+              data={data?.arranger?.create?.map((itm) => itm?.arranger_name)}
               labels={["Arranger", "Secondary Arranger"]}
               ids={["input1", "input2"]}
               placeholders={"Arranger"}
-              onChange={(e) => onValueChange({ arranger: e })}
+              onChange={onArrangerChange}
             />
             <MultiInput
-              data={data?.producer}
+              data={data?.producer?.create?.map((itm) => itm?.producer_name)}
               labels={["Producer", "Secondary Producer"]}
               ids={["input1", "input2"]}
               placeholders={"Producer"}
-              onChange={(e) => onValueChange({ producer: e })}
+              onChange={onProducerChange}
             />
             <div className="input_f mt-3">
               <label className="mb-2">℗ line</label>

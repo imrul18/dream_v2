@@ -32,6 +32,7 @@ function ContentIdRequest() {
         date: moment(item?.date_created).format("DD-MM-YYYY"),
         UPC_EAN: item?.upc,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
+        failed_reason: item?.failed_reason,
       };
     });
     setData(finalData);

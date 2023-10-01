@@ -10,6 +10,11 @@ const getWithdraw = async (params) => {
   return res?.data;
 };
 
+const getWithdrawAmount = async () => {
+  const res = await http.get("/items/App_Settings");
+  return res?.data;
+};
+
 const getBank = async (params) => {
   const res = await http.get("/items/Bank_Account", { params });
   return res?.data;
@@ -20,11 +25,24 @@ const addBank = async (data) => {
   return res?.data;
 };
 
+const getBalance = async () => {
+  const res = await http.get("/items/Balance");
+  return res?.data;
+};
+
+const withdraw = async (data) => {
+  const res = await http.post("/items/Withdraw_Request", data);
+  return res?.data;
+};
+
 const EarningService = {
   overview,
   getWithdraw,
+  getWithdrawAmount,
   getBank,
-  addBank
+  addBank,
+  getBalance,
+  withdraw
 };
 
 export default EarningService;
