@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { BiPencil } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import FileService from "../../service/FileService";
 import PrimaryArtistService from "../../service/PrimaryArtistService";
 import PrimaryBtn from "../Button/PrimaryBtn";
 import PhotoUploader from "../ImageUpload/PhotoUploader";
 import InputField from "../InputField/InputField";
 
-function LabelManagePopup({ id }) {
-  const [show, setShow] = useState(false);
+function LabelManagePopup({ id, isShow }) {
+  const [show, setShow] = useState(isShow);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -98,8 +99,9 @@ function LabelManagePopup({ id }) {
         </Modal.Header>
         <Modal.Body>
           <PhotoUploader
-            uploadedPhoto={uploadedPhoto}
-            setUploadedPhoto={setUploadedPhoto}
+            uploadedPhoto={uploadedPhoto ? FileService?.image(uploadedPhoto) : null}
+            setUploadedPhoto={()=>console.log("A")}
+            onUpload={setUploadedPhoto}
           />
           <div className="input_group">
             <InputField

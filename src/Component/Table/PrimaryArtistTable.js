@@ -34,14 +34,14 @@ const columns = [
   {
     title: "Action",
     dataIndex: "id",
-    render: (id) => {
+    render: (id, data) => {
       // const onClick = async () => {
       //   await PrimaryArtistService.deleteItem(id);
       //   PrimaryArtistService.get();
       // };
       return (
         <div className="r_edit_delete">
-          <PrimaryArtistEditPopup id={id} />
+          <PrimaryArtistEditPopup id={id} isShow={data?.isEdit}/>
           {/* <DeletePopup onClick={onClick} /> */}
         </div>
       );

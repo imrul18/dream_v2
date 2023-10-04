@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import PrimaryArtistAddPopup from "../Component/Modal/PrimaryArtistAddPopup";
 import SearchBar from "../Component/SearchBar/SearchBar";
 import PrimaryArtistTable from "../Component/Table/PrimaryArtistTable";
@@ -7,6 +8,9 @@ import PrimaryArtistService from "../service/PrimaryArtistService";
 
 function PrimaryArtistManage() {
   const [data, setData] = useState([]);
+  const [search,setSearch]=useSearchParams();
+  const editId = search?.get("edit_id");
+  const isCreate = search?.get("create");
 
   const getData = async (params) => {
     const res = await PrimaryArtistService.get(params);
@@ -31,6 +35,7 @@ function PrimaryArtistManage() {
         FId: item?.facebook_url,
         IId: item?.instagram_id,
         YCU: item?.youtube_channel_url,
+        isEdit: item?.id == editId ? true : false,
       };
     });
     setData(finalData);
@@ -51,7 +56,7 @@ function PrimaryArtistManage() {
           <h1>Primary Artist</h1>
         </div>
         <hr className="mt-4" />
-        <PrimaryArtistAddPopup onSubmit={getData} />
+        <PrimaryArtistAddPopup onSubmit={getData} isShow={isCreate == 1}/>
       </div>
       <div className="table_content mt-4">
         <div className="table_title">

@@ -14,7 +14,12 @@ import ProfileService from "../service/ProfileService";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({});
-  const [sliderData, setSliderData] = useState([swiper_img,swiper_img,swiper_img,swiper_img]);
+  const [sliderData, setSliderData] = useState([
+    swiper_img,
+    swiper_img,
+    swiper_img,
+    swiper_img,
+  ]);
   const [data, setData] = useState([]);
   const [cardData, setCardData] = useState([]);
   const [releaseData, setReleaseData] = useState([]);
@@ -26,11 +31,14 @@ const Dashboard = () => {
 
     const res = await PrimaryArtistService.get();
     setData(
-      res?.data?.map((item) =>
-        item?.image
-          ? FileService?.image(item.image)
-          : `https://i2.wp.com/ui-avatars.com/api/${item?.name}/400`
-      )
+      res?.data?.map((item) => {
+        return {
+          id: item?.id,
+          image: item?.image
+            ? FileService?.image(item.image)
+            : `https://i2.wp.com/ui-avatars.com/api/${item?.name}/400`,
+        };
+      })
     );
 
     const music = await MusicCatalogService.get();
@@ -70,7 +78,7 @@ const Dashboard = () => {
       <div className="container-fluid">
         <div className="row">
           <div className="col-xl-12">
-            <DashboardSlider data={userData} sliderData={sliderData}/>
+            <DashboardSlider data={userData} sliderData={sliderData} />
           </div>
         </div>
         <div className="mt-4">
@@ -80,15 +88,15 @@ const Dashboard = () => {
           <div className="artist_item">
             <ul className="mt-2">
               <li className="add_artist">
-                <Link to="/primary_artist_manage">
+                <Link to="/primary_artist_manage?create=1">
                   <FaPlus />
                 </Link>
               </li>
               {data?.map((item, index) => (
                 <li key={index} className="border rounded-circle">
-                  <div>
-                    <img src={item} alt="" className="border rounded-circle" />
-                  </div>
+                  <Link to={`/primary_artist_manage?edit_id=${item?.id}`}>
+                    <img src={item?.image} alt="" className="border rounded-circle" />
+                  </Link>
                 </li>
               ))}
             </ul>
