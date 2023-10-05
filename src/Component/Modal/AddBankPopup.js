@@ -10,56 +10,60 @@ function Example({ onAdd }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [bname, setBName] = useState("");
-  const [name, setName] = useState("");
-  const [aNumber, setAnumber] = useState("");
-  const [reaNumber, setReAnumber] = useState("");
-  const [ifsc, setIFSC] = useState("");
-  const [isPrimary, setIsPrimary] = useState(false);
+  const [data, setData] = useState({});
+  const [error, setError] = useState({});
 
-  const handleBNameChange = (event) => {
-    setBName(event.target.value);
-  };
-
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleAnumberChange = (event) => {
-    setAnumber(event.target.value);
-  };
-
-  const handlReAnumberChange = (event) => {
-    setReAnumber(event.target.value);
-  };
-
-  const handlIFSCChange = (event) => {
-    setIFSC(event.target.value);
-  };
-
-  const handleIsPrimaryChange = (event) => {
-    setIsPrimary(event.target.checked);
+  const onChangeHandle = (name, value) => {
+    setData({ ...data, [name]: value });
   };
 
   const handleSubmit = async (e) => {
-    const data = {
-      bank_name: bname,
-      account_holder_name: name,
-      account_number: aNumber,
-      ifsc_code: ifsc,
-      is_primary: true,
-    };
+    let flag = false;
+    let error = {};
+    if (!data?.bank_name) {
+      error = { ...error, bank_name: "Bank name is required" };
+      flag = true;
+    }
+    if (!data?.account_holder_name) {
+      error = {
+        ...error,
+        account_holder_name: "Account holder name is required",
+      };
+      flag = true;
+    }
+    if (!data?.account_number) {
+      error = { ...error, account_number: "Account number is required" };
+      flag = true;
+    }
+    if (data?.re_account_number != data?.account_number) {
+      error = { ...error, re_account_number: "Account number not matched" };
+      flag = true;
+    }
+    if (!data?.re_account_number) {
+      error = {
+        ...error,
+        re_account_number: "Re-type Account Number is required",
+      };
+      flag = true;
+    }
+    if (!data?.ifsc_code) {
+      error = { ...error, ifsc_code: "IFSC code is required" };
+      flag = true;
+    }
+    setError(error);
 
-    const res = await EarningService.addBank(data);
-    if (res) {
-      setBName("");
-      setName("");
-      setAnumber("");
-      setReAnumber("");
-      setIFSC("");
-      setIsPrimary(false);
-      handleClose();
-      onAdd();
+    if (!flag) {
+      const res = await EarningService.addBank({
+        bank_name: data?.bank_name,
+        account_holder_name: data?.account_holder_name,
+        account_number: data?.account_number,
+        ifsc_code: data?.ifsc_code,
+      });
+      if (res) {
+        setData({});
+        handleClose();
+        onAdd();
+      }
     }
   };
 
@@ -76,46 +80,47 @@ function Example({ onAdd }) {
           <InputField
             type="text"
             label="Bank Name"
-            value={bname}
+            value={data?.bank_name}
             star="*"
-            onChange={handleBNameChange}
+            onChange={(e) => onChangeHandle("bank_name", e?.target?.value)}
           />
+          <small className="text-danger">{error?.bank_name}</small>
           <InputField
             type="text"
             label="Name On Bank Account"
-            value={name}
+            value={data?.account_holder_name}
             star="*"
-            onChange={handleNameChange}
+            onChange={(e) =>
+              onChangeHandle("account_holder_name", e?.target?.value)
+            }
           />
+          <small className="text-danger">{error?.account_holder_name}</small>
           <InputField
             type="number"
             label="Account Number"
-            value={aNumber}
+            value={data?.account_number}
             star="*"
-            onChange={handleAnumberChange}
+            onChange={(e) => onChangeHandle("account_number", e?.target?.value)}
           />
+          <small className="text-danger">{error?.account_number}</small>
           <InputField
             type="number"
             label="Re-type Account Number"
-            value={reaNumber}
+            value={data?.re_account_number}
             star="*"
-            onChange={handlReAnumberChange}
+            onChange={(e) =>
+              onChangeHandle("re_account_number", e?.target?.value)
+            }
           />
+          <small className="text-danger">{error?.re_account_number}</small>
           <InputField
-            type="number"
+            type="text"
             label="IFSC Code"
-            value={ifsc}
+            value={data?.ifsc_code}
             star="*"
-            onChange={handlIFSCChange}
+            onChange={(e) => onChangeHandle("ifsc_code", e?.target?.value)}
           />
-          <div className="mt-3 check_box">
-            <input
-              type="checkbox"
-              value={isPrimary}
-              onChange={handleIsPrimaryChange}
-            />
-            Set as primary method
-          </div>
+          <small className="text-danger">{error?.ifsc_code}</small>
         </Modal.Body>
         <Modal.Footer>
           <div className="btn_area">

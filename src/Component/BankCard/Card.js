@@ -1,8 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { BsBank2 } from "react-icons/bs";
+import EditBankPopup from "../Modal/EditBankPopup";
 
-function Card({ bankName, accountNumber, companyName, activateCard, isActive }) {
+function Card({
+  id,
+  bankName,
+  accountNumber,
+  companyName,
+  activateCard,
+  isActive,
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const iconsRef = useRef(null);
 
@@ -29,8 +37,6 @@ function Card({ bankName, accountNumber, companyName, activateCard, isActive }) 
     };
   }, []);
 
-
-
   return (
     <div className={`bank_card card ${isActive ? "active" : "inactive"}`}>
       <div className="d-flex align-items-center">
@@ -48,16 +54,18 @@ function Card({ bankName, accountNumber, companyName, activateCard, isActive }) 
       </div>
       <div className="dot_toggle" ref={iconsRef}>
         <BiDotsVerticalRounded className="icons" onClick={handleMenuClick} />
-        {/* {isMenuOpen && (
+        {isMenuOpen && (
           <div className="toggle_menu">
             <ul>
               <li className="primary" onClick={handlePrimaryClick}>
-                Primary
+                <EditBankPopup id={id} />
               </li>
-              <li className="mt-2" onClick={() => setIsMenuOpen(false)}>Edit</li>
+              <li className="mt-2" onClick={() => setIsMenuOpen(false)}>
+                Edit
+              </li>
             </ul>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

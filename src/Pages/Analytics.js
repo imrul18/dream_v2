@@ -56,6 +56,7 @@ function Analytics() {
         month: item?.month,
         label: label?.data?.find((itm) => itm?.id == item?.label)?.title,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
+        failed_reason: item?.failed_reason,
       };
     });
     setData(finalData);

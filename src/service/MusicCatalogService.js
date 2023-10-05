@@ -30,7 +30,7 @@ const show = async (id) => {
 };
 
 const CallerTune = async (params) => {
-  const res = await http.get("/items/Caller_Tune", { params });
+  const res = await http.get("/items/Caller_Tune", { params: {...params, fields: ['*.*.*']} });
   return res?.data;
 };
 

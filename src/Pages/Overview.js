@@ -52,7 +52,7 @@ function Earning() {
       <div className="table_content">
         <h2>All Time Earning Transactions</h2>
         <div className="table_title">
-          <p>Show 4 entries</p>
+          <p>Show {data?.length} entries</p>
           <Selector
             options={options}
             onChange={handleChange}

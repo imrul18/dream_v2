@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Card from "./Card";
 
-function CardList({cards}) {
+function CardList({ cards }) {
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
   const activateCard = (index) => {
@@ -12,6 +12,7 @@ function CardList({cards}) {
     <div>
       {cards.map((card, index) => (
         <Card
+          id={card.id}
           key={index}
           bankName={card.bankName}
           accountNumber={card.accountNumber}

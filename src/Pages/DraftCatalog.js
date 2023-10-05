@@ -1,7 +1,7 @@
 import React from "react";
-import SearchBar from "../Component/SearchBar/SearchBar";
 import DraftCardList from "../Component/CatalogsCard/DraftCardList";
 import PaginationList from "../Component/Pagination/PaginationList";
+import SearchBar from "../Component/SearchBar/SearchBar";
 
 function DraftCatalog() {
   return (
@@ -17,7 +17,7 @@ function DraftCatalog() {
       </div>
       <div className="mt-5">
         <div className="table_title">
-          <p>Show 4 entries</p>
+          <p>Show {data?.length} entries</p>
           <SearchBar />
         </div>
         <DraftCardList />

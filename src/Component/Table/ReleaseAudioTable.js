@@ -226,7 +226,7 @@ const ReleaseAudioTable = ({ data, onSearch }) => {
       />
 
       <div className="table_title mt-3">
-        <p>Show 4 entries</p>
+        <p>Show {data?.length} entries</p>
         <SearchBar onSearch={onSearch} />
       </div>
 

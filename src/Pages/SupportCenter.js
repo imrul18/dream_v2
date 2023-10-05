@@ -9,21 +9,10 @@ import UploadButton from "../Component/UploadBtn/UploadButton";
 import SupportService from "../service/SupportService";
 
 function SupportCenter() {
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
-  const [file, setFile] = useState("");
-  console.log("🚀 ~ file: SupportCenter.js:15 ~ SupportCenter ~ file:", file)
+  const [uploadData, setUploadData] = useState({});
 
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleMessageChange = (event) => {
-    setMessage(event.target.value);
-  };
-
-  const handleFileChange = (event) => {
-    setFile(event);
+  const onChangeHandle = (name, value) => {
+    setUploadData({ ...uploadData, [name]: value });
   };
 
   const [data, setData] = useState([]);
@@ -54,8 +43,8 @@ function SupportCenter() {
   }, []);
 
   const onSubmit = async () => {
-    const res = await SupportService.add({title: name, message});
-    // const res = await SupportService.add({title: name, message, files: {create:'a', update:null, delete:[]}});
+    // const res = await SupportService.add(data);
+    const res = await SupportService.add({title: data?.title, message: data?.message, files: {create:null, update:null, delete:[]}});
     if (res) {
       getData();
     }
@@ -72,18 +61,18 @@ function SupportCenter() {
                 label="Title"
                 star="*"
                 type="text"
-                value={name}
-                onChange={handleNameChange}
+                value={uploadData?.title}
+                onChange={(e)=>onChangeHandle('title', e.target.value)}
               />
               <TextField
                 label="Messages"
                 star="*"
                 type="text"
-                value={message}
-                onChange={handleMessageChange}
+                value={uploadData?.message}
+                onChange={(e)=>onChangeHandle('message', e.target.value)}
               />
               <div className="support_file mt-3">
-                <UploadButton onChange={handleFileChange} />
+                <UploadButton onChange={(id)=>onChangeHandle('file', id)} />
               </div>
               <div className="mt-3">
                 <PrimaryBtn label="Submit" onClick={onSubmit} />

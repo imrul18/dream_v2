@@ -1,47 +1,47 @@
 import { Table } from "antd";
 import React, { useState } from "react";
+import FileService from "../../service/FileService";
 import TableFilter from "../Filter/TableFilter";
+import FailedPopover from "../Popover/FailedPopover";
 import SearchBar from "../SearchBar/SearchBar";
 import airtelLogo from "../assets/img/Airtel.png";
 import coverImg from "../assets/img/cover.jpg";
 import vodafoneLogo from "../assets/img/vodafone.png";
 
 const columns = [
-  // {
-  //   title: "Title",
-  //   dataIndex: "title",
-  //   className: "header_title",
-  // },
+  {
+    title: "ID",
+    dataIndex: "id",
+  },
+  {
+    title: "Title",
+    dataIndex: "title",
+    className: "header_title",
+  },
   // {
   //   title: "Artist",
   //   dataIndex: "artist",
   // },
-  // {
-  //   title: "Label",
-  //   dataIndex: "label",
-  // },
-  // {
-  //   title: "Upc",
-  //   dataIndex: "upc",
-  // },
-  // {
-  //   title: "Stores",
-  //   dataIndex: "stores",
-  // },
   {
-    title: "Caller Tune",
-    dataIndex: "id",
+    title: "Label",
+    dataIndex: "label",
+  },
+  {
+    title: "Upc",
+    dataIndex: "upc",
   },
   {
     title: "Stores",
-    dataIndex: "crbt",
-    render: (crbt) => {
+    dataIndex: "stores",
+    render: (stores) => {
       return (
         <div className="sim_icons">
-          {`${crbt?.length} Items (${crbt.map((item) => `${item}`)})`}
+          {stores?.map((item, index) => (
+            <img key={index} src={FileService?.image(item)} alt="" height={30} width={30}/>
+          ))}
         </div>
       );
-    }
+    },
   },
   {
     title: "Status",
@@ -68,7 +68,7 @@ const columns = [
           <span className={`status ${className}`} style={{ color }}>
             {status}
           </span>
-          {/* {status === "Failed" && <FailedPopover message={data?.failed_reason} />} */}
+          {status === "Failed" && <FailedPopover message={data?.failed_reason} />}
         </div>
       );
     },
@@ -157,7 +157,7 @@ const CallerTuneTable = ({ data, onSearch }) => {
       />
 
       <div className="table_title mt-5">
-        <p>Show 4 entries</p>
+        <p>Show {data?.length} entries</p>
         <SearchBar onSearch={onSearch} />
       </div>
 

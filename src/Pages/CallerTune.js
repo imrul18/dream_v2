@@ -10,7 +10,12 @@ function CallerTune() {
     const finalData = res?.data?.map((item, index) => {
       return {
         key: index,
-        ...item,
+        id: item?.id,
+        title: item?.release_music?.title,
+        label: item?.release_music?.label?.title,
+        upc: item?.release_music?.upc,
+        stores: item?.crbt?.map((item) => item?.CRBT_id?.icon),
+        failed_reason: item?.failed_reason,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),        
       };
     });
