@@ -1,46 +1,46 @@
 import React, { useEffect, useState } from "react";
-import ProfilePhotoUploader from "../Component/ImageUpload/ProfilePhotoUploader";
+import ProfileImageUploader from "../Component/ImageUpload/ProfileImageUploader";
 import InputField from "../Component/InputField/InputField";
 import ProfileService from "../service/ProfileService";
 
 function Profile() {
   const [data, setData] = useState({});
+  const [update, setUpdate] = useState({});
 
   const getData = async () => {
-    const user = await ProfileService.get();
-    setData(user?.data);
+    const res = await ProfileService.get();
+    setData(res.data);
   };
+
   useEffect(() => {
     getData();
   }, []);
 
-  const onChange = (obj) => {
-    setData({ ...data, ...obj });
+  const onHandleChange = (name, value) => {
+    setData({ ...data, [name]: value });
+    setUpdate({ ...update, [name]: value });
   };
-
   const [isEditable, setIsEditable] = useState(false);
 
   const handleEdit = () => {
     setIsEditable(true);
   };
 
-  const handleSave = async () => {
-    const user = await ProfileService.update(data);
+  const handleSave = async() => {
+    await ProfileService.update(update);
     setIsEditable(false);
+    alert("Profile Updated Successfully");
   };
 
   return (
     <>
       <div className="user_profile_top mb-5">
         <div className="user_p_info">
-          <ProfilePhotoUploader
-            photo={data?.avatar}
-            onChange={(link) => onChange({ avatar: link })}
-          />
+          <ProfileImageUploader uploadedPhoto={data?.avatar} setUploadedPhoto={e=>onHandleChange("avatar", e)} />
           <div className="text_area">
-            <h2>{data?.email}</h2>
+            <h2>{data?.username}</h2>
             <p className="mt-2">
-              Govt. ID: <span>{data?.govt_id ?? "Not Available"}</span>
+              Govt. ID: <span>{data?.govt_id}</span>
             </p>
           </div>
         </div>
@@ -62,7 +62,7 @@ function Profile() {
             <InputField
               label="First Name"
               value={data?.first_name}
-              onChange={(e) => onChange({ first_name: e?.target?.value })}
+              onChange={(e) => onHandleChange("first_name", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
@@ -70,34 +70,107 @@ function Profile() {
             <InputField
               label="Last Name"
               value={data?.last_name}
-              onChange={(e) => onChange({ last_name: e?.target?.value })}
+              onChange={(e) => onHandleChange("last_name", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
             <InputField
-              label="Email"
+              label="City"
+              value={data?.city}
+              onChange={(e) => onHandleChange("city", e.target.value)}
+              type="text"
+              error={null}
+              disabled={!isEditable}
+            />
+            <InputField
+              label="State"
+              value={data?.state}
+              onChange={(e) => onHandleChange("state", e.target.value)}
+              type="text"
+              error={null}
+              disabled={!isEditable}
+            />
+          </div>
+        </div>
+        <div className="col-lg-6">
+          <div className="profile_input_area">
+            <InputField
+              label="Address Line 1"
+              value={data?.line_1}
+              onChange={(e) => onHandleChange("line_1", e.target.value)}
+              type="text"
+              error={null}
+              disabled={!isEditable}
+            />
+            <InputField
+              label="Address Line 2"
+              value={data?.line_2}
+              onChange={(e) => onHandleChange("line_2", e.target.value)}
+              type="text"
+              error={null}
+              disabled={!isEditable}
+            />
+            <InputField
+              label="Postal Code"
+              value={data?.post}
+              onChange={(e) => onHandleChange("post", e.target.value)}
+              type="text"
+              error={null}
+              disabled={!isEditable}
+            />
+            <InputField
+              label="Country / Region"
+              value={data?.country}
+              onChange={(e) => onHandleChange("country", e.target.value)}
+              type="text"
+              error={null}
+              disabled={!isEditable}
+            />
+          </div>
+        </div>
+        <div className="col-lg-12">
+          <div className="profile_input_area mt-4">
+            <InputField
+              label="Email Address"
               value={data?.email}
               type="text"
               error={null}
               disabled
             />
             <InputField
-              label="Localtion"
-              value={data?.localtion}
-              onChange={(e) => onChange({ localtion: e?.target?.value })}
+              label="Phone Number"
+              value={data?.phone}
+              onChange={(e) => onHandleChange("phone", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
-            <InputField
-              label="Title"
-              value={data?.title}
-              onChange={(e) => onChange({ title: e?.target?.value })}
-              type="text"
-              error={null}
-              disabled={!isEditable}
-            />
+            <div>
+              <InputField
+                label="Whatsapp Number"
+                value={data?.whatsapp_number}
+                onChange={(e) =>
+                  onHandleChange("whatsapp_number", e.target.value)
+                }
+                type="text"
+                error={null}
+                disabled={!isEditable}
+              />
+              <span className="enable_wp">
+                <input
+                  type="checkbox"
+                  checked={data?.receive_whatsapp_notification}
+                  onChange={(e) =>
+                    onHandleChange(
+                      "receive_whatsapp_notification",
+                      e.target.checked
+                    )
+                  }
+                />
+                Add Whatsapp Notification
+              </span>
+            </div>
           </div>
         </div>
         {/* <div className="col-lg-6 mt-5">

@@ -12,19 +12,23 @@ function CallerTune() {
         key: index,
         id: item?.id,
         title: item?.release_music?.title,
+        image: item?.release_music?.cover_image?.id,
+        artist: item?.release_music?.primary_artist?.length
+          ? item?.release_music?.primary_artist[0]?.Primary_Artist_id?.name
+          : null,
         label: item?.release_music?.label?.title,
         upc: item?.release_music?.upc,
-        stores: item?.crbt?.map((item) => item?.CRBT_id?.icon),
+        stores: item?.crbt?.map((item) => item?.CRBT_id?.icon?.id),
         failed_reason: item?.failed_reason,
-        status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),        
+        status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
       };
     });
     setData(finalData);
   };
 
   const onSearch = async (value) => {
-    getData({search: value});
-  };    
+    getData({ search: value });
+  };
 
   useEffect(() => {
     getData();

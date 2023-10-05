@@ -50,6 +50,11 @@ function SupportCenter() {
     }
   };
 
+  const openWhatsApp = () => {
+    const whatsappURL = `whatsapp://send?phone=+917001293484`;
+    window.location.href = whatsappURL;
+  };
+
   return (
     <div className="support_page">
       <div className="row">
@@ -84,7 +89,7 @@ function SupportCenter() {
           <div className="connect_wp">
             <IoLogoWhatsapp className="icons" />
             <p>Live WhatsApp Support</p>
-            <button className="btn">Chet Now</button>
+            <button className="btn" onClick={openWhatsApp}>Chet Now</button>
           </div>
         </div>
       </div>

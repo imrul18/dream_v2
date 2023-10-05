@@ -1,13 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiFillSetting } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import FileService from "../../service/FileService";
+import ProfileService from "../../service/ProfileService";
 import ChangePasswordPopup from "../Modal/ChangePasswordPopup";
 import Notification from "../Notification/Notification";
 import Logo from "../assets/img/Logo.svg";
-import userImg from "../assets/img/user.png";
 
 function Topbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [data, setData] = useState({});
+
+  const getData = async () => {
+    const res = await ProfileService.get();
+    setData(res.data);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -29,8 +40,8 @@ function Topbar() {
       <div className="nav_right">
       <Notification />
       <div className="account_info">
-        <p className="name">username</p>
-        <img src={userImg} alt="" />
+        <p className="name">{data?.username}</p>
+        <img src={data?.avatar ? FileService?.image(data?.avatar) : `https://i2.wp.com/ui-avatars.com/api/${data?.first_name}/400`} alt="" />
       </div>
       <div className="toggle_account_info">
         <AiFillSetting className="icons" onClick={toggleMenu} />

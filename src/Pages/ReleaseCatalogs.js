@@ -33,7 +33,7 @@ function ReleaseCatalogs() {
 
 
   const getData = async (params) => {
-    const res = await MusicCatalogService.get(params);
+    const res = await MusicCatalogService.getList(params);
     const finalData = res?.data?.map((item) => {
       return {
         id: item?.id,
@@ -41,14 +41,13 @@ function ReleaseCatalogs() {
         title: (
           <div className="c_tune_table_title">
             <img src={item?.cover_image
-                  ? FileService?.image(item.cover_image) : `https://i2.wp.com/ui-avatars.com/api/${item?.title}/400`} alt="" className="table_img" />
+                  ? FileService?.image(item.cover_image?.id) : `https://i2.wp.com/ui-avatars.com/api/${item?.title}/400`} alt="" className="table_img" />
             <span>{item?.title}</span>
           </div>
         ),
-        label: labelOption?.find(itm=>itm?.id==item?.label)?.label,
-        artist: item?.artist_name,
+        label: item?.label?.title,
+        artist: item?.primary_artist?.length ? item?.primary_artist[0]?.Primary_Artist_id?.name : null,
         releaseDate: item?.main_release_date,
-        artist: artistOption?.find(itm=>itm?.id==item?.primary_artist[0])?.label,
         upc: <span>{item?.upc}</span>,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
         rejection: item?.reject_reason ?? "",

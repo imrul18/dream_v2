@@ -9,19 +9,31 @@ import coverImg from "../assets/img/cover.jpg";
 import vodafoneLogo from "../assets/img/vodafone.png";
 
 const columns = [
-  {
-    title: "ID",
-    dataIndex: "id",
-  },
+  // {
+  //   title: "ID",
+  //   dataIndex: "id",
+  // },
   {
     title: "Title",
     dataIndex: "title",
     className: "header_title",
+    render: (title, data) => {
+      return (
+        <div className="c_tune_table_title">
+          <img
+            src={FileService?.image(data?.image)}
+            alt=""
+            className="table_img"
+          />
+          <span>{title}</span>
+        </div>
+      );
+    }
   },
-  // {
-  //   title: "Artist",
-  //   dataIndex: "artist",
-  // },
+  {
+    title: "Artist",
+    dataIndex: "artist",
+  },
   {
     title: "Label",
     dataIndex: "label",

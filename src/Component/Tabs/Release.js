@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { setMusicData } from "../../Pages/reduxStore";
 import OptionService from "../../service/OptionService";
-import ImageUploadForm from "../ImageUpload/ImageUploadForm";
+import ReleaseImageUpload from "../ImageUpload/ReleaseImageUpload";
 import MultiInput from "../InputField/MultiInput";
 import MultiSelect from "../InputField/MultiSelect";
 
@@ -116,13 +116,6 @@ const Release = ({ currentStep, setCurrentStep }) => {
       redirect = false;
     }
 
-    if (musicData?.upc) {
-      errorData = { ...errorData, upc: null };
-    } else {
-      errorData = { ...errorData, upc: "Please enter upc" };
-      redirect = false;
-    }
-
     if (musicData?.p_line) {
       errorData = { ...errorData, p_line: null };
     } else {
@@ -159,9 +152,10 @@ const Release = ({ currentStep, setCurrentStep }) => {
       <div className="steps">
         <div className="row release-row">
           <div className="col-xl-3 col-lg-6 mt-4">
-            <ImageUploadForm
+            <ReleaseImageUpload
               image={musicData?.cover_image}
               onUpload={(link) => setData({ cover_image: link })}
+              onError={(err) => setError({ ...error, cover_image: err })}
             />
             <small className="text-danger">{error?.cover_image}</small>
           </div>
@@ -282,7 +276,7 @@ const Release = ({ currentStep, setCurrentStep }) => {
                 <div>
                   <DatePicker
                     selected={
-                      new Date(musicData?.original_release_date ?? null)
+                      new Date(musicData?.original_release_date ?? Date.now())
                     }
                     onChange={(date) =>
                       setData({ original_release_date: date })
@@ -334,8 +328,7 @@ const Release = ({ currentStep, setCurrentStep }) => {
                 <small className="text-danger">{error?.production_year}</small>
               </div>
               <div className="input_f mt-3">
-                <label className="mb-2">UPC/EAN</label>{" "}
-                <span className="input_star">*</span>
+                <label className="mb-2">UPC/EAN</label>
                 <input
                   type="text"
                   value={musicData?.upc}

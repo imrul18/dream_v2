@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import PasswordInput from "../InputField/PasswordInput";
 import { Link } from "react-router-dom";
+import PasswordInput from "../InputField/PasswordInput";
 
 function Example() {
   const [show, setShow] = useState(false);
@@ -9,11 +9,21 @@ function Example() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [data, setData] = useState({});
+
+  const onHandleChange = (name, value) => {
+    setData({ ...data, [name]: value });
+  }
 
   const [name, setName] = useState("");
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
+
+  const handleSubmit = () => {
+    alert("Password Updated Successfully");
+    handleClose();
+  }
 
   return (
     <>
@@ -27,7 +37,7 @@ function Example() {
             <div className="col-12">
             <PasswordInput
                 label="Current Password"
-                value={name}
+                value={data?.password}
                 star="*"
                 onChange={handleNameChange}
               />
@@ -48,7 +58,7 @@ function Example() {
         </Modal.Body>
         <Modal.Footer>
           <div className="btn_area">
-            <button className="btn" onClick={handleClose}>
+            <button className="btn" onClick={handleSubmit}>
               Save
             </button>
             <button className="btn_s" onClick={handleClose}>

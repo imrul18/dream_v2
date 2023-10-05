@@ -13,14 +13,14 @@ const columns = [
     dataIndex: "title",
     className: "header_title",
   },
-  // {
-  //   title: "Label",
-  //   dataIndex: "label",
-  // },
-  // {
-  //   title: "Artist",
-  //   dataIndex: "artist",
-  // },
+  {
+    title: "Label",
+    dataIndex: "label",
+  },
+  {
+    title: "Artist",
+    dataIndex: "artist",
+  },
   {
     title: "Release Date",
     dataIndex: "releaseDate",

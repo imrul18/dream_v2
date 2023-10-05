@@ -13,17 +13,12 @@ function Earning() {
 
   const [selectedOption, setSelectedOption] = useState(null);
 
-  useEffect(() => {
-    if (selectedOption) {
-      getData({ year: selectedOption?.value });
-    }
-  }, [selectedOption]);
-
   const handleChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
 
   const [data, setData] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const getData = async (params) => {
     const res = await EarningService.overview(params);
     const finalData = res?.data?.map((item, index) => {
@@ -36,11 +31,21 @@ function Earning() {
       };
     });
     setData(finalData);
+    setTableData(finalData);
   };
+
+  useEffect(() => {
+    if (selectedOption) {
+      setTableData(data?.filter((item) => item?.years == selectedOption?.value));
+    }else{
+      setTableData(data);
+    }
+  }, [selectedOption]);
 
   useEffect(() => {
     getData();
   }, []);
+
   return (
     <div>
       <div className="section_title border_bottom">
@@ -52,7 +57,7 @@ function Earning() {
       <div className="table_content">
         <h2>All Time Earning Transactions</h2>
         <div className="table_title">
-          <p>Show {data?.length} entries</p>
+          <p>Show {tableData?.length} entries</p>
           <Selector
             options={options}
             onChange={handleChange}
@@ -60,7 +65,7 @@ function Earning() {
             value={selectedOption}
           />
         </div>
-        <EarningHistoryTable data={data}/>
+        <EarningHistoryTable data={tableData} />
       </div>
     </div>
   );

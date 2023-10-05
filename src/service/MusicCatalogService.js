@@ -5,6 +5,13 @@ const get = async (params) => {
   return res?.data;
 };
 
+const getList = async (params) => {
+  const res = await http.get("/items/Release_Music", {
+    params: { ...params, fields: ["*.*.*.*"], sort: ["-id"] },
+  });
+  return res?.data;
+};
+
 const getById = async (id) => {
   const res = await http.get("/items/Release_Music/" + id, {
     params: { fields: ["*.*.*.*"] },
@@ -24,13 +31,15 @@ const edit = async (id, data) => {
 
 const show = async (id) => {
   const res = await http.get("/items/Release_Music/" + id, {
-    params: { fields: ["*.*.*"] },
+    params: { fields: ["*.*.*.*"] },
   });
   return res?.data;
 };
 
 const CallerTune = async (params) => {
-  const res = await http.get("/items/Caller_Tune", { params: {...params, fields: ['*.*.*']} });
+  const res = await http.get("/items/Caller_Tune", {
+    params: { ...params, fields: ["*.*.*.*"]},
+  });
   return res?.data;
 };
 
@@ -51,6 +60,7 @@ const tracks = async (id) => {
 
 const MusicCatalogService = {
   get,
+  getList,
   getById,
   add,
   edit,

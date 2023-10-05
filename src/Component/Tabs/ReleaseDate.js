@@ -37,7 +37,7 @@ const EditAssets = ({ currentStep, setCurrentStep }) => {
             <div className="checkbox_item">
               <Space direction="vertical">
                 <DatePicker
-                  selected={new Date(musicData?.main_release_date ?? null)}
+                  selected={new Date(musicData?.main_release_date ?? Date.now())}
                   onChange={(date) => setData({ main_release_date: date })}
                   minDate={new Date()}
                 />

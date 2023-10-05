@@ -8,7 +8,6 @@ import MultiInput from "../InputField/MultiInput";
 import MultiSelect from "../InputField/MultiSelect";
 
 function AddAssetsPopup({ onSubmit, musicData }) {
-
   const [data, setData] = useState({});
   const [error, setError] = useState(null);
   useEffect(() => {
@@ -44,6 +43,7 @@ function AddAssetsPopup({ onSubmit, musicData }) {
   const [artistOption, setArtistOption] = useState([]);
   const [genreOption, setGenreOption] = useState([]);
   const [productionYearOption, setProductionYearOption] = useState([]);
+  const [languageOption, setLanguageOption] = useState([]);
   const getYearOptions = async () => {
     const Year = new Date().getFullYear();
     const array = [];
@@ -59,6 +59,14 @@ function AddAssetsPopup({ onSubmit, musicData }) {
     const artist = await OptionService.artist();
     setArtistOption(
       artist?.data?.map((itm) => ({
+        ...itm,
+        value: itm?.id,
+        label: itm?.name,
+      }))
+    );
+    const language = await OptionService.language();
+    setLanguageOption(
+      language?.data?.map((itm) => ({
         ...itm,
         value: itm?.id,
         label: itm?.name,
@@ -91,7 +99,10 @@ function AddAssetsPopup({ onSubmit, musicData }) {
       redirect = false;
     }
 
-    if (data?.primary_artist?.length) {
+    if (
+      data?.primary_artist?.length &&
+      data?.primary_artist?.every((itm) => itm != "")
+    ) {
       errorData = { ...errorData, primary_artist: null };
     } else {
       errorData = {
@@ -101,8 +112,26 @@ function AddAssetsPopup({ onSubmit, musicData }) {
       redirect = false;
     }
 
-    if (data?.lyrics_writter?.length) {
-      errorData = { ...errorData, lyrics_writter: null };
+    if (
+      data?.lyrics_writter?.length &&
+      data?.lyrics_writter?.every((itm) => itm != "")
+    ) {
+      function meetsCriteria(str) {
+        var words = str?.split(/\s+/);
+        return words?.length >= 2 && words?.every((word) => word?.length >= 3);
+      }
+      var allItemsMeetCriteria = data?.lyrics_writter?.every((item) =>
+        meetsCriteria(item)
+      );
+      if (allItemsMeetCriteria) {
+        errorData = { ...errorData, lyrics_writter: null };
+      } else {
+        errorData = {
+          ...errorData,
+          lyrics_writter: "Name should be in valid Fistname Lastname format",
+        };
+        redirect = false;
+      }
     } else {
       errorData = {
         ...errorData,
@@ -111,12 +140,27 @@ function AddAssetsPopup({ onSubmit, musicData }) {
       redirect = false;
     }
 
-    if (data?.composer?.length) {
-      errorData = { ...errorData, composer: null };
+    if (data?.composer?.length && data?.composer?.every((itm) => itm != "")) {
+      function meetsCriteria(str) {
+        var words = str?.split(/\s+/);
+        return words?.length >= 2 && words?.every((word) => word?.length >= 3);
+      }
+      var allItemsMeetCriteria = data?.composer?.every((item) =>
+        meetsCriteria(item)
+      );
+      if (allItemsMeetCriteria) {
+        errorData = { ...errorData, composer: null };
+      } else {
+        errorData = {
+          ...errorData,
+          composer: "Name should be in valid Fistname Lastname format",
+        };
+        redirect = false;
+      }
     } else {
       errorData = {
         ...errorData,
-        composer: "Please add lyrics writter",
+        composer: "Please add composer",
       };
       redirect = false;
     }
@@ -151,17 +195,23 @@ function AddAssetsPopup({ onSubmit, musicData }) {
     if (data?.track_title_language) {
       errorData = { ...errorData, track_title_language: null };
     } else {
-      errorData = { ...errorData, track_title_language: "Please add Track Title Language" };
+      errorData = {
+        ...errorData,
+        track_title_language: "Please add Track Title Language",
+      };
       redirect = false;
     }
 
     if (data?.lyrics_language) {
       errorData = { ...errorData, lyrics_language: null };
     } else {
-      errorData = { ...errorData, lyrics_language: "Please add lyric language" };
+      errorData = {
+        ...errorData,
+        lyrics_language: "Please add lyric language",
+      };
       redirect = false;
     }
-    
+
     if (redirect) {
       onSubmit(data);
       setData(null);
@@ -502,7 +552,9 @@ function AddAssetsPopup({ onSubmit, musicData }) {
                 }
                 placeholder="Track Title Language"
               />
-              <small className="text-danger">{error?.track_title_language}</small>
+              <small className="text-danger">
+                {error?.track_title_language}
+              </small>
             </div>
             <div className="input_f mt-3">
               <label className="mb-2">Lyrics Language</label>
