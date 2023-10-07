@@ -16,14 +16,28 @@ const TableFilter = ({ selectedStatus, handleFilter }) => {
         Approved
       </button>
       <button
+        onClick={() => handleFilter("Published")}
+        className={selectedStatus === "Published" ? "active" : ""}
+      >
+        Published
+      </button>
+      <button
         onClick={() => handleFilter("Pending")}
         className={selectedStatus === "Pending" ? "active" : ""}
       >
         Pending
       </button>
       <button
+        onClick={() => handleFilter("Ongoing")}
+        className={selectedStatus === "Ongoing" ? "active" : "draft"}
+      >
+        Ongoing
+      </button>
+      <button
         onClick={() => handleFilter("Failed")}
-        className={selectedStatus === "Failed" ? "active" : "Failed all_r_d_none"}
+        className={
+          selectedStatus === "Failed" ? "active" : "Failed all_r_d_none"
+        }
       >
         Failed
       </button>
@@ -34,14 +48,8 @@ const TableFilter = ({ selectedStatus, handleFilter }) => {
         Rejected
       </button>
       <button
-        onClick={() => handleFilter("Unfinished")}
-        className={selectedStatus === "Unfinished" ? "active" : "draft"}
-      >
-        Unfinished
-      </button>
-      <button
-        onClick={() => handleFilter("Correction Request")}
-        className={selectedStatus === "Correction Request" ? "c_req" : ""}
+        onClick={() => handleFilter("Correction_request")}
+        className={selectedStatus === "Correction_request" ? "active" : "c_req"}
         id="hide_c_request"
       >
         Correction Request

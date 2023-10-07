@@ -1,7 +1,7 @@
 import http from "./http";
 
 const get = async (params) => {
-  const res = await http.get("/items/Support_Ticket", { params });
+  const res = await http.get("/items/Support_Ticket", { params: {...params, sort: ["-id"] } });
   return res?.data;
 };
 

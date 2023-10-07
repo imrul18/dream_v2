@@ -1,18 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import PasswordInput from "../InputField/PasswordInput";
 import { Link } from "react-router-dom";
+import AuthService from "../../service/AuthService";
+import ProfileService from "../../service/ProfileService";
 
 function Example() {
   const [show, setShow] = useState(false);
 
+  const [email, setEmail] = useState("");
+
+  const getEmail = async () => {
+    const res = await ProfileService?.get();
+    setEmail(res?.data?.email);
+  };
+
+  useEffect(() => {
+    getEmail();
+  }, []);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-
-  const [name, setName] = useState("");
-  const handleNameChange = (event) => {
-    setName(event.target.value);
+ 
+  const handleSubmit = async() => {
+    const res = await AuthService?.forget(email);
+    await AuthService?.logout();
+    window.location.href = "/";
+    handleClose();
   };
 
   return (
@@ -25,31 +38,15 @@ function Example() {
         <Modal.Body>
           <div className="row">
             <div className="col-12">
-            <PasswordInput
-                label="Current Password"
-                value={name}
-                star="*"
-                onChange={handleNameChange}
-              />
-            <PasswordInput
-                label="New Password"
-                value={name}
-                star="*"
-                onChange={handleNameChange}
-              />
-            <PasswordInput
-                label="Confirm Password"
-                value={name}
-                star="*"
-                onChange={handleNameChange}
-              />
+              By Clicking on confirm button, you will get an email to reset your
+              password in <b>{email}</b> and logged out now.
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <div className="btn_area">
-            <button className="btn" onClick={handleClose}>
-              Save
+            <button className="btn" onClick={handleSubmit}>
+              Submit
             </button>
             <button className="btn_s" onClick={handleClose}>
               Close

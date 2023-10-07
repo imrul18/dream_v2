@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { BsCamera } from "react-icons/bs";
 import FileService from "../../service/FileService";
 
-const ImageUploadForm = ({ image, onImage, onUpload }) => {
-  const [uploadedPhoto, setUploadedPhoto] = useState(image);
-  const [buttonText, setButtonText] = useState("Upload Cover");
+const ImageUploadForm = ({ image, onUpload }) => {
+  const [buttonText, setButtonText] = useState("Replace Cover");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleUploadClick = async (e) => {
@@ -15,14 +14,11 @@ const ImageUploadForm = ({ image, onImage, onUpload }) => {
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-
     if (file) {
       setIsLoading(true);
       try {
         const imageURL = URL.createObjectURL(file);
         await new Promise((resolve) => setTimeout(resolve, 1500));
-        setUploadedPhoto(imageURL);
-        onImage(imageURL);
         setButtonText("Replace Cover");
         const res = await FileService.upload({
           file,
@@ -47,8 +43,8 @@ const ImageUploadForm = ({ image, onImage, onUpload }) => {
         onChange={handleFileChange}
       />
       <div className="dropzone">
-        {uploadedPhoto ? (
-          <img src={uploadedPhoto} alt="Uploaded" className="uploaded-image" />
+        {image ? (
+          <img src={FileService?.image(image)} alt="Uploaded" className="uploaded-image" />
         ) : (
           <div className="upload-placeholder" onClick={handleUploadClick}>
             <BsCamera className="icons" />

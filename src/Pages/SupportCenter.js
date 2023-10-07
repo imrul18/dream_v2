@@ -9,20 +9,11 @@ import UploadButton from "../Component/UploadBtn/UploadButton";
 import SupportService from "../service/SupportService";
 
 function SupportCenter() {
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
-  const [file, setFile] = useState("");
+  const [uploadData, setUploadData] = useState({});
+  const [clearAll, setClearAll] = useState(false);
 
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleMessageChange = (event) => {
-    setMessage(event.target.value);
-  };
-
-  const handleFileChange = (event) => {
-    setFile(event);
+  const onChangeHandle = (name, value) => {
+    setUploadData({ ...uploadData, [name]: value });
   };
 
   const [data, setData] = useState([]);
@@ -53,10 +44,17 @@ function SupportCenter() {
   }, []);
 
   const onSubmit = async () => {
-    const res = await SupportService.add({title: name, message});
+    const res = await SupportService.add(uploadData);
+    setUploadData({title: "", message: "", files: []});
+    setClearAll(true);
     if (res) {
       getData();
     }
+  };
+
+  const openWhatsApp = () => {
+    const whatsappURL = `whatsapp://send?phone=+917001293484`;
+    window.location.href = whatsappURL;
   };
 
   return (
@@ -70,18 +68,18 @@ function SupportCenter() {
                 label="Title"
                 star="*"
                 type="text"
-                value={name}
-                onChange={handleNameChange}
+                value={uploadData?.title}
+                onChange={(e)=>onChangeHandle('title', e.target.value)}
               />
               <TextField
                 label="Messages"
                 star="*"
                 type="text"
-                value={message}
-                onChange={handleMessageChange}
+                value={uploadData?.message}
+                onChange={(e)=>onChangeHandle('message', e.target.value)}
               />
               <div className="support_file mt-3">
-                <UploadButton onChange={handleFileChange} />
+                <UploadButton onChange={(data)=>onChangeHandle('files', data)} clearAll={clearAll}/>
               </div>
               <div className="mt-3">
                 <PrimaryBtn label="Submit" onClick={onSubmit} />
@@ -93,7 +91,7 @@ function SupportCenter() {
           <div className="connect_wp">
             <IoLogoWhatsapp className="icons" />
             <p>Live WhatsApp Support</p>
-            <button className="btn">Chet Now</button>
+            <button className="btn" onClick={openWhatsApp}>Chet Now</button>
           </div>
         </div>
       </div>

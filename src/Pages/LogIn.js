@@ -21,7 +21,7 @@ function LogIn() {
     setLoading(true);
     const res = await AuthService?.login(name, pass);
     if (!res?.status) {
-      setError(res?.data);
+      setError("Wrong Username or Password");
     }
     else{
       window.location.href = "/dashboard";
@@ -54,7 +54,7 @@ function LogIn() {
             />
             {error && <div className="mt-3 text-danger">{error}</div>}
             <div className="btn_area">
-              <Link to="#" className="mt-3 forget">
+              <Link to="/forget-password" className="mt-3 forget">
                 Forget your password?
               </Link>
               <Link onClick={login} className="mt-3">

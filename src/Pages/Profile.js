@@ -1,77 +1,46 @@
-import React, { useState } from "react";
-import PhotoUploader from "../Component/ImageUpload/PhotoUploader";
+import React, { useEffect, useState } from "react";
+import ProfileImageUploader from "../Component/ImageUpload/ProfileImageUploader";
 import InputField from "../Component/InputField/InputField";
+import ProfileService from "../service/ProfileService";
 
 function Profile() {
-  const [fname, setFName] = useState("");
-const [lname, setLName] = useState("");
-const [line, setLine] = useState("");
-const [line2, setLine2] = useState("");
-const [pNumber, setpNumber] = useState("");
-const [cname, setCName] = useState("");
-const [city, setCity] = useState("");
-const [currentState, setCurrentState] = useState("");
-const [pAddress, setPAddress] = useState("");
-const [pcode, setPCode] = useState("");
-const [email, setEmail] = useState("yourmail@gmail.com");
-const [isEditable, setIsEditable] = useState(false);
+  const [data, setData] = useState({});
+  const [update, setUpdate] = useState({});
 
-const handleEdit = () => {
-  setIsEditable(true);
-};
-
-const handleSave = () => {
-  setIsEditable(false);
-  window.alert("All information saved");
-};
-
-const handleChange = (event) => {
-  setFName(event.target.value);
-};
-const handleLName = (event) => {
-  setLName(event.target.value);
+  const getData = async () => {
+    const res = await ProfileService.get();
+    setData(res.data);
   };
-  
-const handleLine = (event) => {
-  setLine(event.target.value);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const onHandleChange = (name, value) => {
+    setData({ ...data, [name]: value });
+    setUpdate({ ...update, [name]: value });
   };
-  
-const handleLine2 = (event) => {
-  setLine2(event.target.value);
-};
-const handlepNumber = (event) => {
-  setpNumber(event.target.value);
-};
-const handleCName = (event) => {
-  setCName(event.target.value);
-};
-const handleCity = (event) => {
-  setCity(event.target.value);
-};
-const handleCurrentState = (event) => {
-  setCurrentState(event.target.value);
-};
-const handlePAddress = (event) => {
-  setPAddress(event.target.value);
-};
+  const [isEditable, setIsEditable] = useState(false);
 
-const handlePCode = (event) => {
-  setPCode(event.target.value);
-};
+  const handleEdit = () => {
+    setIsEditable(true);
+  };
 
-const handleEmail = (event) => {
-  setEmail(event.target.value);
-};
+  const handleSave = async() => {
+    await ProfileService.update(update);
+    setIsEditable(false);
+    alert("Profile Updated Successfully");
+  };
 
   return (
     <>
       <div className="user_profile_top mb-5">
         <div className="user_p_info">
-          <PhotoUploader />
+          <ProfileImageUploader uploadedPhoto={data?.avatar} setUploadedPhoto={e=>onHandleChange("avatar", e)} />
           <div className="text_area">
-            <h2>username</h2>
+            <h2>{data?.username}</h2>
             <p className="mt-2">
-              Govt. ID: <span>0123456789</span>
+              Govt. ID: <span>{data?.govt_id}</span>
             </p>
           </div>
         </div>
@@ -92,32 +61,32 @@ const handleEmail = (event) => {
           <div className="profile_input_area">
             <InputField
               label="First Name"
-              value={fname}
-              onChange={handleChange}
+              value={data?.first_name}
+              onChange={(e) => onHandleChange("first_name", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
             <InputField
               label="Last Name"
-              value={lname}
-              onChange={handleLName}
+              value={data?.last_name}
+              onChange={(e) => onHandleChange("last_name", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
-           <InputField
+            <InputField
               label="City"
-              value={city}
-              onChange={handleCity}
+              value={data?.city}
+              onChange={(e) => onHandleChange("city", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
             <InputField
               label="State"
-              value={currentState}
-              onChange={handleCurrentState}
+              value={data?.state}
+              onChange={(e) => onHandleChange("state", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
@@ -126,34 +95,34 @@ const handleEmail = (event) => {
         </div>
         <div className="col-lg-6">
           <div className="profile_input_area">
-             <InputField
+            <InputField
               label="Address Line 1"
-              value={line}
-              onChange={handleLine}
+              value={data?.line_1}
+              onChange={(e) => onHandleChange("line_1", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
             <InputField
               label="Address Line 2"
-              value={line2}
-              onChange={handleLine2}
+              value={data?.line_2}
+              onChange={(e) => onHandleChange("line_2", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
             <InputField
               label="Postal Code"
-              value={pcode}
-              onChange={handlePCode}
+              value={data?.post}
+              onChange={(e) => onHandleChange("post", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
-             <InputField
+            <InputField
               label="Country / Region"
-              value={cname}
-              onChange={handleCName}
+              value={data?.country}
+              onChange={(e) => onHandleChange("country", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
@@ -164,16 +133,15 @@ const handleEmail = (event) => {
           <div className="profile_input_area mt-4">
             <InputField
               label="Email Address"
-              value={email}
-              onChange={handleEmail}
+              value={data?.email}
               type="text"
               error={null}
-              disabled={!isEditable}
+              disabled
             />
             <InputField
               label="Phone Number"
-              value={pNumber}
-              onChange={handlepNumber}
+              value={data?.phone}
+              onChange={(e) => onHandleChange("phone", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
@@ -181,13 +149,27 @@ const handleEmail = (event) => {
             <div>
               <InputField
                 label="Whatsapp Number"
-                value={pAddress}
-                onChange={handlePAddress}
+                value={data?.whatsapp_number}
+                onChange={(e) =>
+                  onHandleChange("whatsapp_number", e.target.value)
+                }
                 type="text"
                 error={null}
                 disabled={!isEditable}
               />
-              <span className="enable_wp"><input type="checkbox" />Add Whatsapp Notification</span>
+              <span className="enable_wp">
+                <input
+                  type="checkbox"
+                  checked={data?.receive_whatsapp_notification}
+                  onChange={(e) =>
+                    onHandleChange(
+                      "receive_whatsapp_notification",
+                      e.target.checked
+                    )
+                  }
+                />
+                Add Whatsapp Notification
+              </span>
             </div>
           </div>
         </div>

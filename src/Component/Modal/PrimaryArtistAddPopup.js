@@ -5,8 +5,8 @@ import PrimaryBtn from "../Button/PrimaryBtn";
 import PhotoUploader from "../ImageUpload/PhotoUploader";
 import InputField from "../InputField/InputField";
 
-function LabelManagePopup({onSubmit}) {
-  const [show, setShow] = useState(false);
+function LabelManagePopup({onSubmit, isShow}) {
+  const [show, setShow] = useState(isShow);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);

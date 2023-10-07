@@ -1,7 +1,7 @@
 import React from "react";
-import SearchBar from "../Component/SearchBar/SearchBar";
 import PendingCardList from "../Component/CatalogsCard/PendingCardList";
 import PaginationList from "../Component/Pagination/PaginationList";
+import SearchBar from "../Component/SearchBar/SearchBar";
 
 function PendingCatalog() {
   return (
@@ -17,7 +17,7 @@ function PendingCatalog() {
       </div>
       <div className="mt-5">
         <div className="table_title">
-          <p>Show 4 entries</p>
+          <p>Total {data?.length} entries</p>
           <SearchBar />
         </div>
         <PendingCardList />

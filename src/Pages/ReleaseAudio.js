@@ -1,23 +1,11 @@
 import React, { useState } from "react";
 import { BiCheck } from "react-icons/bi";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import EditAssets from "../Component/Tabs/EditAssets";
 import Release from "../Component/Tabs/Release";
 import ReleaseDate from "../Component/Tabs/ReleaseDate";
 import Submission from "../Component/Tabs/Submission";
-import MusicCatalogService from "../service/MusicCatalogService";
-import { setMusicData } from "./reduxStore";
-
-
 
 function ReleaseAudio() {
-  const dispatch = useDispatch();
-  const { musicData } = useSelector((state) => state.reduxStore);
-
-  const onChange = (value) => {
-    dispatch(setMusicData({ ...musicData, ...value }));
-  };
 
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -26,16 +14,24 @@ function ReleaseAudio() {
   };
 
   const steps = [
-    { title: "Release", component: <Release data={musicData} onChange={onChange}/> },
-    { title: "Edit Assets", component: <EditAssets data={musicData} onChange={onChange}/> },
-    { title: "Release Date", component: <ReleaseDate data={musicData} onChange={onChange}/> },
-    { title: "Submission", component: <Submission data={musicData} onChange={onChange}/> },
+    {
+      title: "Release",
+      component: <Release currentStep={currentStep} setCurrentStep={setCurrentStep} />,
+    },
+    {
+      title: "Edit Assets",
+      component: <EditAssets currentStep={currentStep} setCurrentStep={setCurrentStep} />,
+    },
+    {
+      title: "Release Date",
+      component: <ReleaseDate currentStep={currentStep} setCurrentStep={setCurrentStep} />,
+    },
+    {
+      title: "Submission",
+      component: <Submission currentStep={currentStep} setCurrentStep={setCurrentStep} />,
+    },
   ];
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    const res = await MusicCatalogService.add(musicData);
-  }
+ 
 
   return (
     <div className="releaseaudio_page">
@@ -53,28 +49,7 @@ function ReleaseAudio() {
           ))}
         </div>
       </div>
-      <div className="steps">{steps[currentStep].component}</div>
-      <div className="btn_area">
-        <button
-          className="btn"
-          onClick={() => handleStepChange(currentStep - 1)}
-          disabled={currentStep === 0}
-        >
-          Back
-        </button>
-        {currentStep === steps.length - 1 ? (
-          <Link to="/all-release">
-            <button className="btn" onClick={onSubmit}>Submit</button>
-          </Link>
-        ) : (
-          <button
-            className="btn"
-            onClick={() => handleStepChange(currentStep + 1)}
-          >
-            Next
-          </button>
-        )}
-      </div>
+      {steps[currentStep].component}     
     </div>
   );
 }

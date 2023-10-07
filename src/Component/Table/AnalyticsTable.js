@@ -1,5 +1,8 @@
 import { Table } from "antd";
 import React, { useState } from "react";
+import { BiDownload } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import FileService from "../../service/FileService";
 import TableFilter from "../Filter/TableFilter";
 import FailedPopover from "../Popover/FailedPopover";
 import SearchBar from "../SearchBar/SearchBar";
@@ -20,7 +23,7 @@ const columns = [
   {
     title: "Status",
     dataIndex: "status",
-    render: (status) => {
+    render: (status, data) => {
       let color;
       let className = ""; // Initialize className with an empty string
 
@@ -42,29 +45,29 @@ const columns = [
           <span className={`status ${className}`} style={{ color }}>
             {status}
           </span>
-          {status === "Failed" && <FailedPopover />}
+          {status === "Failed" && <FailedPopover message={data?.failed_reason}/>}
         </div>
       );
     },
   },
-  // {
-  //   title: "Action",
-  //   render: (text, record) => {
-  //     const { status } = record;
+  {
+    title: "Action",
+    render: (text, record) => {
+      const { status } = record;
 
-  //     if (status === "Approved") {
-  //       return (
-  //         <div className="r_edit_delete">
-  //           <Link to="#" className="edit">
-  //             <BiDownload className="icons" />
-  //           </Link>
-  //         </div>
-  //       );
-  //     } else {
-  //       return null;
-  //     }
-  //   },
-  // },
+      if (status === "Approved") {
+        return (
+          <div className="r_edit_delete">
+            <Link to={FileService?.image(record?.file)} download={true} className="edit" target="_new">
+              <BiDownload className="icons"  />
+            </Link>
+          </div>
+        );
+      } else {
+        return null;
+      }
+    },
+  },
 ];
 const data = [
   {
@@ -117,7 +120,7 @@ const AnalyticsTable = ({data, onSearch}) => {
       />
 
       <div className="table_title mt-3">
-        <p>Show 4 entries</p>
+        <p>Total {data?.length} entries</p>
         <SearchBar onSearch={onSearch}/>
       </div>
 

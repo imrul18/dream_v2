@@ -5,23 +5,33 @@ import Selector from "../Component/Selector/Selector";
 import AnalyticsTable from "../Component/Table/AnalyticsTable";
 import AnalyticService from "../service/AnalyticService";
 import OptionService from "../service/OptionService";
+import ProfileService from "../service/ProfileService";
 
 function Analytics() {
+  const [startDate, setStartDate] = useState(new Date());
+
+  const getYear = async () => {
+    const data = await ProfileService.get();
+    setStartDate(new Date(data?.data?.date_created));
+  };
+
   const [yearsOptions, setYearsOptions] = useState([]);
-  const [monthsOptions, setMonthsOptions] = useState([
-    { label: "January", value: "January" },
-    { label: "February", value: "February" },
-    { label: "March", value: "March" },
-    { label: "April", value: "April" },
-    { label: "May", value: "May" },
-    { label: "June", value: "June" },
-    { label: "July", value: "July" },
-    { label: "August", value: "August" },
-    { label: "September", value: "September" },
-    { label: "October", value: "October" },
-    { label: "November", value: "November" },
-    { label: "December", value: "December" },
-  ]);
+  const monthsList = [
+    { sl: 1, label: "January", value: "January" },
+    { sl: 2, label: "February", value: "February" },
+    { sl: 3, label: "March", value: "March" },
+    { sl: 4, label: "April", value: "April" },
+    { sl: 5, label: "May", value: "May" },
+    { sl: 6, label: "June", value: "June" },
+    { sl: 7, label: "July", value: "July" },
+    { sl: 8, label: "August", value: "August" },
+    { sl: 9, label: "September", value: "September" },
+    { sl: 10, label: "October", value: "October" },
+    { sl: 11, label: "November", value: "November" },
+    { sl: 12, label: "December", value: "December" },
+  ];
+  const [monthsOptions, setMonthsOptions] = useState([]);
+
   const [labelOptions, setLabelOptions] = useState([]);
 
   const [params, setParams] = useState({
@@ -34,15 +44,29 @@ function Analytics() {
   };
 
   const getYearOptions = async () => {
-    const Year = new Date().getFullYear();
+    const Year = new Date(startDate).getFullYear();
     const array = [];
-    for (let index = Year - 3; index < Year + 3; index++) {
+    for (let index = Year; index <= new Date().getFullYear(); index++) {
       array?.push({ label: index, value: index });
       setYearsOptions(array);
     }
   };
 
   const [data, setData] = useState([]);
+
+  useEffect(() => {
+    let array = [...monthsList];
+    if (params?.year == new Date(startDate).getFullYear()) {
+      array = array.filter(
+        (itm) => itm?.sl >= new Date(startDate).getMonth() + 1
+      );
+    }
+    if (params?.year == new Date().getFullYear()) {
+      array = array.filter((itm) => itm?.sl <= new Date().getMonth() + 1);
+    }
+    setMonthsOptions(array);
+  }, [params?.year]);
+
   const getData = async (params) => {
     const label = await OptionService.label();
     setLabelOptions(
@@ -52,10 +76,12 @@ function Analytics() {
     const finalData = res?.data?.map((item, index) => {
       return {
         key: index,
+        file: item?.file,
         years: item?.year,
         month: item?.month,
         label: label?.data?.find((itm) => itm?.id == item?.label)?.title,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
+        failed_reason: item?.failed_reason,
       };
     });
     setData(finalData);
@@ -75,6 +101,7 @@ function Analytics() {
   useEffect(() => {
     getYearOptions();
     getData();
+    getYear();
   }, []);
 
   return (

@@ -3,27 +3,44 @@ import React, { useEffect, useState } from "react";
 import Selector from "../Component/Selector/Selector";
 import EarningHistoryTable from "../Component/Table/EarningHistoryTable";
 import EarningService from "../service/EarningService";
+import ProfileService from "../service/ProfileService";
 
 function Earning() {
-  const options = [
-    { value: "2023", label: "2023" },
-    { value: "2022", label: "2022" },
-    { value: "2021", label: "2021" },
-  ];
+  const [yearsOptions, setYearsOptions] = useState([]);
 
+
+  const [startDate, setStartDate] = useState(new Date());
   const [selectedOption, setSelectedOption] = useState(null);
 
-  useEffect(() => {
-    if (selectedOption) {
-      getData({ year: selectedOption?.value });
+  const getYear = async () => {
+    const data = await ProfileService.get();
+    setStartDate(new Date(data?.data?.date_created));
+  };
+
+  const getYearOptions = async () => {
+    const Year = new Date(startDate).getFullYear();
+    const array = [];
+    for (let index = Year; index <= new Date().getFullYear(); index++) {
+      array?.push({ label: index, value: index });
+      setYearsOptions(array);
     }
+  };
+
+  useEffect(() => {
+    getYear();
+  }, []);
+
+  useEffect(() => {
+    getYearOptions();
   }, [selectedOption]);
+
 
   const handleChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
 
   const [data, setData] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const getData = async (params) => {
     const res = await EarningService.overview(params);
     const finalData = res?.data?.map((item, index) => {
@@ -36,11 +53,21 @@ function Earning() {
       };
     });
     setData(finalData);
+    setTableData(finalData);
   };
+
+  useEffect(() => {
+    if (selectedOption) {
+      setTableData(data?.filter((item) => item?.years == selectedOption?.value));
+    }else{
+      setTableData(data);
+    }
+  }, [selectedOption]);
 
   useEffect(() => {
     getData();
   }, []);
+
   return (
     <div>
       <div className="section_title border_bottom">
@@ -52,15 +79,15 @@ function Earning() {
       <div className="table_content">
         <h2>All Time Earning Transactions</h2>
         <div className="table_title">
-          <p>Show 4 entries</p>
+          <p>Show {tableData?.length} entries</p>
           <Selector
-            options={options}
+            options={yearsOptions}
             onChange={handleChange}
             placeholder="This Year"
             value={selectedOption}
           />
         </div>
-        <EarningHistoryTable data={data}/>
+        <EarningHistoryTable data={tableData} />
       </div>
     </div>
   );

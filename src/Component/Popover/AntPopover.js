@@ -1,16 +1,16 @@
-import React from 'react';
 import { Button, Popover, Space } from 'antd';
+import React from 'react';
 import { BsInfoLg } from 'react-icons/bs';
 
 const content = (
   <div>
-    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam minus laborum fugiat</p>
+    
   </div>
 );
 
-const AntPopover = () => (
+const AntPopover = ({message}) => (
   <Space wrap>
-    <Popover content={content} title="Title" trigger="click" >
+    <Popover content={<p>{message}</p>} title="Message" trigger="click" >
       <Button className='popover_btn'><BsInfoLg className='icons'/></Button>
     </Popover>
   </Space>

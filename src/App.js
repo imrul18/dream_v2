@@ -11,6 +11,7 @@ import CatalogDetails from "./Pages/CatalogDetails";
 import ContentIdRequest from "./Pages/ContentIdRequest";
 import Dashboard from "./Pages/Dashboard";
 import EditPrimaryArtist from "./Pages/EditPrimaryArtist";
+import ForgetPassword from "./Pages/ForgetPassword";
 import LabelManage from "./Pages/LabelManage";
 import LogIn from "./Pages/LogIn";
 import ManualClaimRequest from "./Pages/ManualClaimRequest";
@@ -18,6 +19,7 @@ import Overview from "./Pages/Overview";
 import PrimaryArtistManage from "./Pages/PrimaryArtistManage";
 import Profile from "./Pages/Profile";
 import ReleaseAudio from "./Pages/ReleaseAudio";
+import ReleaseAudioEdit from "./Pages/ReleaseAudioEdit";
 import ReleaseCatalogs from "./Pages/ReleaseCatalogs";
 import SupportCenter from "./Pages/SupportCenter";
 import Withdraw from "./Pages/Withdraw";
@@ -38,9 +40,11 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<LogIn />} />
+            <Route path="/forget-password" element={<ForgetPassword />} />
             <Route path="/" element={<MainLayout />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="release-audio" element={<ReleaseAudio />} />
+              <Route path="release-audio/:id" element={<ReleaseAudioEdit />} />
               <Route path="all-release" element={<ReleaseCatalogs />} />
               <Route path="analytics" element={<Analytics />} />
               <Route
@@ -64,7 +68,7 @@ function App() {
                 path="edit_primary_artist"
                 element={<EditPrimaryArtist />}
               />
-              <Route path="catalog_details" element={<CatalogDetails />} />
+              <Route path="catalog_details/:id" element={<CatalogDetails />} />
               <Route path="support_center" element={<SupportCenter />} />
               <Route path="label_manage" element={<LabelManage />} />
               <Route path="profile" element={<Profile />} />

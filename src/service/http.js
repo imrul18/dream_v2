@@ -1,6 +1,5 @@
 import axios from "axios";
 import baseUrl from "./../config";
-import AuthService from "./AuthService";
 
 let Api = axios.create({
   baseURL: baseUrl,
@@ -10,13 +9,8 @@ let Api = axios.create({
     accept: "application/json",
   },
   transformResponse: (data) => {
-    let response = JSON.parse(data);
-    if (
-      response?.errors &&
-      response?.errors[0]?.extensions?.code == "TOKEN_EXPIRED"
-    ) {
-      AuthService.refreshToken();
-    } else {
+    if (data) {
+      let response = JSON.parse(data);
       return response;
     }
   },

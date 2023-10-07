@@ -1,29 +1,60 @@
-import { DatePicker, Space } from "antd";
+import { Space } from "antd";
 import React from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setMusicData } from "../../Pages/reduxStore";
 
-const EditAssets = ({ data, onChange }) => {
+const EditAssets = ({ currentStep, setCurrentStep }) => {
+  const dispatch = useDispatch();
+  const { musicData } = useSelector((state) => state.reduxStore);
 
-  const onDateChange = (date, dateString) => {
-    onChange({main_release_date: dateString})
+  const setData = (data) => {
+    dispatch(setMusicData({ ...musicData, ...data }));
   };
 
-  const disabledDate = (current) => {
-    return current && current < new Date();
+  const clickPrev = () => {
+    setCurrentStep(currentStep - 1);
+  };
+
+  const clickNext = () => {
+    if (musicData?.main_release_date) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      alert("Please select a date");
+    }
   };
 
   return (
-    <form className="r_input_group">
-      <div className="mt-3">
-        <label htmlFor="" className="mb-2">
-          Choose a main release date <span className="input_star">*</span>
-        </label>
-        <div className="checkbox_item">
-          <Space direction="vertical">
-            <DatePicker onChange={onDateChange} disabledDate={disabledDate} />
-          </Space>
-        </div>
+    <>
+      <div className="steps">
+        <form className="r_input_group">
+          <div className="mt-3">
+            <label htmlFor="" className="mb-2">
+              Choose a main release date <span className="input_star">*</span>
+            </label>
+
+            <div className="checkbox_item">
+              <Space direction="vertical">
+                <DatePicker
+                  selected={new Date(musicData?.main_release_date ?? Date.now())}
+                  onChange={(date) => setData({ main_release_date: date })}
+                  minDate={new Date()}
+                />
+              </Space>
+            </div>
+          </div>
+        </form>
       </div>
-    </form>
+      <div className="btn_area">
+        <button className="btn" onClick={clickPrev}>
+          Back
+        </button>
+        <button className="btn" onClick={clickNext}>
+          Next
+        </button>
+      </div>
+    </>
   );
 };
 

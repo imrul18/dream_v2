@@ -1,25 +1,25 @@
 import { Table } from "antd";
 import React, { useRef, useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
-import t_audio from "../assets/audio/Lukrembo.mp3";
+import FileService from "../../service/FileService";
 
 const columns = [
-  // {
-  //   title: "#",
-  //   dataIndex: "audio",
-  //   render: (audio) => <CustomAudioPlayer audio={audio} />,
-  // },
   {
-    title: "Track Title",
-    dataIndex: "track",
+    title: "#",
+    dataIndex: "file",
+    render: (file) => <CustomAudioPlayer audio={file} />,
   },
   {
-    title: "Artist",
-    dataIndex: "artist",
+    title: "Track Title",
+    dataIndex: "title",
+  },
+  {
+    title: "Sub title",
+    dataIndex: "subtitle",
   },
   {
     title: "ISRC",
-    dataIndex: "ISRC",
+    dataIndex: "isrc",
   },
   // {
   //   title: "Action",
@@ -37,15 +37,6 @@ const columns = [
   // },
 ];
 
-const data = [
-  {
-    key: "1",
-    audio: t_audio,
-    track: "Track Title",
-    artist: "Type Here",
-    ISRC: "Not Found",
-  },
-];
 
 const CustomAudioPlayer = ({ audio }) => {
   const audioRef = useRef(null);
@@ -64,7 +55,7 @@ const CustomAudioPlayer = ({ audio }) => {
 
   return (
     <div className="custom-audio-player">
-      <audio ref={audioRef} src={audio} />
+      <audio ref={audioRef} src={FileService.image(audio)} />
       <button className="play_btn" onClick={togglePlayPause}>
         {isPlaying ? <FaPause /> : <FaPlay />}
       </button>
@@ -73,7 +64,6 @@ const CustomAudioPlayer = ({ audio }) => {
 };
 
 const AssetsTable = ({data}) => {
-  console.log("🚀 ~ file: AssetsTable.js:76 ~ AssetsTable ~ data:", data)
   return (
     <div>
       <Table

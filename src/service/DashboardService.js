@@ -1,12 +1,22 @@
 import http from "./http";
 
 const get = async (params) => {
-  const res = await http.get("/items/Dashboard_Page", { params });
+  const res = await http.get("/items/Dashboard_Page", {
+    params: { ...params, fields: "*.*" },
+  });
   return res?.data;
 };
 
-const getById = async (id) => {
-  const res = await http.get("/items/Label/" + id);
+const notification = async () => {
+  const res = await http.get("/Notifications");
+  return res?.data;
+};
+
+const archived = async (id) => {
+  const res = await http.patch("/Notifications", {
+    data: { status: "archived" },
+    keys: [id],
+  });
   return res?.data;
 };
 
@@ -27,7 +37,8 @@ const deleteItem = async (id) => {
 
 const DashboardService = {
   get,
-  getById,
+  notification,
+  archived,
   add,
   update,
   deleteItem,

@@ -1,6 +1,7 @@
 import { Table } from "antd";
 import React, { useState } from "react";
 import TableFilter from "../Filter/TableFilter";
+import FailedPopover from "../Popover/FailedPopover";
 import SearchBar from "../SearchBar/SearchBar";
 
 const columns = [
@@ -49,7 +50,7 @@ const columns = [
             <span className={`status ${className}`} style={{ color }}>
               {status}
             </span>
-            {/* {status === 'Failed' && <FailedPopover/>} */}
+            {status === "Failed" && <FailedPopover message={data?.failed_reason}/>}
           </div>
       );
     },
@@ -80,7 +81,7 @@ const AddClaimReleaseTable = ({data, onSearch}) => {
       />
 
       <div className="table_title mt-5">
-        <p>Show 4 entries</p>
+        <p>Total {data?.length} entries</p>
         <SearchBar onSearch={onSearch}/>
       </div>
       <Table

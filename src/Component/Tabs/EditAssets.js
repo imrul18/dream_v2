@@ -1,62 +1,22 @@
 import React, { useEffect, useState } from "react";
-import OptionService from "../../service/OptionService";
+import { useDispatch, useSelector } from "react-redux";
+import { setMusicData } from "../../Pages/reduxStore";
 import AddAssetsPopup from "../Modal/AddAssetsPopup";
 import EditAssetsTable from "../Table/EditAssetsTable";
 
-function EditAssets({ data, onChange }) {
-  const [artistOption, setArtistOption] = useState([]);
-  const getOptions = async () => {
-    const artist = await OptionService.artist();
-    setArtistOption(
-      artist?.data?.map((itm) => ({
-        ...itm,
-        value: itm?.id,
-        label: itm?.name,
-      }))
-    );
+function EditAssets({ currentStep, setCurrentStep }) {
+  const dispatch = useDispatch();
+  const { musicData } = useSelector((state) => state.reduxStore);
+
+  const setData = (data) => {
+    dispatch(setMusicData({ ...musicData, ...data }));
   };
 
-  useEffect(() => {
-    getOptions();
-  }, []);
-
+  const [error, setError] = useState(null);
   const [truck, setTruck] = useState([]);
 
-  useEffect(() => {
-    setTruck(data?.tracks ?? []);
-    setTableData(
-      data?.tracks?.map((itm, index) => ({
-          key: itm?.id,
-          // audio: t_audio,
-          track: itm?.title,
-          artist: itm?.primary_artist?.length
-            ? artistOption?.find(
-                (item) => item?.value == itm?.primary_artist[0]
-              )?.label
-            : "",
-          ISRC: itm?.isrc,
-        }))
-    );
-  }, [data]);
-
-  const [tableData, setTableData] = useState([]);
-  console.log("🚀 ~ file: EditAssets.js:43 ~ EditAssets ~ tableData:", tableData)
-
-  const onTrackChange = (value) => {
+  const onTrackSubmit = (value) => {
     setTruck([...truck, value]);
-    setTableData([
-      ...tableData,
-      {
-        key: value?.id,
-        // audio: t_audio,
-        track: value?.title,
-        artist: value?.primary_artist?.length
-          ? artistOption?.find((itm) => itm?.value == value?.primary_artist[0])
-              ?.label
-          : "",
-        ISRC: value?.isrc,
-      },
-    ]);
   };
 
   const onTrackEdit = (value) => {
@@ -68,46 +28,55 @@ function EditAssets({ data, onChange }) {
         return itm;
       })
     );
-
-    setTableData(
-      tableData?.map((itm) => {
-        if (itm?.key == value?.id) {
-          return {
-            key: value?.id,
-            // audio: t_audio,
-            track: value?.title,
-            artist: value?.primary_artist?.length
-              ? artistOption?.find(
-                  (itm) => itm?.value == value?.primary_artist[0]
-                )?.label
-              : "",
-            ISRC: value?.isrc,
-          };
-        }
-        return itm;
-      })
-    );
   };
 
   const onTrackDelete = (id) => {
     setTruck(truck?.filter((itm) => itm?.id != id));
-    setTableData(tableData?.filter((itm) => itm?.key != id));
   };
 
   useEffect(() => {
-    onChange({ tracks: truck });
-  }, [truck]);
+    setTruck(musicData?.tracks ?? []);
+  }, [musicData]);
 
+  const clickPrev = () => {
+    if (truck?.length > 0) {
+      setData({ tracks: truck });
+    }
+    setCurrentStep(currentStep - 1);
+  };
+
+  const clickNext = () => {
+    if (truck?.length > 0) {
+      setData({ tracks: truck });
+      setCurrentStep(currentStep + 1);
+    } else {
+      setError("Please add at least one track");
+    }
+  };
   return (
-    <div className="edit_assets">
-      <AddAssetsPopup onTrackChange={onTrackChange} />
-      <EditAssetsTable
-        originalData={truck}
-        data={tableData}
-        onTrackEdit={onTrackEdit}
-        onTrackDelete={onTrackDelete}
-      />
-    </div>
+    <>
+      <div className="steps">
+        <div className="edit_assets">
+          <AddAssetsPopup onSubmit={onTrackSubmit} musicData={musicData}/>
+
+          <EditAssetsTable
+            data={truck}
+            onTrackEdit={onTrackEdit}
+            onTrackDelete={onTrackDelete}
+          />
+        </div>
+        <small className="text-danger">{error}</small>
+      </div>
+
+      <div className="btn_area">
+        <button className="btn" onClick={clickPrev}>
+          Back
+        </button>
+        <button className="btn" onClick={clickNext}>
+          Next
+        </button>
+      </div>
+    </>
   );
 }
 

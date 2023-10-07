@@ -1,24 +1,29 @@
-import React, { useRef, useState } from "react";
-import {
-  FaAngleDown,
-  FaAngleUp,
-  FaPause,
-  FaPlay,
-} from "react-icons/fa";
+import React, { useEffect, useRef, useState } from "react";
 import { BiPencil } from "react-icons/bi";
-import DeletePopup from "../Component/Modal/DeletePopup";
-import { Link } from "react-router-dom";
+import { FaAngleDown, FaAngleUp, FaPause, FaPlay } from "react-icons/fa";
+import { Link, useParams } from "react-router-dom";
 import CallerTunePopup from "../Component/Modal/CallerTunePopup";
-import t_audio from "../Component/assets/audio/Lukrembo.mp3";
-import cover from "../Component/assets/img/cover.jpg";
+import DeletePopup from "../Component/Modal/DeletePopup";
 import AntPopover from "../Component/Popover/AntPopover";
+import FileService from "../service/FileService";
+import MusicCatalogService from "../service/MusicCatalogService";
 
 function CatalogDetails() {
   const audioRef = useRef(null);
+  const { id } = useParams();
+  const [data, setData] = useState({});
+
+  const getData = async () => {
+    const res = await MusicCatalogService.show(id);
+    setData(res?.data);
+  };
+
+  useEffect(() => {
+    if (id) getData();
+  }, [id]);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInfoVisible, setIsInfoVisible] = useState(false);
-  const status = "Approved";
-  let statusClassName = "";
 
   const togglePlayPause = () => {
     if (audioRef.current) {
@@ -36,52 +41,73 @@ function CatalogDetails() {
   };
 
   let icon = null;
+  let statusClassName = "";
+  let text = "";
 
   // Your status conditionals
-  if (status === "Approved") {
+  if (data?.status === "pending") {
+    icon = <div className="r_edit_delete"></div>;
+    statusClassName = "pending";
+    text = "Pending";
+  } else if (data?.status === "ongoing") {
+    icon = <div className="r_edit_delete"></div>;
+    statusClassName = "unfinished";
+    text = "Ongoing";
+  } else if (data?.status === "published") {
     icon = (
       <div className="r_edit_delete">
-        <CallerTunePopup />
+        <CallerTunePopup id={data?.id} />
       </div>
     );
     statusClassName = "approved";
-  } else if (status === "Pending") {
+    text = "Published";
+  } else if (data?.status === "rejected") {
     icon = (
       <div className="r_edit_delete">
-        <AntPopover />
-      </div>
-    );
-    statusClassName = "pending";
-  } else if (status === "Rejected") {
-    icon = (
-      <div className="r_edit_delete">
-        <DeletePopup />
-        <AntPopover />
+        <DeletePopup onClick={() => console.log("A")} />
+        <AntPopover message={data?.reject_reason} />
       </div>
     );
     statusClassName = "rejected";
-  } else if (status === "Correction Request") {
+    text = "Rejected";
+  } else if (data?.status === "correction_request") {
     icon = (
       <div className="r_edit_delete">
-        <Link to="/release-audio" className="pen">
+        <Link to={`/release-audio/${data?.id}`} className="pen">
           <BiPencil className="icons" />
         </Link>
-        <DeletePopup />
-        <AntPopover />
+        {/* <DeletePopup /> */}
+        <AntPopover message={data?.reject_reason} />
       </div>
     );
     statusClassName = "c_request";
-  } else if (status === "Unfinished") {
-    icon = (
-      <div className="r_edit_delete">
-        <Link to="/release-audio" className="pen">
-          <BiPencil className="icons" />
-        </Link>
-        <DeletePopup />
+    text = "Correction Request";
+  }
+
+  const CustomAudioPlayer = ({ audio }) => {
+    const audioRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const togglePlayPause = () => {
+      if (audioRef.current) {
+        if (isPlaying) {
+          audioRef.current.pause();
+        } else {
+          audioRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+      }
+    };
+
+    return (
+      <div className="custom-audio-player">
+        <audio ref={audioRef} src={FileService.image(audio)} />
+        <button className="play_btn" onClick={togglePlayPause}>
+          {isPlaying ? <FaPause /> : <FaPlay />}
+        </button>
       </div>
     );
-    statusClassName = "unfinished";
-  }
+  };
 
   return (
     <div className="catalog_details">
@@ -89,139 +115,163 @@ function CatalogDetails() {
         <div className="row">
           <div className="col-xl-3 col-lg-6 col-sm-12">
             <div className="cover_img">
-              <img src={cover} alt="" />
+              <img
+                src={
+                  data?.cover_image
+                    ? FileService?.image(data?.cover_image?.id)
+                    : `https://i2.wp.com/ui-avatars.com/api/${data?.title}/400`
+                }
+                alt=""
+              />
             </div>
           </div>
           <div className="col-xl-9 col-lg-6 col-sm-12">
             <div className="cover_text_content">
               <div className="cover_header">
-                <p className={`status ${statusClassName}`}>
-                  {status}
-                </p>
+                <p className={`status ${statusClassName}`}>{text}</p>
                 <div className="cover_edit">{icon}</div>
               </div>
               <div className="covr_title">
-                <h1>Ek Sundori Maiya</h1>
-                <h2>By Subha</h2>
+                <h1>{data?.title}</h1>
+                <h2>
+                  by{" "}
+                  {data?.primary_artist?.length &&
+                    data?.primary_artist[0]?.Primary_Artist_id?.name}
+                </h2>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="catalog_release_info">
-        <div className="song_info">
-          <div className="title">
-            <div className="custom-audio-player">
-              <audio ref={audioRef} src={t_audio} />
-              <button className="play_btn" onClick={togglePlayPause}>
-                {isPlaying ? <FaPause /> : <FaPlay />}
-              </button>
+      {data?.tracks?.map((itm) => (
+        <div className="catalog_release_info">
+          <div className="song_info">
+            <div className="title">
+              <CustomAudioPlayer audio={itm?.file?.id} />
+              <div>
+                <h2>{itm?.title}</h2>
+                <p>
+                  By{" "}
+                  {itm?.primary_artist?.length &&
+                    itm?.primary_artist[0]?.Primary_Artist_id?.name}
+                </p>
+              </div>
             </div>
-            <div>
-              <h2>Ek Sundori Maiya</h2>
-              <p>By Subha</p>
+            <div className="toggle_icons" onClick={toggleInfoVisibility}>
+              {isInfoVisible ? (
+                <FaAngleUp className="icons active" />
+              ) : (
+                <FaAngleDown className="icons" />
+              )}
             </div>
           </div>
-          <div className="toggle_icons" onClick={toggleInfoVisibility}>
-            {isInfoVisible ? (
-              <FaAngleUp className="icons active" />
-            ) : (
-              <FaAngleDown className="icons" />
-            )}
-          </div>
-        </div>
-        {isInfoVisible && (
-          <div className="catalog_toggle_info">
-            <hr />
-            <div className="s_info">
-              <div className="row">
-                <div className="col-xl-4 col-lg-6 col-md-12 ">
-                  <div className="input_value">
-                    <p className="input_name">Title</p> <span>Not Found</span>
+          {isInfoVisible && (
+            <div className="catalog_toggle_info">
+              <hr />
+              <div className="s_info">
+                <div className="row">
+                  <div className="col-xl-4 col-lg-6 col-md-12 ">
+                    <div className="input_value">
+                      <p className="input_name">Title</p>{" "}
+                      <span>{itm?.title ?? "Not Found"}</span>
+                    </div>
+                    <div className="input_value">
+                      <p className="input_name">Version/Subtitle</p>
+                      <span>{itm?.subtitle ?? "Not Found"}</span>
+                    </div>
+                    <div className="input_value">
+                      <p className="input_name">Primary Artist </p>
+                      <span>
+                        {itm?.primary_artist?.length &&
+                          itm?.primary_artist[0]?.Primary_Artist_id?.name}
+                      </span>
+                    </div>
                   </div>
-                  <div className="input_value">
-                    <p className="input_name">Version/Subtitle</p>
-                    <span>Not Found</span>
+                  <div className="col-xl-4 col-lg-6 col-md-12">
+                    <div className="input_value">
+                      <p className="input_name">Lyrics Writter</p>
+                      <span>
+                        {itm?.lyrics_writer?.length
+                          ? itm?.lyrics_writer[0]?.writer_name
+                          : "Not Found"}
+                      </span>
+                    </div>
+                    <div className="input_value">
+                      <p className="input_name">Composer</p>
+                      <span>
+                        {itm?.composer?.length
+                          ? itm?.composer[0]?.composer_name
+                          : "Not Found"}
+                      </span>
+                    </div>
+                    <div className="input_value">
+                      <p className="input_name">ISRC</p>
+                      <span>{itm?.isrc ?? "Not Found"}</span>
+                    </div>
                   </div>
-                  <div className="input_value">
-                    <p className="input_name">Primary Artist </p>
-                    <span>Not Found</span>
-                  </div>
-                </div>
-                <div className="col-xl-4 col-lg-6 col-md-12">
-                  <div className="input_value">
-                    <p className="input_name">Lyrics Writter</p>
-                    <span>Not Found</span>
-                  </div>
-                  <div className="input_value">
-                    <p className="input_name">Composer</p>
-                    <span>Not Found</span>
-                  </div>
-                  <div className="input_value">
-                    <p className="input_name">ISRC</p>
-                    <span>Not Found</span>
-                  </div>
-                </div>
-                <div className="col-xl-4 col-lg-6 col-md-12">
-                  <div className="input_value">
-                    <p className="input_name">Genre</p> <span>Not Found</span>
-                  </div>
-                  <div className="input_value">
-                    <p className="input_name">Subgenre</p>{" "}
-                    <span>Not Found</span>
-                  </div>
-                  <div className="input_value">
-                    <p className="input_name">Lyrics Language</p>{" "}
-                    <span>Not Found</span>
+                  <div className="col-xl-4 col-lg-6 col-md-12">
+                    <div className="input_value">
+                      <p className="input_name">Genre</p>{" "}
+                      <span>{itm?.genre ?? "Not Found"}</span>
+                    </div>
+                    <div className="input_value">
+                      <p className="input_name">Lyrics Language</p>{" "}
+                      <span>{itm?.lyrics_language ?? "Not Found"}</span>
+                    </div>
+                    <div className="input_value">
+                      <p className="input_name">Track Title Language</p>{" "}
+                      <span>{itm?.track_title_language ?? "Not Found"}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      ))}
+
       <div className="catalog_release_info s_info mt-3">
         <div className="row">
           <div className="col-xl-4 col-lg-6 col-md-12">
             <div className="input_value">
               <p className="input_name">Label Name</p>
-              <span>Not Found</span>
+              <span>{data?.label?.title ?? "Not Found"}</span>
             </div>
             <div className="input_value">
               <p className="input_name">UPC/EAN</p>
-              <span>Not Found</span>
+              <span>{data?.upc ?? "Not Found"}</span>
             </div>
             <div className="input_value">
               <p className="input_name">℗ line</p>
-              <span>Not Found</span>
+              <span>{data?.p_line ?? "Not Found"}</span>
             </div>
           </div>
           <div className="col-xl-4 col-lg-6 col-md-12">
             <div className="input_value">
               <p className="input_name">© line</p>
-              <span>Not Found</span>
+              <span>{data?.c_line ?? "Not Found"}</span>
             </div>
             <div className="input_value">
               <p className="input_name">Production Year</p>
-              <span>Not Found</span>
+              <span>{data?.production_year ?? "Not Found"}</span>
             </div>
             <div className="input_value">
               <p className="input_name">Genre</p>
-              <span>Not Found</span>
+              <span>{data?.genre ?? "Not Found"}</span>
             </div>
           </div>
           <div className="col-xl-4 col-lg-6 col-md-12">
             <div className="input_value">
-              <p className="input_name">Sub Genre</p>
-              <span>Not Found</span>
+              <p className="input_name">Format</p>
+              <span>{data?.format ?? "Not Found"}</span>
             </div>
             <div className="input_value">
               <p className="input_name">Original Release Date</p>
-              <span>Not Found</span>
+              <span>{data?.original_release_date ?? "Not Found"}</span>
             </div>
             <div className="input_value">
               <p className="input_name">Main Release Date</p>
-              <span>Not Found</span>
+              <span>{data?.main_release_date ?? "Not Found"}</span>
             </div>
           </div>
         </div>

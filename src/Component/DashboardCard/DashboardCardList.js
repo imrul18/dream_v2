@@ -1,25 +1,25 @@
 import React from "react";
-import Card from "./Card";
 import d_card_1 from "../assets/img/D_card_1.png";
 import d_card_2 from "../assets/img/D_card_2.png";
 import d_card_3 from "../assets/img/D_card_3.png";
+import Card from "./Card";
 
-const DashboardCardList = () => {
+const DashboardCardList = ({data}) => {
   const cardData = [
     {
       d_bg: d_card_1,
       title: "Total Created Audio",
-      bgTitle: "5",
+      bgTitle: data?.total,
     },
     {
       d_bg: d_card_2,
       title: "Total Pending Audio",
-      bgTitle: "5",
+      bgTitle: data?.pending,
     },
     {
       d_bg: d_card_3,
       title: "Total Release Audio",
-      bgTitle: "5",
+      bgTitle: data?.published,
     },
   ];
 

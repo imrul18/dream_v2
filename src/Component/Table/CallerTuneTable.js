@@ -1,17 +1,34 @@
 import { Table } from "antd";
 import React, { useState } from "react";
+import FileService from "../../service/FileService";
 import TableFilter from "../Filter/TableFilter";
+import FailedPopover from "../Popover/FailedPopover";
 import SearchBar from "../SearchBar/SearchBar";
 import airtelLogo from "../assets/img/Airtel.png";
 import coverImg from "../assets/img/cover.jpg";
 import vodafoneLogo from "../assets/img/vodafone.png";
-import FailedPopover from "../Popover/FailedPopover";
 
 const columns = [
+  // {
+  //   title: "ID",
+  //   dataIndex: "id",
+  // },
   {
     title: "Title",
     dataIndex: "title",
     className: "header_title",
+    render: (title, data) => {
+      return (
+        <div className="c_tune_table_title">
+          <img
+            src={FileService?.image(data?.image)}
+            alt=""
+            className="table_img"
+          />
+          <span>{title}</span>
+        </div>
+      );
+    }
   },
   {
     title: "Artist",
@@ -28,11 +45,20 @@ const columns = [
   {
     title: "Stores",
     dataIndex: "stores",
+    render: (stores) => {
+      return (
+        <div className="sim_icons">
+          {stores?.map((item, index) => (
+            <img key={index} src={FileService?.image(item)} alt="" height={30} width={30}/>
+          ))}
+        </div>
+      );
+    },
   },
   {
     title: "Status",
     dataIndex: "status",
-    render: (status) => {
+    render: (status, data) => {
       let color;
       let className = ""; // Initialize className with an empty string
 
@@ -54,7 +80,7 @@ const columns = [
           <span className={`status ${className}`} style={{ color }}>
             {status}
           </span>
-          {status === "Failed" && <FailedPopover />}
+          {status === "Failed" && <FailedPopover message={data?.failed_reason} />}
         </div>
       );
     },
@@ -66,9 +92,7 @@ const data = [
     title: (
       <div className="c_tune_table_title">
         <img src={coverImg} alt="" className="table_img" />
-        <span>
-          Title Here
-        </span>
+        <span>Title Here</span>
       </div>
     ),
     artist: "Artist Name",
@@ -87,9 +111,7 @@ const data = [
     title: (
       <div className="c_tune_table_title">
         <img src={coverImg} alt="" className="table_img" />
-        <span>
-          Title Here
-        </span>
+        <span>Title Here</span>
       </div>
     ),
     artist: "Artist Name",
@@ -108,9 +130,7 @@ const data = [
     title: (
       <div className="c_tune_table_title">
         <img src={coverImg} alt="" className="table_img" />
-        <span>
-          Title Here
-        </span>
+        <span>Title Here</span>
       </div>
     ),
     artist: "Artist Name",
@@ -126,7 +146,7 @@ const data = [
   },
 ];
 
-const CallerTuneTable = () => {
+const CallerTuneTable = ({ data, onSearch }) => {
   const [selectedStatus, setSelectedStatus] = useState("all");
 
   const handleFilter = (status) => {
@@ -149,8 +169,8 @@ const CallerTuneTable = () => {
       />
 
       <div className="table_title mt-5">
-        <p>Show 4 entries</p>
-        <SearchBar />
+        <p>Total {data?.length} entries</p>
+        <SearchBar onSearch={onSearch} />
       </div>
 
       <Table

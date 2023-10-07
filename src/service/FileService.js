@@ -1,3 +1,4 @@
+import baseUrl from "./../config";
 import http from "./http";
 
 const upload = async (data) => {
@@ -9,8 +10,13 @@ const upload = async (data) => {
   return res?.data;
 };
 
+const image = (id) => {
+  return `${baseUrl}/assets/${id}?access_token=${JSON.parse(localStorage.getItem("accessToken"))}`
+};
+
 const FileService = {
   upload,
+  image,
 };
 
 export default FileService;

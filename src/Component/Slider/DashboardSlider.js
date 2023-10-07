@@ -1,56 +1,26 @@
-import React from 'react'
+import React from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-import swiper_img from "../assets/img/Swiper_img/Swiper-bg.png";
 
-export default function DashboardSlider() {
+export default function DashboardSlider({ data, sliderData }) {
+  console.log("🚀 ~ file: DashboardSlider.js:8 ~ DashboardSlider ~ sliderData:", sliderData)
   return (
     <div>
-      <Swiper
-              navigation={true}
-              modules={[Navigation]}
-              className="mySwiper"
-            >
-              <SwiperSlide>
-                <div className="swipe_content">
-                  <img src={swiper_img} alt="" />
-                  <div className="text_content">
-                    <p>Hello,</p>
-                    <h1>Mahfuzur R.</h1>
-                  </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="swipe_content">
-                  <img src={swiper_img} alt="" />
-                  <div className="text_content">
-                    <p>Hello,</p>
-                    <h1>Mahfuzur R.</h1>
-                  </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="swipe_content">
-                  <img src={swiper_img} alt="" />
-                  <div className="text_content">
-                    <p>Hello,</p>
-                    <h1>Mahfuzur R.</h1>
-                  </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="swipe_content">
-                  <img src={swiper_img} alt="" />
-                  <div className="text_content">
-                    <p>Hello,</p>
-                    <h1>Mahfuzur R.</h1>
-                  </div>
-                </div>
-              </SwiperSlide>
-              {/* Add more slides here */}
-            </Swiper>
+      <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+        {sliderData?.map((item, index) => (
+          <SwiperSlide>
+            <div className="swipe_content">
+              <img src={item} alt="" />
+              <div className="text_content">
+                <p>Hello,</p>
+                <h1>{data?.first_name}</h1>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
-  )
+  );
 }

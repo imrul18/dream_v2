@@ -12,11 +12,16 @@ const artist = async () => {
   const res = await http.get("/items/Primary_Artist");
   return res?.data;
 };
+const language = async () => {
+  const res = await http.get("/items/Languages");
+  return res?.data;
+};
 
 const OptionService = {
   genre,
   label,
   artist,
+  language,
 };
 
 export default OptionService;
