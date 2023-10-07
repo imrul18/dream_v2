@@ -5,6 +5,7 @@ import LatestReleaseCard from "../Component/CatalogsCard/LatestReleaseCard";
 import DashboardCardList from "../Component/DashboardCard/DashboardCardList";
 import DashboardSlider from "../Component/Slider/DashboardSlider";
 import swiper_img from "../Component/assets/img/Swiper_img/Swiper-bg.png";
+import DashboardService from "../service/DashboardService";
 import EarningService from "../service/EarningService";
 import FileService from "../service/FileService";
 import MusicCatalogService from "../service/MusicCatalogService";
@@ -68,6 +69,12 @@ const Dashboard = () => {
     if (currentBalance?.data?.length) {
       setBalance(parseFloat(currentBalance?.data[0]?.total).toFixed(2));
     }
+
+    const slider = await DashboardService.get();
+    const sliderData = slider?.data?.header_images?.map((item) => {
+      return FileService?.image(item?.directus_files_id);
+    });
+    setSliderData(sliderData);
   };
   useEffect(() => {
     getData();

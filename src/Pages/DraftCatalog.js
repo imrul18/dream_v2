@@ -17,7 +17,7 @@ function DraftCatalog() {
       </div>
       <div className="mt-5">
         <div className="table_title">
-          <p>Show {data?.length} entries</p>
+          <p>Total {data?.length} entries</p>
           <SearchBar />
         </div>
         <DraftCardList />

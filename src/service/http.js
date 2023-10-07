@@ -9,8 +9,10 @@ let Api = axios.create({
     accept: "application/json",
   },
   transformResponse: (data) => {
-    let response = JSON.parse(data);
-    return response;
+    if (data) {
+      let response = JSON.parse(data);
+      return response;
+    }
   },
 
   validateStatus: function (status) {

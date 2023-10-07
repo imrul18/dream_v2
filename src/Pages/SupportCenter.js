@@ -10,6 +10,7 @@ import SupportService from "../service/SupportService";
 
 function SupportCenter() {
   const [uploadData, setUploadData] = useState({});
+  const [clearAll, setClearAll] = useState(false);
 
   const onChangeHandle = (name, value) => {
     setUploadData({ ...uploadData, [name]: value });
@@ -43,8 +44,9 @@ function SupportCenter() {
   }, []);
 
   const onSubmit = async () => {
-    // const res = await SupportService.add(data);
-    const res = await SupportService.add({title: data?.title, message: data?.message, files: {create:null, update:null, delete:[]}});
+    const res = await SupportService.add(uploadData);
+    setUploadData({title: "", message: "", files: []});
+    setClearAll(true);
     if (res) {
       getData();
     }
@@ -77,7 +79,7 @@ function SupportCenter() {
                 onChange={(e)=>onChangeHandle('message', e.target.value)}
               />
               <div className="support_file mt-3">
-                <UploadButton onChange={(id)=>onChangeHandle('file', id)} />
+                <UploadButton onChange={(data)=>onChangeHandle('files', data)} clearAll={clearAll}/>
               </div>
               <div className="mt-3">
                 <PrimaryBtn label="Submit" onClick={onSubmit} />

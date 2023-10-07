@@ -3,18 +3,19 @@ import Dropzone from "react-dropzone";
 import { MdAudiotrack } from "react-icons/md"; // Using the audio icon
 import FileService from "../../service/FileService";
 
-const AudioUploadForm = ({audio, onValueChange}) => {
+const AudioUploadForm = ({ audio, onValueChange, onErrorMessage }) => {
   const [uploadedAudio, setUploadedAudio] = useState(null);
   const [buttonText, setButtonText] = useState("Upload Audio");
   const [audioFileName, setAudioFileName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0); // Added upload progress state
 
-  const handleDrop = async(acceptedFiles) => {
+  const handleDrop = async (acceptedFiles) => {
     const file = acceptedFiles[0];
 
-    if (file) {
+    if (file && file.type === "audio/wav") {
       setIsLoading(true);
+      onErrorMessage("");
       const audioURL = URL.createObjectURL(file);
 
       const res = await FileService.upload({
@@ -46,6 +47,8 @@ const AudioUploadForm = ({audio, onValueChange}) => {
         setIsLoading(false); // Stop loading
         setUploadProgress(0); // Reset upload progress
       });
+    } else {
+      onErrorMessage("Only wav files are allowed");
     }
   };
 
@@ -74,7 +77,11 @@ const AudioUploadForm = ({audio, onValueChange}) => {
         )}
       </Dropzone>
       <div className="upload-button-container">
-        <button onClick={handleUploadClick} className="btn mt-3" disabled={isLoading}>
+        <button
+          onClick={handleUploadClick}
+          className="btn mt-3"
+          disabled={isLoading}
+        >
           {isLoading ? `Uploading ${uploadProgress}%` : buttonText}
         </button>
       </div>

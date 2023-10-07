@@ -1,7 +1,9 @@
 import http from "./http";
 
 const get = async (params) => {
-  const res = await http.get("/items/Dashboard_Page", { params });
+  const res = await http.get("/items/Dashboard_Page", {
+    params: { ...params, fields: "*.*" },
+  });
   return res?.data;
 };
 

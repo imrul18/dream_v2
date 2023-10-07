@@ -7,6 +7,7 @@ import OptionService from "../service/OptionService";
 
 function ReleaseCatalogs() {
   const [data, setData] = useState([]);
+  console.log("🚀 ~ file: ReleaseCatalogs.js:10 ~ ReleaseCatalogs ~ data:", data)
 
   const [artistOption, setArtistOption] = useState([]);  
   const [labelOption, setLabelOption] = useState([]);
@@ -34,10 +35,10 @@ function ReleaseCatalogs() {
 
   const getData = async (params) => {
     const res = await MusicCatalogService.getList(params);
-    const finalData = res?.data?.map((item) => {
+    const finalData = res?.data?.map((item, index) => {
       return {
         id: item?.id,
-        key: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
+        key: item?.index,
         title: (
           <div className="c_tune_table_title">
             <img src={item?.cover_image

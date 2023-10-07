@@ -6,7 +6,7 @@ const overview = async (params) => {
 };
 
 const getWithdraw = async (params) => {
-  const res = await http.get("/items/Withdraw_Request", { params });
+  const res = await http.get("/items/Withdraw_Request", { params: {...params, sort: ["-id"],fields: ["*.*.*"] } });
   return res?.data;
 };
 
@@ -16,12 +16,22 @@ const getWithdrawAmount = async () => {
 };
 
 const getBank = async (params) => {
-  const res = await http.get("/items/Bank_Account", { params });
+  const res = await http.get("/items/Bank_Account", { params: {...params, sort: ["-id"] } });
   return res?.data;
 };
 
 const addBank = async (data) => {
   const res = await http.post("/items/Bank_Account", data);
+  return res?.data;
+};
+
+const updateBank = async (id, data) => {
+  const res = await http.patch("/items/Bank_Account/" + id, data);
+  return res?.data;
+};
+
+const deleteBank = async (id) => {
+  const res = await http.delete("/items/Bank_Account/" + id);
   return res?.data;
 };
 
@@ -41,6 +51,8 @@ const EarningService = {
   getWithdrawAmount,
   getBank,
   addBank,
+  updateBank,
+  deleteBank,
   getBalance,
   withdraw
 };

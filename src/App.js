@@ -11,6 +11,7 @@ import CatalogDetails from "./Pages/CatalogDetails";
 import ContentIdRequest from "./Pages/ContentIdRequest";
 import Dashboard from "./Pages/Dashboard";
 import EditPrimaryArtist from "./Pages/EditPrimaryArtist";
+import ForgetPassword from "./Pages/ForgetPassword";
 import LabelManage from "./Pages/LabelManage";
 import LogIn from "./Pages/LogIn";
 import ManualClaimRequest from "./Pages/ManualClaimRequest";
@@ -39,6 +40,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<LogIn />} />
+            <Route path="/forget-password" element={<ForgetPassword />} />
             <Route path="/" element={<MainLayout />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="release-audio" element={<ReleaseAudio />} />

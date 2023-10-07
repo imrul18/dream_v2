@@ -1,121 +1,100 @@
 import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
+import { BiPen } from "react-icons/bi";
 import EarningService from "../../service/EarningService";
 import PrimaryBtn from "../Button/PrimaryBtn";
 import InputField from "../InputField/InputField";
 
-function EditBankPopup({ id }) {
+function EditBankPopup({ cardData, onAdd }) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [bname, setBName] = useState("");
-  const [name, setName] = useState("");
-  const [aNumber, setAnumber] = useState("");
-  const [reaNumber, setReAnumber] = useState("");
-  const [ifsc, setIFSC] = useState("");
-  const [isPrimary, setIsPrimary] = useState(false);
+  const [data, setData] = useState(cardData ?? {});
+  const [updateData, setUpdateData] = useState({});
+  const [error, setError] = useState({});
 
-  const handleBNameChange = (event) => {
-    setBName(event.target.value);
-  };
-
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleAnumberChange = (event) => {
-    setAnumber(event.target.value);
-  };
-
-  const handlReAnumberChange = (event) => {
-    setReAnumber(event.target.value);
-  };
-
-  const handlIFSCChange = (event) => {
-    setIFSC(event.target.value);
-  };
-
-  const handleIsPrimaryChange = (event) => {
-    setIsPrimary(event.target.checked);
+  const onChangeHandle = (name, value) => {
+    setData({ ...data, [name]: value });
+    setUpdateData({ ...updateData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
-    const data = {
-      bank_name: bname,
-      account_holder_name: name,
-      account_number: aNumber,
-      ifsc_code: ifsc,
-      is_primary: true,
-    };
+    let flag = false;
+    let error = {};
+    if (!data?.bank_name) {
+      error = { ...error, bank_name: "Bank name is required" };
+      flag = true;
+    }
+    if (!data?.account_holder_name) {
+      error = {
+        ...error,
+        account_holder_name: "Account holder name is required",
+      };
+      flag = true;
+    }
+    if (!data?.account_number) {
+      error = { ...error, account_number: "Account number is required" };
+      flag = true;
+    }
+    if (!data?.ifsc_code) {
+      error = { ...error, ifsc_code: "IFSC code is required" };
+      flag = true;
+    }
+    setError(error);
 
-    const res = await EarningService.addBank(data);
-    if (res) {
-      setBName("");
-      setName("");
-      setAnumber("");
-      setReAnumber("");
-      setIFSC("");
-      setIsPrimary(false);
-      handleClose();
-      // onAdd();
+    if (!flag) {
+      const res = await EarningService.updateBank(data?.id, updateData);
+      if (res) {
+        handleClose();
+        onAdd();
+      }
     }
   };
 
   return (
     <>
-      <button className="btn mt-4" onClick={handleShow}>
-        Add payment method
-      </button>
+      <BiPen class="icons" onClick={handleShow} />
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Enter bank details</Modal.Title>
+          <Modal.Title>Edit bank details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <InputField
             type="text"
             label="Bank Name"
-            value={bname}
+            value={data?.bank_name}
             star="*"
-            onChange={handleBNameChange}
+            onChange={(e) => onChangeHandle("bank_name", e?.target?.value)}
           />
+          <small className="text-danger">{error?.bank_name}</small>
           <InputField
             type="text"
             label="Name On Bank Account"
-            value={name}
+            value={data?.account_holder_name}
             star="*"
-            onChange={handleNameChange}
+            onChange={(e) =>
+              onChangeHandle("account_holder_name", e?.target?.value)
+            }
           />
+          <small className="text-danger">{error?.account_holder_name}</small>
           <InputField
             type="number"
             label="Account Number"
-            value={aNumber}
+            value={data?.account_number}
             star="*"
-            onChange={handleAnumberChange}
+            onChange={(e) => onChangeHandle("account_number", e?.target?.value)}
           />
+          <small className="text-danger">{error?.account_number}</small>
           <InputField
-            type="number"
-            label="Re-type Account Number"
-            value={reaNumber}
-            star="*"
-            onChange={handlReAnumberChange}
-          />
-          <InputField
-            type="number"
+            type="text"
             label="IFSC Code"
-            value={ifsc}
+            value={data?.ifsc_code}
             star="*"
-            onChange={handlIFSCChange}
+            onChange={(e) => onChangeHandle("ifsc_code", e?.target?.value)}
           />
-          <div className="mt-3 check_box">
-            <input
-              type="checkbox"
-              value={isPrimary}
-              onChange={handleIsPrimaryChange}
-            />
-            Set as primary method
-          </div>
+          <small className="text-danger">{error?.ifsc_code}</small>
         </Modal.Body>
         <Modal.Footer>
           <div className="btn_area">

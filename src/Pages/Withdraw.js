@@ -22,26 +22,18 @@ function Withdraw() {
         key: index,
         date: moment(item?.issue_date).format("DD/MM/YYYY"),
         amount: item?.amount,
-        bank: item?.bank_account,
+        account_holder_name: item?.bank_account?.account_holder_name,
+        bank_name: item?.bank_account?.bank_name,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
         reject_reason: item?.reject_reason,
-        file: FileService.image(item?.transactions_record),
+        file: FileService.image(item?.transactions_record?.id),
       };
     });
     setData(finalData);
   };
   const getBank = async (params) => {
     const res = await EarningService.getBank(params);
-    const finalData = res?.data?.map((item, index) => {
-      return {
-        id: item?.id,
-        bankName: item?.bank_name,
-        accountNumber: item?.account_number,
-        companyName: item?.account_holder_name,
-        status: item?.status,
-      };
-    });
-    setBank(finalData);
+    setBank(res?.data);
   };
 
   const getBalance = async () => {
@@ -97,7 +89,7 @@ function Withdraw() {
         <div className="col-lg-4">
           <div className="card bank_add_card">
             <h2>How you get paid</h2>
-            <CardList cards={bank} />
+            <CardList cards={bank} onAdd={getBank} />
             <AddBankPopup onAdd={getBank} />
           </div>
         </div>

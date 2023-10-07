@@ -65,13 +65,7 @@ function AddAssetsPopup({ onSubmit, musicData }) {
       }))
     );
     const language = await OptionService.language();
-    setLanguageOption(
-      language?.data?.map((itm) => ({
-        ...itm,
-        value: itm?.id,
-        label: itm?.name,
-      }))
-    );
+    setLanguageOption(language?.data);
   };
 
   useEffect(() => {
@@ -235,6 +229,7 @@ function AddAssetsPopup({ onSubmit, musicData }) {
             <AudioUploadForm
               audio={data?.file}
               onValueChange={(e) => onDataChange({ file: e })}
+              onErrorMessage={(e) => setError({ ...error, file: e })}
             />
             <small className="text-danger">{error?.file}</small>
           </div>
@@ -544,13 +539,15 @@ function AddAssetsPopup({ onSubmit, musicData }) {
             <div className="input_f mt-3">
               <label className="mb-2">Track Title Language</label>
               <span className="input_star">*</span>
-              <input
-                type="text"
-                value={data?.track_title_language}
+              <Select
+                options={languageOption}
+                value={languageOption?.find(
+                  (itm) => itm?.value == data?.track_title_language
+                )}
                 onChange={(e) =>
-                  onDataChange({ track_title_language: e.target.value })
+                  onDataChange({ track_title_language: e?.value })
                 }
-                placeholder="Track Title Language"
+                placeholder="Select Track Title Language"
               />
               <small className="text-danger">
                 {error?.track_title_language}
@@ -559,13 +556,13 @@ function AddAssetsPopup({ onSubmit, musicData }) {
             <div className="input_f mt-3">
               <label className="mb-2">Lyrics Language</label>
               <span className="input_star">*</span>
-              <input
-                type="text"
-                value={data?.lyrics_language}
-                onChange={(e) =>
-                  onDataChange({ lyrics_language: e.target.value })
-                }
-                placeholder="Lyrics Language"
+              <Select
+                options={languageOption}
+                value={languageOption?.find(
+                  (itm) => itm?.value === data?.lyrics_language
+                )}
+                onChange={(e) => onDataChange({ lyrics_language: e?.value })}
+                placeholder="Select Lyrics Language"
               />
               <small className="text-danger">{error?.lyrics_language}</small>
             </div>

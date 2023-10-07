@@ -84,7 +84,7 @@ const ArtistChannelRequestTable = ({data, onSearch}) => {
       />
 
       <div className="table_title mt-3">
-        <p>Show {data?.length} entries</p>
+        <p>Total {data?.length} entries</p>
         <SearchBar onSearch={onSearch}/>
       </div>
       <Table

@@ -62,6 +62,14 @@ const refreshToken = async () => {
   }
 };
 
+const forget = async (email) => {
+  const res = await http.post("/auth/password/request", {
+    email: email,
+  });
+  if (res?.data) return false;
+  else return true;
+};
+
 const logout = () => {
   localStorage.clear();
 };
@@ -69,6 +77,7 @@ const logout = () => {
 const AuthService = {
   login,
   refreshToken,
+  forget,
   logout,
 };
 

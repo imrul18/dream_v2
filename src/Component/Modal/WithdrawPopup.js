@@ -12,7 +12,7 @@ function WithdrawPopup({
 }) {
   const [show, setShow] = useState(false);
   const [bankOptions, setBankOptions] = useState([]);
-  const [data, setData] = useState({});
+  const [data, setData] = useState({amount: balance});
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -33,8 +33,8 @@ function WithdrawPopup({
 
   const submitData = async(e) => {
     e?.preventDefault();
-    if (!data?.amount || !data?.bank_account) {
-      setError("Please fill all the fields");
+    if (!data?.bank_account) {
+      setError("Please Select Bank Account");
     } else if (data?.amount < minimum_withdraw) {
       setError(`Minimum withdraw balance: ₹${minimum_withdraw}`);
     } else if (data?.amount > parseFloat(balance)) {
@@ -64,17 +64,8 @@ function WithdrawPopup({
       <Modal show={show} onHide={handleClose} className="s-popup" size="lg">
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
-          <h1>Your Current Balance: ₹{balance}</h1>
-          <h5>Minimum withdraw balance: ₹{minimum_withdraw}</h5>
-
+          <h1>Your Withdraw Balance: ₹{balance}</h1>
           <div>
-            <input
-              type="text"
-              placeholder="Enter Amount"
-              className="input"
-              value={data?.amount}
-              onChange={(e) => onChange({ amount: e?.target?.value })}
-            />
             <Select
               className="select py-2"
               options={bankOptions}

@@ -1,5 +1,5 @@
 import { Divider, Radio, Table } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiPencil } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -202,6 +202,7 @@ const data = [
 ];
 
 const ReleaseAudioTable = ({ data, onSearch }) => {
+  const [tableData, setTableData] = useState(data);
   const [selectionType, setSelectionType] = useState("checkbox");
   const [selectedStatus, setSelectedStatus] = useState("all");
 
@@ -210,12 +211,18 @@ const ReleaseAudioTable = ({ data, onSearch }) => {
   };
 
   const getFilteredData = (data) => {
-    if (selectedStatus === "all") {
-      return data;
+    let finalData = [];
+    if (selectedStatus == "all") {
+      finalData = data;
     } else {
-      return data.filter((item) => item.status === selectedStatus);
+      finalData= data.filter((item) => item.status == selectedStatus);
     }
+    setTableData(finalData);
   };
+
+  useEffect(() => {
+    getFilteredData(data);
+  }, [data, selectedStatus]);
 
   return (
     <div>
@@ -226,7 +233,7 @@ const ReleaseAudioTable = ({ data, onSearch }) => {
       />
 
       <div className="table_title mt-3">
-        <p>Show {data?.length} entries</p>
+        <p>Total {data?.length} entries</p>
         <SearchBar onSearch={onSearch} />
       </div>
 
@@ -243,7 +250,7 @@ const ReleaseAudioTable = ({ data, onSearch }) => {
       <Table
         className="release_audio_table"
         columns={columns}
-        dataSource={getFilteredData(data)}
+        dataSource={tableData}
         scroll={{ x: 768 }}
       />
     </div>

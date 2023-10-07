@@ -5,6 +5,7 @@ import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function DashboardSlider({ data, sliderData }) {
+  console.log("🚀 ~ file: DashboardSlider.js:8 ~ DashboardSlider ~ sliderData:", sliderData)
   return (
     <div>
       <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
