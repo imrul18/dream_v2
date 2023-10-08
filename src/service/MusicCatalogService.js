@@ -38,7 +38,7 @@ const show = async (id) => {
 
 const CallerTune = async (params) => {
   const res = await http.get("/items/Caller_Tune", {
-    params: { ...params, fields: ["*.*.*.*"]},
+    params: { ...params, fields: ["*.*.*.*"], sort: ["-id"] },
   });
   return res?.data;
 };

@@ -173,11 +173,11 @@ function CatalogDetails() {
                   <div className="col-xl-4 col-lg-6 col-md-12 ">
                     <div className="input_value">
                       <p className="input_name">Title</p>{" "}
-                      <span>{itm?.title ?? "Not Found"}</span>
+                      <span>{itm?.title ?? ""}</span>
                     </div>
                     <div className="input_value">
                       <p className="input_name">Version/Subtitle</p>
-                      <span>{itm?.subtitle ?? "Not Found"}</span>
+                      <span>{itm?.subtitle ?? ""}</span>
                     </div>
                     <div className="input_value">
                       <p className="input_name">Primary Artist </p>
@@ -193,7 +193,7 @@ function CatalogDetails() {
                       <span>
                         {itm?.lyrics_writer?.length
                           ? itm?.lyrics_writer[0]?.writer_name
-                          : "Not Found"}
+                          : ""}
                       </span>
                     </div>
                     <div className="input_value">
@@ -201,26 +201,26 @@ function CatalogDetails() {
                       <span>
                         {itm?.composer?.length
                           ? itm?.composer[0]?.composer_name
-                          : "Not Found"}
+                          : ""}
                       </span>
                     </div>
                     <div className="input_value">
                       <p className="input_name">ISRC</p>
-                      <span>{itm?.isrc ?? "Not Found"}</span>
+                      <span>{itm?.isrc ?? ""}</span>
                     </div>
                   </div>
                   <div className="col-xl-4 col-lg-6 col-md-12">
                     <div className="input_value">
                       <p className="input_name">Genre</p>{" "}
-                      <span>{itm?.genre ?? "Not Found"}</span>
+                      <span>{itm?.genre ?? ""}</span>
                     </div>
                     <div className="input_value">
                       <p className="input_name">Lyrics Language</p>{" "}
-                      <span>{itm?.lyrics_language ?? "Not Found"}</span>
+                      <span>{itm?.lyrics_language ?? ""}</span>
                     </div>
                     <div className="input_value">
                       <p className="input_name">Track Title Language</p>{" "}
-                      <span>{itm?.track_title_language ?? "Not Found"}</span>
+                      <span>{itm?.track_title_language ?? ""}</span>
                     </div>
                   </div>
                 </div>
@@ -235,43 +235,43 @@ function CatalogDetails() {
           <div className="col-xl-4 col-lg-6 col-md-12">
             <div className="input_value">
               <p className="input_name">Label Name</p>
-              <span>{data?.label?.title ?? "Not Found"}</span>
+              <span>{data?.label?.title ?? ""}</span>
             </div>
             <div className="input_value">
               <p className="input_name">UPC/EAN</p>
-              <span>{data?.upc ?? "Not Found"}</span>
+              <span>{data?.upc ?? ""}</span>
             </div>
             <div className="input_value">
               <p className="input_name">℗ line</p>
-              <span>{data?.p_line ?? "Not Found"}</span>
+              <span>{data?.p_line ?? ""}</span>
             </div>
           </div>
           <div className="col-xl-4 col-lg-6 col-md-12">
             <div className="input_value">
               <p className="input_name">© line</p>
-              <span>{data?.c_line ?? "Not Found"}</span>
+              <span>{data?.c_line ?? ""}</span>
             </div>
             <div className="input_value">
               <p className="input_name">Production Year</p>
-              <span>{data?.production_year ?? "Not Found"}</span>
+              <span>{data?.production_year ?? ""}</span>
             </div>
             <div className="input_value">
               <p className="input_name">Genre</p>
-              <span>{data?.genre ?? "Not Found"}</span>
+              <span>{data?.genre ?? ""}</span>
             </div>
           </div>
           <div className="col-xl-4 col-lg-6 col-md-12">
             <div className="input_value">
               <p className="input_name">Format</p>
-              <span>{data?.format ?? "Not Found"}</span>
+              <span>{data?.format ?? ""}</span>
             </div>
             <div className="input_value">
               <p className="input_name">Original Release Date</p>
-              <span>{data?.original_release_date ?? "Not Found"}</span>
+              <span>{data?.original_release_date ?? ""}</span>
             </div>
             <div className="input_value">
               <p className="input_name">Main Release Date</p>
-              <span>{data?.main_release_date ?? "Not Found"}</span>
+              <span>{data?.main_release_date ?? ""}</span>
             </div>
           </div>
         </div>

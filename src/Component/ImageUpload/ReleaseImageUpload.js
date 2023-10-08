@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsCamera } from "react-icons/bs";
 import FileService from "../../service/FileService";
 
 const ReleaseImageUpload = ({ image, onUpload, onError }) => {
-  const [buttonText, setButtonText] = useState("Replace Cover");
+  const [buttonText, setButtonText] = useState("Upload Cover");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (image) {
+      setButtonText("Change Cover");
+    } else {
+      setButtonText("Upload Cover");
+    }
+  }, [image]);
 
   const handleUploadClick = async (e) => {
     // Trigger the hidden input element
@@ -29,7 +37,6 @@ const ReleaseImageUpload = ({ image, onUpload, onError }) => {
             onError(null);
             try {
               await new Promise((resolve) => setTimeout(resolve, 1500));
-              setButtonText("Replace Cover");
               const res = await FileService.upload({
                 file,
                 folder: "85dd3bb5-4d45-485d-8037-ba07babebe13",

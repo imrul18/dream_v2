@@ -9,6 +9,7 @@ import MultiSelect from "../InputField/MultiSelect";
 
 function AddAssetsPopup({ onSubmit, musicData }) {
   const [data, setData] = useState({});
+  const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
     if (musicData) {
@@ -38,6 +39,12 @@ function AddAssetsPopup({ onSubmit, musicData }) {
   const onDataChange = (value) => {
     setData({ ...data, ...value });
   };
+
+  useEffect(() => {
+    if (file) {
+      onDataChange({file: file });
+    }
+  }, [file]);
 
   const [show, setShow] = useState(false);
   const [artistOption, setArtistOption] = useState([]);
@@ -228,7 +235,7 @@ function AddAssetsPopup({ onSubmit, musicData }) {
           <div className="modal_upload_area">
             <AudioUploadForm
               audio={data?.file}
-              onValueChange={(e) => onDataChange({ file: e })}
+              onValueChange={(e) => setFile(e)}
               onErrorMessage={(e) => setError({ ...error, file: e })}
             />
             <small className="text-danger">{error?.file}</small>

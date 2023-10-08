@@ -275,11 +275,11 @@ function Submission({ currentStep, setCurrentStep }) {
             <div className="col-xl-4 col-lg-6 col-md-12 mt-3">
               <div className="input_value">
                 <p className="input_name">Release Title</p>{" "}
-                <span>{updateData?.title ?? "Not Found"}</span>
+                <span>{updateData?.title ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">Version/Subtitle</p>{" "}
-                <span>{updateData?.subtitle ?? "Not Found"}</span>
+                <span>{updateData?.subtitle ?? ""}</span>
               </div>
 
               {updateData?.primary_artist?.map((item, index) => (
@@ -289,7 +289,7 @@ function Submission({ currentStep, setCurrentStep }) {
                   </p>{" "}
                   <span>
                     {artistOption?.find((itm) => itm?.value == item)?.label ??
-                      "Not Found"}
+                      ""}
                   </span>
                 </div>
               ))}
@@ -298,13 +298,13 @@ function Submission({ currentStep, setCurrentStep }) {
                   <p className="input_name">
                     {index == 0 ? "Featuring" : "Secondary Featuring"}
                   </p>{" "}
-                  <span>{itm ?? "Not Found"}</span>
+                  <span>{itm ?? ""}</span>
                 </div>
               ))}
 
               <div className="input_value">
                 <p className="input_name">Remixer</p>{" "}
-                <span>{updateData?.remixer ?? "Not Found"}</span>
+                <span>{updateData?.remixer ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">Various Artists / Compilation</p>{" "}
@@ -316,7 +316,7 @@ function Submission({ currentStep, setCurrentStep }) {
                 <p className="input_name">Genre</p>{" "}
                 <span>
                   {genreOption?.find((itm) => itm?.value == updateData?.genre)
-                    ?.label ?? "Not Found"}
+                    ?.label ?? ""}
                 </span>
               </div>
             </div>
@@ -325,14 +325,14 @@ function Submission({ currentStep, setCurrentStep }) {
                 <p className="input_name">Label Name</p>{" "}
                 <span>
                   {labelOption?.find((itm) => itm?.value == updateData?.label)
-                    ?.label ?? "Not Found"}
+                    ?.label ?? ""}
                 </span>
               </div>
               <div className="input_value">
                 <p className="input_name">Format</p>{" "}
                 <span>
                   {formatOption?.find((itm) => itm?.value == updateData?.format)
-                    ?.label ?? "Not Found"}
+                    ?.label ?? ""}
                 </span>
               </div>
               <div className="input_value">
@@ -340,29 +340,29 @@ function Submission({ currentStep, setCurrentStep }) {
                 <span>
                   {moment(updateData?.original_release_date).format(
                     "DD-MM-YYYY"
-                  ) ?? "Not Found"}
+                  ) ?? ""}
                 </span>
               </div>
               <div className="input_value">
                 <p className="input_name">℗ line</p>{" "}
-                <span>{updateData?.p_line ?? "Not Found"}</span>
+                <span>{updateData?.p_line ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">℗ line</p>{" "}
-                <span>{updateData?.c_line ?? "Not Found"}</span>
+                <span>{updateData?.c_line ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">Production Year</p>{" "}
-                <span>{updateData?.production_year ?? "Not Found"}</span>
+                <span>{updateData?.production_year ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">UPC/EAN</p>{" "}
-                <span>{updateData?.upc ?? "Not Found"}</span>
+                <span>{updateData?.upc ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">Producer Catalogue Number</p>
                 <span>
-                  {updateData?.producer_catalogue_number ?? "Not Found"}
+                  {updateData?.producer_catalogue_number ?? ""}
                 </span>
               </div>
             </div>

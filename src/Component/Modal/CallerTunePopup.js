@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { FiPhoneCall } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import FileService from "../../service/FileService";
 import MusicCatalogService from "../../service/MusicCatalogService";
-import AirtelLogo from "../assets/img/Airtel.png";
-import VodafoneLogo from "../assets/img/vodafone.png";
 
 function CallerTunePopup({ id }) {
   const [show, setShow] = useState(false);
   const [selectedCards, setSelectedCards] = useState([]);
 
   const [crbt, setCrbt] = useState([]);
+  console.log("🚀 ~ file: CallerTunePopup.js:14 ~ CallerTunePopup ~ crbt:", crbt)
 
   const getCRBT = async () => {
     const res = await MusicCatalogService.getCRBT();
@@ -76,7 +76,7 @@ function CallerTunePopup({ id }) {
                         }`}
                         onClick={() => handleCardClick(item?.id)}
                       >
-                        <img src={AirtelLogo} alt="" />
+                        <img src={FileService.image(item?.icon)} alt="" />
                       </div>
                     );
                   }
@@ -90,7 +90,7 @@ function CallerTunePopup({ id }) {
                   if (item?.status != "active") {
                     return (
                       <div className="card">
-                        <img src={VodafoneLogo} alt="" />
+                        <img src={FileService.image(item?.icon)} alt="" />
                       </div>
                     );
                   }

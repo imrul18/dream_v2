@@ -1,7 +1,8 @@
 import { Table } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 import FileService from "../../service/FileService";
+import OptionService from "../../service/OptionService";
 import DeletePopup from "../Modal/DeletePopup";
 import EditAssetsPopup from "../Modal/EditAssetsPopup";
 
@@ -31,6 +32,20 @@ const CustomAudioPlayer = ({ audio }) => {
 };
 
 const EditAssetsTable = ({ data, onTrackEdit, onTrackDelete }) => {
+  const [artistOptions, setArtistOptions] = useState([]);
+  const getArtistOptions = async () => {
+    const res = await OptionService?.artist();
+    const finalData = res?.data?.map((item) => ({
+      ...item,
+      value: item?.id,
+      label: item?.name,
+    }));
+    setArtistOptions(finalData);
+  };
+  useEffect(() => {
+    getArtistOptions();
+  }, []);
+
   const columns = [
     {
       title: "#",
@@ -42,8 +57,9 @@ const EditAssetsTable = ({ data, onTrackEdit, onTrackDelete }) => {
       dataIndex: "title",
     },
     {
-      title: "Sub Ttile",
-      dataIndex: "subtitle",
+      title: "Primary Artist",
+      dataIndex: "primary_artist",
+      render: (primary_artist) => primary_artist?.length ? artistOptions?.find((itm) => itm?.value == primary_artist[0])?.label : null,
     },
     {
       title: "ISRC",

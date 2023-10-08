@@ -145,11 +145,11 @@ function Submission({ currentStep, setCurrentStep }) {
             <div className="col-xl-4 col-lg-6 col-md-12 mt-3">
               <div className="input_value">
                 <p className="input_name">Release Title</p>{" "}
-                <span>{musicData?.title ?? "Not Found"}</span>
+                <span>{musicData?.title ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">Version/Subtitle</p>{" "}
-                <span>{musicData?.subtitle ?? "Not Found"}</span>
+                <span>{musicData?.subtitle ?? ""}</span>
               </div>
 
               {musicData?.primary_artist?.map((item, index) => (
@@ -158,7 +158,7 @@ function Submission({ currentStep, setCurrentStep }) {
                     {index == 0 ? "Primary Artist" : "Secondary Artist"}</p>{" "}
                   <span>
                     {artistOption?.find((itm) => itm?.value == item)?.label ??
-                      "Not Found"}
+                      ""}
                   </span>
                 </div>
               ))}
@@ -166,13 +166,13 @@ function Submission({ currentStep, setCurrentStep }) {
                 <div className="input_value">
                   <p className="input_name">
                     {index == 0 ? "Featuring" : "Secondary Featuring"}</p>{" "}
-                  <span>{itm ?? "Not Found"}</span>
+                  <span>{itm ?? ""}</span>
                 </div>
               ))}
 
               <div className="input_value">
                 <p className="input_name">Remixer</p>{" "}
-                <span>{musicData?.remixer ?? "Not Found"}</span>
+                <span>{musicData?.remixer ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">Various Artists / Compilation</p>{" "}
@@ -182,7 +182,7 @@ function Submission({ currentStep, setCurrentStep }) {
                 <p className="input_name">Genre</p>{" "}
                 <span>
                   {genreOption?.find((itm) => itm?.value == musicData?.genre)
-                    ?.label ?? "Not Found"}
+                    ?.label ?? ""}
                 </span>
               </div>
             </div>
@@ -191,14 +191,14 @@ function Submission({ currentStep, setCurrentStep }) {
                 <p className="input_name">Label Name</p>{" "}
                 <span>
                   {labelOption?.find((itm) => itm?.value == musicData?.label)
-                    ?.label ?? "Not Found"}
+                    ?.label ?? ""}
                 </span>
               </div>
               <div className="input_value">
                 <p className="input_name">Format</p>{" "}
                 <span>
                   {formatOption?.find((itm) => itm?.value == musicData?.format)
-                    ?.label ?? "Not Found"}
+                    ?.label ?? ""}
                 </span>
               </div>
               <div className="input_value">
@@ -206,29 +206,29 @@ function Submission({ currentStep, setCurrentStep }) {
                 <span>
                   {moment(musicData?.original_release_date).format(
                     "DD-MM-YYYY"
-                  ) ?? "Not Found"}
+                  ) ?? ""}
                 </span>
               </div>
               <div className="input_value">
                 <p className="input_name">℗ line</p>{" "}
-                <span>{musicData?.p_line ?? "Not Found"}</span>
+                <span>{musicData?.p_line ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">℗ line</p>{" "}
-                <span>{musicData?.c_line ?? "Not Found"}</span>
+                <span>{musicData?.c_line ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">Production Year</p>{" "}
-                <span>{musicData?.production_year ?? "Not Found"}</span>
+                <span>{musicData?.production_year ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">UPC/EAN</p>{" "}
-                <span>{musicData?.upc ?? "Not Found"}</span>
+                <span>{musicData?.upc ?? ""}</span>
               </div>
               <div className="input_value">
                 <p className="input_name">Producer Catalogue Number</p>
                 <span>
-                  {musicData?.producer_catalogue_number ?? "Not Found"}
+                  {musicData?.producer_catalogue_number ?? ""}
                 </span>
               </div>
             </div>
