@@ -10,10 +10,11 @@ import FileService from "../service/FileService";
 function Withdraw() {
   const [balance, setBalance] = useState(0);
   const [minimum_withdraw, setMinimum_withdraw] = useState(0);
+  const [allow, setAllow] = useState(false);
   const [data, setData] = useState([]);
   const [bank, setBank] = useState([]);
 
-  const isButtonActive = balance >= minimum_withdraw;
+  const isButtonActive = (balance >= minimum_withdraw && allow);
 
   const getData = async (params) => {
     const res = await EarningService.getWithdraw(params);
@@ -44,6 +45,7 @@ function Withdraw() {
     const result = await EarningService.getWithdrawAmount();
     if (result?.data) {
       setMinimum_withdraw(parseFloat(result?.data?.min_withdraw_amount));
+      setAllow(result?.data?.allow_withdraw);
     }
   };
 
