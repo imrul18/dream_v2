@@ -12,26 +12,24 @@ function WithdrawPopup({
 }) {
   const [show, setShow] = useState(false);
   const [bankOptions, setBankOptions] = useState([]);
-  const [data, setData] = useState({amount: balance});
+  const [data, setData] = useState({ amount: balance });
   const [error, setError] = useState(null);
 
   useEffect(() => {
     setBankOptions(
-      bank
-        ?.filter((itm) => itm?.status === "approved")
-        ?.map((item) => {
-          return {
-            value: item?.id,
-            label: `${item?.companyName} (${item?.bankName})`,
-          };
-        })
+      bank?.map((item) => {
+        return {
+          value: item?.id,
+          label: `${item?.companyName} (${item?.bankName})`,
+        };
+      })
     );
   }, [bank]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const submitData = async(e) => {
+  const submitData = async (e) => {
     e?.preventDefault();
     if (!data?.bank_account) {
       setError("Please Select Bank Account");
@@ -40,9 +38,9 @@ function WithdrawPopup({
     } else if (data?.amount > parseFloat(balance)) {
       setError(`Insufficient balance`);
     } else {
-      const res = await EarningService?.withdraw(data)
-      setData({})
-      confirm()
+      const res = await EarningService?.withdraw(data);
+      setData({});
+      confirm();
       handleClose();
     }
   };

@@ -7,19 +7,24 @@ import ContentIDService from "../service/ContentIDService";
 
 function ContentIdRequest() {
   const [name, setName] = useState("");
+  const [error, setError] = useState({});
 
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
 
   const handleSubmit = async (e) => {
-    const data = {
-      upc: name,
-    };
-    const res = await ContentIDService.add(data);
-    if (res) {
-      setName("");
-      getData();
+    if (!name) {
+      setError({ name: "UPC/EAN is required" });
+    } else {
+      const data = {
+        upc: name,
+      };
+      const res = await ContentIDService.add(data);
+      if (res) {
+        setName("");
+        getData();
+      }
     }
   };
 
@@ -62,6 +67,7 @@ function ContentIdRequest() {
               star="*"
               onChange={handleNameChange}
             />
+            {error?.name && <p className="text-danger">{error?.name}</p>}
             <div className="mt-4">
               <PrimaryBtn label="Submit" onClick={handleSubmit} />
             </div>

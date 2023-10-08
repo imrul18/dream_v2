@@ -16,6 +16,13 @@ const columns = [
   {
     title: "Video Link",
     dataIndex: "channel_link",
+    render: (channel_link) => {
+      return (
+        <a href={channel_link} className="url" target="_new">
+          {channel_link}
+        </a>
+      );
+    },
   },
   {
     title: "Content ID Activated",
@@ -50,7 +57,9 @@ const columns = [
           <span className={`status ${className}`} style={{ color }}>
             {status}
           </span>
-          {status === "Failed" && <FailedPopover message={data?.failed_reason}/>}
+          {status === "Failed" && (
+            <FailedPopover message={data?.failed_reason} />
+          )}
         </div>
       );
     },

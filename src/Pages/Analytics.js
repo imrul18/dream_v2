@@ -34,10 +34,19 @@ function Analytics() {
 
   const [labelOptions, setLabelOptions] = useState([]);
 
+  const [error, setError] = useState({});
   const [params, setParams] = useState({
     year: new Date().getFullYear(),
-    month: monthsOptions[new Date().getMonth()]?.label,
+    month: monthsList?.find((itm) => itm?.sl == new Date().getMonth() + 1)
+      ?.value,
   });
+
+  useEffect(() => {
+    setParams({
+      ...params,
+      label: labelOptions?.length ? labelOptions[0]?.value : null,
+    });
+  }, [labelOptions]);
 
   const handleChange = (selectedOption) => {
     setParams({ ...params, ...selectedOption });
@@ -88,9 +97,14 @@ function Analytics() {
   };
 
   const submitAnalytics = async () => {
-    const res = await AnalyticService.add(params);
-    if (res) {
-      getData();
+    if (!params?.label) {
+      setError({ ...error, label: "Please select a label" });
+    } else {
+      setError({ ...error, label: null });
+      const res = await AnalyticService.add(params);
+      if (res) {
+        getData();
+      }
     }
   };
 
@@ -111,22 +125,27 @@ function Analytics() {
         <div className="analytics_area">
           <Selector
             options={yearsOptions}
-            value={yearsOptions?.find((itm) => itm?.value === params?.year)}
+            value={yearsOptions?.find((itm) => itm?.value == params?.year)}
             onChange={(e) => handleChange({ year: e?.value })}
             placeholder="All Year"
           />
           <Selector
             options={monthsOptions}
-            value={monthsOptions?.find((itm) => itm?.value === params?.month)}
+            value={monthsOptions?.find((itm) => itm?.value == params?.month)}
             onChange={(e) => handleChange({ month: e?.value })}
             placeholder="All Months"
           />
-          <Selector
-            options={labelOptions}
-            value={labelOptions?.find((itm) => itm?.value === params?.label)}
-            onChange={(e) => handleChange({ label: e?.value })}
-            placeholder="All Labels"
-          />
+          <div>
+            <Selector
+              options={labelOptions}
+              value={labelOptions?.find((itm) => itm?.value === params?.label)}
+              onChange={(e) => handleChange({ label: e?.value })}
+              placeholder="All Labels"
+            />
+            {error?.label && (
+              <small className="text-danger">{error?.label}</small>
+            )}
+          </div>
           <PrimaryBtn label="Submit" onClick={submitAnalytics} />
         </div>
         <div className="table_content">

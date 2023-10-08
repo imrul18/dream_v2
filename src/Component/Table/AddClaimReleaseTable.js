@@ -12,6 +12,13 @@ const columns = [
   {
     title: "URL",
     dataIndex: "url",
+    render: (url) => {
+      return (
+        <a href={url} className="url" target="_new">
+          {url}
+        </a>
+      );
+    },
   },
   {
     title: "UPC/EAN",
@@ -47,17 +54,19 @@ const columns = [
 
       return (
         <div className="status_area">
-            <span className={`status ${className}`} style={{ color }}>
-              {status}
-            </span>
-            {status === "Failed" && <FailedPopover message={data?.failed_reason}/>}
-          </div>
+          <span className={`status ${className}`} style={{ color }}>
+            {status}
+          </span>
+          {status === "Failed" && (
+            <FailedPopover message={data?.failed_reason} />
+          )}
+        </div>
       );
     },
   },
 ];
 
-const AddClaimReleaseTable = ({data, onSearch}) => {
+const AddClaimReleaseTable = ({ data, onSearch }) => {
   const [selectedStatus, setSelectedStatus] = useState("all");
 
   const handleFilter = (status) => {
@@ -82,7 +91,7 @@ const AddClaimReleaseTable = ({data, onSearch}) => {
 
       <div className="table_title mt-5">
         <p>Total {data?.length} entries</p>
-        <SearchBar onSearch={onSearch}/>
+        <SearchBar onSearch={onSearch} />
       </div>
       <Table
         columns={columns}

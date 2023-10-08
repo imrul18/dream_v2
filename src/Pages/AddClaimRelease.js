@@ -8,12 +8,14 @@ import ClaimReleaseService from "../service/ClaimReleaseService";
 import OptionService from "../service/OptionService";
 
 function AddClaimRelease() {
+  const [error, setError] = useState({});
+
   const [name, setName] = useState("");
   const [UPCEAN, setUPCEAN] = useState("");
   const [lableName, setLableName] = useState("");
   const [lableNameT, setLableNameT] = useState("");
-  const [labelOption, setLabelOption] = useState([]);
 
+  const [labelOption, setLabelOption] = useState([]);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -29,19 +31,42 @@ function AddClaimRelease() {
   };
 
   const handleSubmit = async (e) => {
-    const data = {
-      url: name,
-      upc: UPCEAN,
-      claim_sender: lableName,
-      claim_receiver: lableNameT,
-    };
-    const res = await ClaimReleaseService.add(data);
-    if (res) {
-      setName("");
-      setUPCEAN("");
-      setLableName("");
-      setLableNameT("");
-      getData();
+    let flag = false;
+    let error = {};
+    if (!name) {
+      error = { ...error, name: "URL is required" };
+      flag = true;
+    }
+    if (!UPCEAN) {
+      error = { ...error, UPCEAN: "UPC/EAN is required" };
+      flag = true;
+    }
+    if (!lableName) {
+      error = { ...error, lableName: "Label Name is required" };
+      flag = true;
+    }
+    if (!lableNameT) {
+      error = { ...error, lableNameT: "Label Name is required" };
+      flag = true;
+    }
+    if (flag) {
+      setError(error);
+    } else {
+      setError(null);
+      const data = {
+        url: name,
+        upc: UPCEAN,
+        claim_sender: lableName,
+        claim_receiver: lableNameT,
+      };
+      const res = await ClaimReleaseService.add(data);
+      if (res) {
+        setName("");
+        setUPCEAN("");
+        setLableName("");
+        setLableNameT("");
+        getData();
+      }
     }
   };
 
@@ -56,9 +81,9 @@ function AddClaimRelease() {
       return {
         key: index,
         date: moment(item?.date_created).format("DD-MM-YYYY"),
-        url: item?.youtube_url,
+        url: item?.url,
         UPC_EAN: item?.upc,
-        LNS: label?.data?.find(itm =>itm?.id == item?.claim_sender)?.title,
+        LNS: label?.data?.find((itm) => itm?.id == item?.claim_sender)?.title,
         LNR: item?.claim_receiver,
         status: item?.status.charAt(0).toUpperCase() + item?.status.slice(1),
         failed_reason: item?.failed_reason,
@@ -92,6 +117,7 @@ function AddClaimRelease() {
               value={name}
               onChange={handleNameChange}
             />
+            {error?.name && <p className="text-danger">{error?.name}</p>}
             <InputField
               label="UPC/EAN"
               star="*"
@@ -99,6 +125,7 @@ function AddClaimRelease() {
               value={UPCEAN}
               onChange={handleUPCEANChange}
             />
+            {error?.UPCEAN && <p className="text-danger">{error?.UPCEAN}</p>}
             <div className="input_f mt-3">
               <label className="mb-2">
                 Label Name (Who send a claim){" "}
@@ -110,6 +137,9 @@ function AddClaimRelease() {
                 onChange={(e) => handleLableChange(e?.value)}
                 placeholder="Select Lable"
               />
+              {error?.lableName && (
+                <p className="text-danger">{error?.lableName}</p>
+              )}
             </div>
             <InputField
               label="Lable Name (Who received a claim)"
@@ -118,6 +148,9 @@ function AddClaimRelease() {
               value={lableNameT}
               onChange={handleLableTChange}
             />
+            {error?.lableNameT && (
+              <p className="text-danger">{error?.lableNameT}</p>
+            )}
             <div className="mt-4">
               <PrimaryBtn label="Submit" onClick={handleSubmit} />
             </div>
