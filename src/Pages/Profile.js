@@ -97,24 +97,24 @@ function Profile() {
           <div className="profile_input_area">
             <InputField
               label="Address Line 1"
-              value={data?.line_1}
-              onChange={(e) => onHandleChange("line_1", e.target.value)}
+              value={data?.address_line_1}
+              onChange={(e) => onHandleChange("address_line_1", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
             <InputField
               label="Address Line 2"
-              value={data?.line_2}
-              onChange={(e) => onHandleChange("line_2", e.target.value)}
+              value={data?.address_line_2}
+              onChange={(e) => onHandleChange("address_line_2", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
             />
             <InputField
               label="Postal Code"
-              value={data?.post}
-              onChange={(e) => onHandleChange("post", e.target.value)}
+              value={data?.postal_code}
+              onChange={(e) => onHandleChange("postal_code", e.target.value)}
               type="text"
               error={null}
               disabled={!isEditable}
@@ -144,7 +144,7 @@ function Profile() {
               onChange={(e) => onHandleChange("phone", e.target.value)}
               type="text"
               error={null}
-              disabled={!isEditable}
+              disabled
             />
             <div>
               <InputField
@@ -155,7 +155,7 @@ function Profile() {
                 }
                 type="text"
                 error={null}
-                disabled={!isEditable}
+                disabled
               />
               <span className="enable_wp">
                 <input

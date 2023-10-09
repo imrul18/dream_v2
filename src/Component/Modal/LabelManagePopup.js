@@ -5,8 +5,9 @@ import PrimaryBtn from "../Button/PrimaryBtn";
 import InputField from "../InputField/InputField";
 import TextField from "../TextBox/TextField";
 
-function LabelManagePopup({onSubmit}) {
+function LabelManagePopup({ onSubmit }) {
   const [show, setShow] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -30,18 +31,33 @@ function LabelManagePopup({onSubmit}) {
   };
 
   const handleSubmit = async (e) => {
-    const data = {
-      title: title,
-      youtube_url: ytLink,
-      message: comment,
-    };
-    const res = await LabelService.add(data);
-    if (res) {
-      setTitle("");
-      setYtLink("");
-      setComment("");
-      handleClose();
-      onSubmit();
+    let error = {};
+    let flag = true;
+    if (!title) {
+      error = { ...error, title: "Title is required" };
+      flag = false;
+    }
+    if (!ytLink) {
+      error = { ...error, ytLink: "Youtube link is required" };
+      flag = false;
+    }
+    if (flag) {
+      setError(null);
+      const data = {
+        title: title,
+        youtube_url: ytLink,
+        message: comment,
+      };
+      const res = await LabelService.add(data);
+      if (res) {
+        setTitle("");
+        setYtLink("");
+        setComment("");
+        handleClose();
+        onSubmit();
+      }
+    } else {
+      setError(error);
     }
   };
 
@@ -62,12 +78,14 @@ function LabelManagePopup({onSubmit}) {
               value={title}
               onChange={handleTitleChange}
             />
+            {error?.title && <small className="text-danger">{error?.title}</small>}
             <InputField
               label="Youtube URL"
               star="*"
               value={ytLink}
               onChange={handleYtChange}
             />
+            {error?.ytLink && <small className="text-danger">{error?.ytLink}</small>}
             <TextField
               label="Messages"
               type="text"

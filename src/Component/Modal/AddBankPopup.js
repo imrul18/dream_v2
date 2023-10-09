@@ -53,6 +53,7 @@ function Example({ onAdd }) {
     setError(error);
 
     if (!flag) {
+      setError(null);
       const res = await EarningService.addBank({
         bank_name: data?.bank_name,
         account_holder_name: data?.account_holder_name,

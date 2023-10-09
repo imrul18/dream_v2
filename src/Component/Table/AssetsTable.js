@@ -1,42 +1,8 @@
 import { Table } from "antd";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa";
 import FileService from "../../service/FileService";
-
-const columns = [
-  {
-    title: "#",
-    dataIndex: "file",
-    render: (file) => <CustomAudioPlayer audio={file} />,
-  },
-  {
-    title: "Track Title",
-    dataIndex: "title",
-  },
-  {
-    title: "Sub title",
-    dataIndex: "subtitle",
-  },
-  {
-    title: "ISRC",
-    dataIndex: "isrc",
-  },
-  // {
-  //   title: "Action",
-  //   render: (text, record) => (
-  //     <div className="r_edit_delete">
-  //       <Link to="#" className="edit">
-  //         <BiPencil className="icons" />
-  //       </Link>
-  //       {/* <Link to="#" className="delete">
-  //         <BiTrashAlt className="icons" />
-  //       </Link> */}
-  //       <DeletePopup/>
-  //     </div>
-  //   ),
-  // },
-];
-
+import OptionService from "../../service/OptionService";
 
 const CustomAudioPlayer = ({ audio }) => {
   const audioRef = useRef(null);
@@ -63,7 +29,45 @@ const CustomAudioPlayer = ({ audio }) => {
   );
 };
 
-const AssetsTable = ({data}) => {
+const AssetsTable = ({ data }) => {
+  const [artistOptions, setArtistOptions] = useState([]);
+  const getArtistOptions = async () => {
+    const res = await OptionService?.artist();
+    const finalData = res?.data?.map((item) => ({
+      ...item,
+      value: item?.id,
+      label: item?.name,
+    }));
+    setArtistOptions(finalData);
+  };
+  useEffect(() => {
+    getArtistOptions();
+  }, []);
+
+  const columns = [
+    {
+      title: "#",
+      dataIndex: "file",
+      render: (file) => <CustomAudioPlayer audio={file} />,
+    },
+    {
+      title: "Track Title",
+      dataIndex: "title",
+    },
+    {
+      title: "Primary Artist",
+      dataIndex: "primary_artist",
+      render: (primary_artist) =>
+        primary_artist?.length
+          ? artistOptions?.find((itm) => itm?.value == primary_artist[0])?.label
+          : null,
+    },
+    {
+      title: "ISRC",
+      dataIndex: "isrc",
+    },
+  ];
+
   return (
     <div>
       <Table

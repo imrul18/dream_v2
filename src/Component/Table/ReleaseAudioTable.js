@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { BiPencil } from "react-icons/bi";
 import { FaRegEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import TableFilter from "../Filter/TableFilter";
+import TableFilter2 from "../Filter/TableFilter2";
 import AntPopover from "../Popover/AntPopover";
 import SearchBar from "../SearchBar/SearchBar";
 import coverImg from "../assets/img/cover.jpg";
@@ -227,7 +227,7 @@ const ReleaseAudioTable = ({ data, onSearch }) => {
   return (
     <div>
       {/* Filter Area */}
-      <TableFilter
+      <TableFilter2
         selectedStatus={selectedStatus}
         handleFilter={handleFilter}
       />

@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const reduxStoreSlice = createSlice({
   name: "reduxStore",
   initialState: {
-    musicData: null,
+    musicData: {original_release_date: new Date(), main_release_date: new Date()},
     oldData: null,
     updateData: null,
     refreshTime: null

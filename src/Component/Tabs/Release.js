@@ -17,6 +17,13 @@ const Release = ({ currentStep, setCurrentStep }) => {
   const setData = (data) => {
     dispatch(setMusicData({ ...musicData, ...data }));
   };
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    if (image) {
+      setData({ cover_image: image });
+    }
+  }, [image]);
 
   const [artistOption, setArtistOption] = useState([]);
   const [genreOption, setGenreOption] = useState([]);
@@ -154,7 +161,7 @@ const Release = ({ currentStep, setCurrentStep }) => {
           <div className="col-xl-3 col-lg-6 mt-4">
             <ReleaseImageUpload
               image={musicData?.cover_image}
-              onUpload={(link) => setData({ cover_image: link })}
+              onUpload={(link) => setImage(link)}
               onError={(err) => setError({ ...error, cover_image: err })}
             />
             <small className="text-danger">{error?.cover_image}</small>

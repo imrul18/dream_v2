@@ -45,6 +45,7 @@ function EditBankPopup({ cardData, onAdd }) {
     setError(error);
 
     if (!flag) {
+      setError(null)
       const res = await EarningService.updateBank(data?.id, updateData);
       if (res) {
         handleClose();

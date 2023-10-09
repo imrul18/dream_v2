@@ -7,6 +7,8 @@ import ManualClaimRequestTable from "../Component/Table/ManualClaimRequestTable"
 import ManualClaimService from "../service/ManualClaimService";
 
 function ManualClaimRequest() {
+  const [error, setError] = useState({});
+
   const [channelLink, setChannelLink] = useState("");
   const [isrc, setIsrc] = useState("");
   const [timing, setTiming] = useState("");
@@ -39,21 +41,48 @@ function ManualClaimRequest() {
   };
 
   const handleSubmit = async (e) => {
-    const data = {
-      url: channelLink,
-      isrc: isrc,
-      timing: timing,
-      content_id_activated: selectedOptionL?.value,
-      upc: upc,
-    };
-    const res = await ManualClaimService.add(data);
-    if (res) {
-      setChannelLink("");
-      setIsrc("");
-      setTiming("");
-      setUpc("");
-      setSelectedOptionL(null);
-      getData();
+    let error = {};
+    let flag = false;
+    if (!channelLink) {
+      error = { ...error, channelLink: "URL is required" };
+      flag = true;
+    }
+    if (!isrc) {
+      error = { ...error, isrc: "ISRC is required" };
+      flag = true;
+    }
+    if (!timing) {
+      error = { ...error, timing: "Timing is required" };
+      flag = true;
+    }
+    if (!selectedOptionL) {
+      error = { ...error, selectedOptionL: "Content ID Activated is required" };
+      flag = true;
+    }
+    if (!upc) {
+      error = { ...error, upc: "UPC is required" };
+      flag = true;
+    }
+    if (flag) {
+      setError(error);
+    } else {
+      setError(null)
+      const data = {
+        url: channelLink,
+        isrc: isrc,
+        timing: timing,
+        content_id_activated: selectedOptionL?.value,
+        upc: upc,
+      };
+      const res = await ManualClaimService.add(data);
+      if (res) {
+        setChannelLink("");
+        setIsrc("");
+        setTiming("");
+        setUpc("");
+        setSelectedOptionL(null);
+        getData();
+      }
     }
   };
 
@@ -99,18 +128,24 @@ function ManualClaimRequest() {
               value={channelLink}
               onChange={handleChannelLinkChange}
             />
+            {error?.channelLink && (
+              <p className="text-danger">{error?.channelLink}</p>
+            )}
+
             <InputField
               label="ISRC"
               star="*"
               value={isrc}
               onChange={handleIsrcChange}
             />
+            {error?.isrc && <p className="text-danger">{error?.isrc}</p>}
             <InputField
               label="Timing"
               star="*"
               value={timing}
               onChange={handleTimingChange}
             />
+            {error?.timing && <p className="text-danger">{error?.timing}</p>}
             <div className="mt-3">
               <label htmlFor="" className="mb-2">
                 Content ID Activated <span style={{ color: "red" }}>*</span>
@@ -121,6 +156,9 @@ function ManualClaimRequest() {
                 placeholder="Please Select"
                 value={selectedOptionL}
               />
+              {error?.selectedOptionL && (
+                <p className="text-danger">{error?.selectedOptionL}</p>
+              )}
             </div>
             <InputField
               label="UPC"
@@ -128,6 +166,7 @@ function ManualClaimRequest() {
               star="*"
               onChange={handleUpcChange}
             />
+            {error?.upc && <p className="text-danger">{error?.upc}</p>}
             <div className="mt-3">
               <PrimaryBtn label="Submit" onClick={handleSubmit} />
             </div>

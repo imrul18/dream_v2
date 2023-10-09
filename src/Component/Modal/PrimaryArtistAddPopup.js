@@ -5,8 +5,9 @@ import PrimaryBtn from "../Button/PrimaryBtn";
 import PhotoUploader from "../ImageUpload/PhotoUploader";
 import InputField from "../InputField/InputField";
 
-function LabelManagePopup({onSubmit, isShow}) {
+function LabelManagePopup({ onSubmit, isShow }) {
   const [show, setShow] = useState(isShow);
+  const [error, setError] = useState(null);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -21,26 +22,31 @@ function LabelManagePopup({onSubmit, isShow}) {
   const [imageId, setImageId] = useState(null);
 
   const handleSubmit = async (e) => {
-    const data = {
-      name: name,
-      spotify_id: spotifyId,
-      apple_id: appleId,
-      facebook_url: facebookUrl,
-      instagram_id: instagramId,
-      youtube_channel_url: youtubeChannelUrl,
-      image: imageId,
-    };
-    const res = await PrimaryArtistService.add(data);
-    if (res) {
-      setName("");
-      setSpotifyId("");
-      setAppleId("");
-      setFacebookUrl("");
-      setInstagramId("");
-      setYoutubeChannelUrl("");
-      setUploadedPhoto(null);
-      handleClose();
-      onSubmit();
+    if (!name) {
+      setError({...error, name: "Name is required"});
+    } else {
+      setError(null);
+      const data = {
+        name: name,
+        spotify_id: spotifyId,
+        apple_id: appleId,
+        facebook_url: facebookUrl,
+        instagram_id: instagramId,
+        youtube_channel_url: youtubeChannelUrl,
+        image: imageId,
+      };
+      const res = await PrimaryArtistService.add(data);
+      if (res) {
+        setName("");
+        setSpotifyId("");
+        setAppleId("");
+        setFacebookUrl("");
+        setInstagramId("");
+        setYoutubeChannelUrl("");
+        setUploadedPhoto(null);
+        handleClose();
+        onSubmit();
+      }
     }
   };
 
@@ -81,7 +87,7 @@ function LabelManagePopup({onSubmit, isShow}) {
           <PhotoUploader
             uploadedPhoto={uploadedPhoto}
             setUploadedPhoto={setUploadedPhoto}
-            onUpload={(link)=>setImageId(link)}
+            onUpload={(link) => setImageId(link)}
           />
           <div className="input_group">
             <InputField
@@ -90,6 +96,7 @@ function LabelManagePopup({onSubmit, isShow}) {
               value={name}
               onChange={handleNameChange}
             />
+            {error?.name && <small className="text-danger">{error?.name}</small>}
             <InputField
               label="Spotify ID"
               value={spotifyId}

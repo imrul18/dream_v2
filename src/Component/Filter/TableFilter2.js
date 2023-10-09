@@ -1,6 +1,6 @@
 import React from "react";
 
-const TableFilter = ({ selectedStatus, handleFilter }) => {
+const TableFilter2 = ({ selectedStatus, handleFilter }) => {
   return (
     <div className="table_filter_btn border_bottom">
       <button
@@ -10,11 +10,11 @@ const TableFilter = ({ selectedStatus, handleFilter }) => {
         All
       </button>
       <button
-        onClick={() => handleFilter("Approved")}
-        className={selectedStatus === "Approved" ? "active" : ""}
+        onClick={() => handleFilter("Published")}
+        className={selectedStatus === "Published" ? "active" : ""}
       >
-        Approved
-      </button>      
+        Published
+      </button>   
       <button
         onClick={() => handleFilter("Pending")}
         className={selectedStatus === "Pending" ? "active" : ""}
@@ -52,4 +52,4 @@ const TableFilter = ({ selectedStatus, handleFilter }) => {
   );
 };
 
-export default TableFilter;
+export default TableFilter2;

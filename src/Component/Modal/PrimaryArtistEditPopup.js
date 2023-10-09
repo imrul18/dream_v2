@@ -10,6 +10,7 @@ import InputField from "../InputField/InputField";
 
 function LabelManagePopup({ id, isShow }) {
   const [show, setShow] = useState(isShow);
+  const [error, setError] = useState(null);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
