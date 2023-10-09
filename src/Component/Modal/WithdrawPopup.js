@@ -20,7 +20,7 @@ function WithdrawPopup({
       bank?.map((item) => {
         return {
           value: item?.id,
-          label: `${item?.companyName} (${item?.bankName})`,
+          label: `${item?.account_holder_name} (${item?.bank_name})`,
         };
       })
     );
