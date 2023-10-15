@@ -58,6 +58,7 @@ const MainLayout = () => {
           onClick={({ key }) => {
             if (key === "signout") {
             } else {
+              handleToggle()
               navigate(key);
             }
           }}
