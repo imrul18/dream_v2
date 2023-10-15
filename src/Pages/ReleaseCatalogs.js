@@ -63,7 +63,7 @@ function ReleaseCatalogs() {
 
   return (
     <>
-      <div className="section_title">
+      <div className="section_title mt-4">
         <div className="text_area">
           <h2>All Release Catalogs</h2>
         </div>

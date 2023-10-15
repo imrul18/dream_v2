@@ -83,7 +83,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="container-fluid">
-        <div className="row">
+        <div className="row mt-5">
           <div className="col-xl-12">
             <DashboardSlider data={userData} sliderData={sliderData} />
           </div>

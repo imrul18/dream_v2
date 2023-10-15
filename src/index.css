@@ -805,10 +805,10 @@ Catalog Page
   flex-wrap: wrap;
 }
 
-.catalog_details .cover_text_content .status{
+.catalog_details .cover_text_content .status {
   padding: 4px 16px;
   border-radius: 100px;
-  color: var(--title-color)
+  color: var(--title-color);
 }
 
 .status.approved {
@@ -860,10 +860,6 @@ Catalog Page
   font-size: 24px;
   color: var(--title-color);
 }
-
-
-
-
 
 .cTune .item {
   display: flex;
@@ -920,7 +916,7 @@ Catalog Page
 }
 
 .r_edit_delete a.edit {
-  background: #57B948;
+  background: #57b948;
 }
 
 .r_edit_delete a.delete {
@@ -950,7 +946,6 @@ Catalog Page
 .relese_audio_filter_btn_add .draft {
   display: block;
 }
-
 
 td.ant-table-cell.ant-table-cell-row-hover {
   background: var(--primary-color) !important;
@@ -987,8 +982,8 @@ td.ant-table-cell .status.c_request {
   background: #dfe088 !important;
 }
 
-
-.release_audio_table label.ant-checkbox-wrapper.css-dev-only-do-not-override-w8mnev {
+.release_audio_table
+  label.ant-checkbox-wrapper.css-dev-only-do-not-override-w8mnev {
   margin-left: 10px !important;
 }
 
@@ -1079,7 +1074,6 @@ Release Information Page
   margin-bottom: 8px;
 }
 
-
 .releaseaudio_page hr {
   border: 1px solid var(--border-color);
 }
@@ -1150,7 +1144,6 @@ Release Information Page
   background: var(--white-color);
   box-shadow: 12px 12px 35px #0000000a;
 }
-
 
 /* =================
 Submission Page
@@ -1320,19 +1313,21 @@ Support Page
 
 :where(.css-dev-only-do-not-override-w8mnev).ant-btn {
   height: auto;
-  display: flex;
+  display: none;
   align-items: center;
 }
 
 td.ant-table-cell.ant-table-cell-row-hover .reply_btn {
-  color: var(--white-color)
+  color: var(--white-color);
 }
 
 td.ant-table-cell.ant-table-cell-row-hover .reply_btn .icons {
-  color: var(--white-color)
+  color: var(--white-color);
 }
 
-.support_page :where(.css-dev-only-do-not-override-w8mnev).ant-upload-wrapper .ant-upload-select {
+.support_page
+  :where(.css-dev-only-do-not-override-w8mnev).ant-upload-wrapper
+  .ant-upload-select {
   width: 100%;
 }
 
@@ -1406,7 +1401,7 @@ LogIn part
 .logIn_page {
   width: 100%;
   height: 100vh;
-  background: #1A1820;
+  background: #1a1820;
   color: var(--white-color);
 }
 
@@ -1419,13 +1414,13 @@ LogIn part
 }
 
 .log_container .lgoIn_img {
-  background: #CDC1FF;
+  background: #cdc1ff;
   height: 100%;
   display: flex;
   align-items: center;
 }
 
-.logIn_from_area{
+.logIn_from_area {
   height: 100%;
   width: 100%;
   display: flex;
@@ -1472,11 +1467,11 @@ LogIn part
 .log_container .logIn_from h1 {
   color: var(--white-color);
   margin-bottom: 42px;
-  font-size: 32px
+  font-size: 32px;
 }
 
 .log_container .logIn_from input {
-  background: #22202C;
+  background: #22202c;
   height: 50px;
   color: var(--white-color);
   border: none;
@@ -1576,7 +1571,6 @@ Swiper part
   color: var(--white-color);
   font-size: 20px;
 }
-
 
 .f_popover_btn {
   padding: 0;
@@ -1743,7 +1737,6 @@ span.enable_wp {
 
 /*  */
 
-
 /*===============================
 Responcive part
 =============================== */
@@ -1808,17 +1801,16 @@ Responcive part
     padding-left: 30px;
   }
 
-  .cover_text_content{
+  .cover_text_content {
     margin-top: 30px;
   }
-
 }
 
 @media screen and (max-width: 768px) {
   .analytics_area {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
-  
+
   .catalog_details .cover_text_content .covr_title h1 {
     font-size: 7vw;
   }

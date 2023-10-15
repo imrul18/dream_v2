@@ -32,7 +32,7 @@ function ForgetPassword() {
               <span className="aaab">Welcome to</span> <br /> Dream Records!
             </h1>
             <InputField
-              label="User Name or Email"
+              label="Email"
               value={name}
               star="*"
               onChange={handleNameChange}

@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import FileService from "../../service/FileService";
 import ProfileService from "../../service/ProfileService";
 import ChangePasswordPopup from "../Modal/ChangePasswordPopup";
-import Notification from "../Notification/Notification";
 import Logo from "../assets/img/Logo.svg";
 
 function Topbar() {
@@ -38,7 +37,7 @@ function Topbar() {
           </h2>
         </div>
       <div className="nav_right">
-      <Notification />
+      {/* <Notification /> */}
       <div className="account_info">
         <p className="name">{data?.username}</p>
         <img src={data?.avatar ? FileService?.image(data?.avatar) : `https://i2.wp.com/ui-avatars.com/api/${data?.first_name}/400`} alt="" />
