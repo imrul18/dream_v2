@@ -41,7 +41,7 @@ function ReleaseAudio() {
             <div
               key={index}
               className={`tab ${index === currentStep ? "active" : ""}`}
-              onClick={() => handleStepChange(index)}
+              // onClick={() => handleStepChange(index)}
             >
               <BiCheck className="icons" />
               {step.title}

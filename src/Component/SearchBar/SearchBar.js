@@ -1,21 +1,21 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
 function SearchBar({ onSearch }) {
-  const { register, handleSubmit } = useForm();
+  const [term, setTerm] = useState("");
 
-  const onSubmit = (data) => {
-    onSearch(data.searchTerm);
+  const onSubmit = (e) => {
+    e?.preventDefault();
+    onSearch(term);
   };
 
   return (
     <div className="search_container">
-      <form className="search_bar" onSubmit={handleSubmit(onSubmit)}>
-        <input type="text" {...register("searchTerm")} />
-        <button type="submit" className="submit">
+      <form className="search_bar">
+        <input type="text" onChange={(e) => setTerm(e?.target?.value)} />
+        <div type="submit" className="submit" onClick={onSubmit}>
           <FaSearch />
-        </button>
+        </div>
       </form>
     </div>
   );
