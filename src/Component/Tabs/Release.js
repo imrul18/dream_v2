@@ -47,8 +47,9 @@ const Release = ({ currentStep, setCurrentStep }) => {
     setGenreOption(genre?.data);
     const label = await OptionService.label();
     setLabelOption(
-      label?.data?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
-      // label?.data?.filter(itm=>itm?.status == 'approved')?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
+      label?.data
+        ?.filter((itm) => itm?.status === "approved")
+        ?.map((itm) => ({ ...itm, value: itm?.id, label: itm?.title }))
     );
     const artist = await OptionService.artist();
     setArtistOption(

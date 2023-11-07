@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
+import { BsLock, BsUnlock } from "react-icons/bs";
 import Select from "react-select";
 import EarningService from "../../service/EarningService";
 
@@ -56,7 +57,12 @@ function WithdrawPopup({
         onClick={handleShow}
         disabled={!isButtonActive}
       >
-        Withdraw Balance
+        Withdraw Balance{" "}
+        {isButtonActive ? (
+          <BsUnlock className="icons" size={14}/>
+        ) : (
+          <BsLock className="icons" />
+        )}
       </button>
 
       <Modal show={show} onHide={handleClose} className="s-popup" size="lg">

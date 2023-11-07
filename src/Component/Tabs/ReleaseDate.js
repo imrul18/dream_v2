@@ -18,7 +18,19 @@ const EditAssets = ({ currentStep, setCurrentStep }) => {
   };
 
   const clickNext = () => {
-    if (musicData?.main_release_date) {
+    var q = new Date();
+    var m = q.getMonth() + 1;
+    var d = q.getDay();
+    var y = q.getFullYear();
+
+    var date = new Date(d, m, y);
+    console.log(date);
+    console.log(musicData?.main_release_date);
+
+    if (
+      musicData?.main_release_date &&
+      musicData?.main_release_date >= date
+    ) {
       setCurrentStep(currentStep + 1);
     } else {
       alert("Please select a date");
@@ -37,7 +49,9 @@ const EditAssets = ({ currentStep, setCurrentStep }) => {
             <div className="checkbox_item">
               <Space direction="vertical">
                 <DatePicker
-                  selected={new Date(musicData?.main_release_date ?? Date.now())}
+                  selected={
+                    new Date(musicData?.main_release_date ?? Date.now())
+                  }
                   onChange={(date) => setData({ main_release_date: date })}
                   minDate={new Date()}
                 />

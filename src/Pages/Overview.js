@@ -8,7 +8,6 @@ import ProfileService from "../service/ProfileService";
 function Earning() {
   const [yearsOptions, setYearsOptions] = useState([]);
 
-
   const [startDate, setStartDate] = useState(new Date());
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -34,7 +33,6 @@ function Earning() {
     getYearOptions();
   }, [selectedOption]);
 
-
   const handleChange = (selectedOption) => {
     setSelectedOption(selectedOption);
   };
@@ -46,9 +44,9 @@ function Earning() {
     const finalData = res?.data?.map((item, index) => {
       return {
         key: index,
-        years: moment(item?.issue_date).format("YYYY"),
-        month: moment(item?.issue_date).format("MMMM"),
-        date: moment(item?.issue_date).format("DD/MM/YYYY"),
+        years: item?.year,
+        month: item?.month,
+        date: moment(item?.date_created).format("DD/MM/YYYY"),
         amount: item?.amount,
       };
     });
@@ -58,8 +56,10 @@ function Earning() {
 
   useEffect(() => {
     if (selectedOption) {
-      setTableData(data?.filter((item) => item?.years == selectedOption?.value));
-    }else{
+      setTableData(
+        data?.filter((item) => item?.years == selectedOption?.value)
+      );
+    } else {
       setTableData(data);
     }
   }, [selectedOption]);

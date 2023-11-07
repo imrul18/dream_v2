@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AiFillSetting } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import AuthService from "../../service/AuthService";
 import FileService from "../../service/FileService";
 import ProfileService from "../../service/ProfileService";
 import ChangePasswordPopup from "../Modal/ChangePasswordPopup";
@@ -23,7 +24,8 @@ function Topbar() {
     setIsOpen(!isOpen);
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async() => {
+    await AuthService.logout();
     setIsOpen(false);
   };
 

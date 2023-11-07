@@ -136,7 +136,7 @@ function CatalogDetails() {
                 <h2>
                   by{" "}
                   {data?.primary_artist?.length &&
-                    data?.primary_artist[0]?.Primary_Artist_id?.name}
+                    data?.primary_artist?.map(itm=>itm?.Primary_Artist_id?.name)?.toString()}
                 </h2>
               </div>
             </div>
@@ -186,6 +186,17 @@ function CatalogDetails() {
                           itm?.primary_artist[0]?.Primary_Artist_id?.name}
                       </span>
                     </div>
+                    {itm?.primary_artist?.length > 1 &&
+                      itm?.primary_artist?.map((itm, index) => {
+                        if (index !== 0) {
+                          return (
+                            <div className="input_value">
+                              <p className="input_name">Secondary Artist </p>
+                              <span>{itm?.Primary_Artist_id?.name}</span>
+                            </div>
+                          );
+                        }
+                      })}
                   </div>
                   <div className="col-xl-4 col-lg-6 col-md-12">
                     <div className="input_value">
