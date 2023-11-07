@@ -122,6 +122,7 @@ function Submission({ currentStep, setCurrentStep }) {
         update: [],
       },
     };
+    console.log("🚀 ~ file: Submission.js:125 ~ onSubmit ~ data:", data)
     const res = await MusicCatalogService.add(data);
     if (res?.data?.id) {
       dispatch(setMusicData(null));

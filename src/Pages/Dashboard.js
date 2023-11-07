@@ -74,7 +74,9 @@ const Dashboard = () => {
     const sliderData = slider?.data?.header_images?.map((item) => {
       return FileService?.image(item?.directus_files_id);
     });
-    setSliderData(sliderData);
+    if (sliderData?.length) {
+      setSliderData(sliderData);
+    }
   };
   useEffect(() => {
     getData();
@@ -102,7 +104,11 @@ const Dashboard = () => {
               {data?.map((item, index) => (
                 <li key={index} className="border rounded-circle">
                   <Link to={`/primary_artist_manage?edit_id=${item?.id}`}>
-                    <img src={item?.image} alt="" className="border rounded-circle" />
+                    <img
+                      src={item?.image}
+                      alt=""
+                      className="border rounded-circle"
+                    />
                   </Link>
                 </li>
               ))}

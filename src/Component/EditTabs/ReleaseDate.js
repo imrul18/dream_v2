@@ -19,7 +19,15 @@ const EditAssets = ({ currentStep, setCurrentStep }) => {
 
   const clickNext = () => {
     if (updateData?.main_release_date) {
-      setCurrentStep(currentStep + 1);
+      const currentDate = new Date();
+      currentDate.setDate(currentDate.getDate() - 1);
+      const dateToCompare = new Date(updateData?.main_release_date);
+
+      if (dateToCompare >= currentDate) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        alert("selected date is not valid a date");
+      }
     } else {
       alert("Please select a date");
     }

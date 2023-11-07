@@ -116,13 +116,6 @@ const Release = ({ currentStep, setCurrentStep }) => {
       redirect = false;
     }
 
-    if (updateData?.upc) {
-      errorData = { ...errorData, upc: null };
-    } else {
-      errorData = { ...errorData, upc: "Please enter upc" };
-      redirect = false;
-    }
-
     if (updateData?.p_line) {
       errorData = { ...errorData, p_line: null };
     } else {
@@ -332,8 +325,7 @@ const Release = ({ currentStep, setCurrentStep }) => {
                 <small className="text-danger">{error?.production_year}</small>
               </div>
               <div className="input_f mt-3">
-                <label className="mb-2">UPC/EAN</label>{" "}
-                <span className="input_star">*</span>
+                <label className="mb-2">UPC/EAN</label>
                 <input
                   type="text"
                   value={updateData?.upc}
