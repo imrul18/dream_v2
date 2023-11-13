@@ -34,7 +34,7 @@ function WithdrawPopup({
     e?.preventDefault();
     if (!data?.bank_account) {
       setError("Please Select Bank Account");
-    } else if (data?.amount < minimum_withdraw) {
+    } else if (parseFloat(data?.amount) < parseFloat(minimum_withdraw)) {
       setError(`Minimum withdraw balance: ₹${minimum_withdraw}`);
     } else if (data?.amount > parseFloat(balance)) {
       setError(`Insufficient balance`);
