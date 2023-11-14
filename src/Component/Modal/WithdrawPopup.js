@@ -13,7 +13,7 @@ function WithdrawPopup({
 }) {
   const [show, setShow] = useState(false);
   const [bankOptions, setBankOptions] = useState([]);
-  const [data, setData] = useState({ amount: balance });
+  const [data, setData] = useState();
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -27,6 +27,10 @@ function WithdrawPopup({
     );
   }, [bank]);
 
+  useEffect(() => {
+    setData({ ...data, amount: balance });
+  }, [balance]);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -36,7 +40,7 @@ function WithdrawPopup({
       setError("Please Select Bank Account");
     } else if (parseFloat(data?.amount) < parseFloat(minimum_withdraw)) {
       setError(`Minimum withdraw balance: ₹${minimum_withdraw}`);
-    } else if (data?.amount > parseFloat(balance)) {
+    } else if (parseFloat(data?.amount) > parseFloat(balance)) {
       setError(`Insufficient balance`);
     } else {
       const res = await EarningService?.withdraw(data);
@@ -59,7 +63,7 @@ function WithdrawPopup({
       >
         Withdraw Balance{" "}
         {isButtonActive ? (
-          <BsUnlock className="icons" size={14}/>
+          <BsUnlock className="icons" size={14} />
         ) : (
           <BsLock className="icons" />
         )}
