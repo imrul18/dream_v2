@@ -21,7 +21,7 @@ function WithdrawPopup({
       bank?.map((item) => {
         return {
           value: item?.id,
-          label: `${item?.bank_name} (${item?.account_holder_name})`,
+          label: `${item?.account_holder_name} (${item?.bank_name})`,
         };
       })
     );
